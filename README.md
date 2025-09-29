@@ -12,7 +12,25 @@ Built with extensibility in mind, the system supports modular character sheet te
 - Website Deployment: 
 - Github Repository: https://github.com/CutbackTG/BattleRoster
 
-# Features
+# Features & Architecture
+
+#User Roles & Authentication
+-	Player Account: Create/edit/delete own character sheets, invite others.
+-	Dungeon Master Account: Manage all sheets in their group, send invites.
+-	Authentication: Extend Django User model with roles (Player, DM).  
+
+#Character Sheet Management
+-	CRUD operations for character sheets with fields like Name, Race, Class, Stats, etc.
+-	Save individual values using AJAX or HTMX.
+-	Optional versioning or history tracking.  
+
+#Group System
+-	Groups contain one DM and multiple Players.
+-	Group invites via email or username.
+-	Permissions: Players manage own sheets, DMs manage all in group.  
+
+#Game System Extensibility
+-	Modular character sheet templates for D&D, BattleTech, etc.
 
 
 
