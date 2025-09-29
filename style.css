@@ -11,7 +11,7 @@ html {
 
 /* General styles */
 body {
-  background-color: #1a1a1a;
+  background-color: #2a2a2a;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -36,12 +36,12 @@ h4 {
 
 /* Header */
 header {
-  background-color: #1a1a1a;
+  background-color: #2a2a2a;
   padding: 0 1rem;
   position: fixed;
   z-index: 99;
   width: 100%;
-  box-shadow: 0 2px 2px #3a3a3a;
+  box-shadow: 0 2px 2px #1a1a1a;
   display: flex;
   justify-content: space-between;
   align-items: baseline;
@@ -52,52 +52,33 @@ header a {
   color: whitesmoke;
 }
 
-#logo {
-  color: #e50000;
-}
-
 /* Navbar */
-nav {
-  position: absolute;
-  background-color: #1a1a1a;
-  width: 100%;
-  left: 0;
-  top: 100%;
-  padding: 0 1rem;
-  box-shadow: 0 2px 2px #3a3a3a;
-  display: none;
-}
+.text { color: whitesmoke !important; }
+.navbar { border-bottom: 3px solid gold; }
+#battleroster-logo { width: 300px; max-width: 300px; height: auto; }
 
-#menu {
-  font-size: 110%;
-  letter-spacing: 4px;
-  list-style-type: none;
-}
-
-#menu > li {
-  margin-bottom: 1em;
-}
-
+/* Show nav on toggle */
 #nav-toggle:checked ~ nav {
   display: block;
 }
 
-#nav-toggle {
-  display: none;
+#menu {
+  font-size: 1.2rem;
+  letter-spacing: 4px;
+  list-style-type: none;
+  color: whitesmoke;
+  padding: 0 1rem;
+  margin: 0;
 }
 
 .nav-toggle-label {
-  font-size: 2rem;
+  font-size: 6rem;
   color: whitesmoke;
+  cursor: pointer;
 }
 
-.glow:hover {
-  text-shadow: 0 0 10px #e50000, 0 0 20px #e50000, 0 0 30px #e50000,
-    0 0 40px #e50000, 0 0 50px #e50000;
-}
-
-.active {
-  border-bottom: 1px solid #e50000;
+#menu > li {
+  margin-bottom: 0.5em;
 }
 
 /* Footer */
