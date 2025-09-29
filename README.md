@@ -21,8 +21,8 @@ Built with extensibility in mind, the system supports modular character sheet te
 
 #Character Sheet Management
 -	CRUD operations for character sheets with fields like Name, Race, Class, Stats, etc.
--	Save individual values using AJAX or HTMX.
--	Optional versioning or history tracking.  
+-	Save individual values.
+-	Create multiple character sheets per player account.
 
 #Group System
 -	Groups contain one DM and multiple Players.
