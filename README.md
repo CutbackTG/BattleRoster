@@ -1,5 +1,5 @@
-# project Three: BattleRoster
-======================================
+# Project Three: BattleRoster
+======================================  
 **Author:** *Tyler Worth*
 
 # Project Description
