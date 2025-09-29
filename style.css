@@ -1,0 +1,118 @@
+/* Asterisk wildcard selector to override default styles added by the browser */
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+/* General styles */
+body {
+  background-color: #1a1a1a;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  color: whitesmoke;
+  font-family: "Lato", sans-serif;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-family: "Oswald", sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: whitesmoke;
+  margin: 2px;
+}
+
+.hidden-heading {
+  display: none;
+}
+
+/* Header */
+header {
+  background-color: #1a1a1a;
+  padding: 0 1rem;
+  position: fixed;
+  z-index: 99;
+  width: 100%;
+  box-shadow: 0 2px 2px #3a3a3a;
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+header a {
+  text-decoration: none;
+  color: whitesmoke;
+}
+
+#logo {
+  color: #e50000;
+}
+
+/* Navbar */
+nav {
+  position: absolute;
+  background-color: #1a1a1a;
+  width: 100%;
+  left: 0;
+  top: 100%;
+  padding: 0 1rem;
+  box-shadow: 0 2px 2px #3a3a3a;
+  display: none;
+}
+
+#menu {
+  font-size: 110%;
+  letter-spacing: 4px;
+  list-style-type: none;
+}
+
+#menu > li {
+  margin-bottom: 1em;
+}
+
+#nav-toggle:checked ~ nav {
+  display: block;
+}
+
+#nav-toggle {
+  display: none;
+}
+
+.nav-toggle-label {
+  font-size: 2rem;
+  color: whitesmoke;
+}
+
+.glow:hover {
+  text-shadow: 0 0 10px #e50000, 0 0 20px #e50000, 0 0 30px #e50000,
+    0 0 40px #e50000, 0 0 50px #e50000;
+}
+
+.active {
+  border-bottom: 1px solid #e50000;
+}
+
+/* Footer */
+#social-networks {
+  background-color: #1a1a1a;
+  z-index: 4;
+  align-items: center;
+  padding: 15px 0;
+  display: flex;
+  justify-content: space-evenly;
+  list-style-type: none;
+}
+
+#social-networks i {
+  font-size: 160%;
+  padding: 5%;
+  color: whitesmoke;
+}
