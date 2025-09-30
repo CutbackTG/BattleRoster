@@ -11,68 +11,81 @@
   <title>BattleRoster | Game Rosters</title>
   <link rel="stylesheet" href="style.css">
 
- <!-- Navbar -->
-  <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm fixed-top">
-    <div class="container">
-      <a class="navbar-brand d-flex align-items-center" href="#">
-        <img src="assets/images/battleroster-logo.png" alt="BattleRoster Logo" id="battleroster-logo">
-      </a>
-      
-      <div class="collapse navbar-collapse justify-content-end" id="navMenu">
-        <ul class="navbar-nav">
-          <li class="nav-item">
-            <a class="nav-link text" href="">Characters</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link text" href="">Party</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link text" href="">Contact</a>
-          </li>
-        </ul>
-      </div>
-    </div>
-  </nav>
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 
 <body>
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container">
+      <!-- Logo -->
+      <a class="navbar-brand" href="#">
+        <img src="assets/images/battleroster-logo.png" alt="BattleRoster Logo" id="battleroster-logo">
+      </a>
+
+      <!-- Hamburger button -->
+      <button class="navbar-toggler ms-auto custom-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu"
+      aria-controls="navMenu" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <!-- Menu items -->
+<div class="collapse navbar-collapse justify-content-end" id="navMenu">
+  <ul class="navbar-nav">
+    <li class="nav-item">
+      <a class="nav-link" href="#">
+        <i class="fa-solid fa-user me-2 text-gold"></i>Characters
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="#">
+        <i class="fa-solid fa-users me-2 text-gold"></i>Party
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="#">
+        <i class="fa-solid fa-scroll me-2 text-gold"></i>Contact
+      </a>
+    </li>
+  </ul>
+</div>
+    </div>
+  </nav>
 
   <div>
-
+    <!-- Main content -->
   </div>
 
+  <!-- Footer -->
+  <footer id="footerSocials" class="mt-5">
+    <ul id="social-networks" class="socials list-unstyled d-flex gap-5 justify-content-center">
+      <li>
+        <a href="https://www.facebook.com/" target="_blank" rel="noopener"
+          aria-label="visit our Facebook page (opens in a new tab)"><i class="fa-brands fa-facebook"></i></a>
+      </li>
+      <li>
+        <a href="https://www.X.com/" target="_blank" rel="noopener"
+          aria-label="visit our X page (opens in a new tab)"><i class="fa-brands fa-square-x-twitter"></i></a>
+      </li>
+      <li>
+        <a href="https://www.youtube.com/" target="_blank" rel="noopener"
+          aria-label="visit our YouTube page (opens in a new tab)"><i class="fa-brands fa-youtube-square"></i></a>
+      </li>
+      <li>
+        <a href="https://www.instagram.com/" target="_blank" rel="noopener"
+          aria-label="visit our Instagram page (opens in a new tab)"><i class="fa-brands fa-instagram"></i></a>
+      </li>
+    </ul>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="js/main.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-ndDqU0Gzau9qJ1lfW4pNLlhNTkCfHzAVBReH9diLvGRem5+R9g2FzA8ZGN954O5Q"
+    crossorigin="anonymous"></script>
+  <!-- Font Awesome -->
+  <script src="https://kit.fontawesome.com/f84e35c3bf.js" crossorigin="anonymous"></script>
 </body>
 
- <!-- footer element -->
-    <footer id="footerSocials">
-      <ul id="social-networks" class="socials">
-        <li>
-          <a href="https://www.facebook.com/" target="_blank" rel="noopener"
-            aria-label="visit our Facebook page (opens in a new tab)"><i class="fa-brands fa-facebook"></i></a>
-        </li>
-        <li>
-          <a href="https://www.X.com/" target="_blank" rel="noopener"
-            aria-label="visit our X page (opens in a new tab)"><i class="fa-brands fa-square-x-twitter"></i></a>
-        </li>
-        <li>
-          <a href="https://www.youtube.com/" target="_blank" rel="noopener"
-            aria-label="visit our YouTube page (opens in a new tab)"><i class="fa-brands fa-youtube-square"></i></a>
-        </li>
-        <li>
-          <a href="https://www.instagram.com/" target="_blank" rel="noopener"
-            aria-label="visit our Instagram page (opens in a new tab)"><i class="fa-brands fa-instagram"></i></a>
-        </li>
-      </ul>
-    </footer>
-
-    <!-- Scripts -->
-    <script src="js/main.js"></script>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"
-      integrity="sha384-ndDqU0Gzau9qJ1lfW4pNLlhNTkCfHzAVBReH9diLvGRem5+R9g2FzA8ZGN954O5Q"
-      crossorigin="anonymous"></script>
-
-    <!-- JavaScript fontawesome kit -->
-    <script src="https://kit.fontawesome.com/f84e35c3bf.js" crossorigin="anonymous"></script>
-  </main>
 </html>
