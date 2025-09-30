@@ -140,6 +140,7 @@ header a {
   display: flex;
   justify-content: space-evenly;
   list-style-type: none;
+  margin-bottom: 0;
 }
 
 /* Remove underline from social links */
@@ -205,6 +206,16 @@ header a {
     text-align: left;
     padding: 0.5rem 0;
   }
+}
+
+#welcome-adventurer-text {
+  border: 1px solid gold;
+  margin: 1px;
+}
+
+#welcome-adventurer-text :hover {
+  color: gold;
+  transition: color 0.8s ease, transform 0.8s ease;
 }
 
 /* Social icons - gold hover */
