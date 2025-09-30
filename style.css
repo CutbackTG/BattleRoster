@@ -53,24 +53,39 @@ header a {
 }
 
 /* Navbar */
-.nav-link { color: gold; }
-.navbar { border-bottom: 3px solid gold; }
-#battleroster-logo { width: 200px; max-width: 200px; height: auto; }
+.nav-link {
+  color: gold;
+}
+
+.navbar {
+  border-bottom: 3px solid gold;
+}
+
+#battleroster-logo {
+  width: 200px;
+  max-width: 200px;
+  height: auto;
+}
 
 /* Increase navbar text and icon size */
 .navbar-nav .nav-link {
-  font-size: 1.2rem;   /* bump up text size */
-  display: flex;       /* align icon + text */
-  align-items: center; /* vertically center */
+  font-size: 1.4rem;
+  /* bump up text size */
+  display: flex;
+  /* align icon + text */
+  align-items: center;
+  /* vertically center */
 }
 
 .navbar-nav .nav-link i {
-  font-size: 1.3rem;   /* bump up icon size slightly */
+  font-size: 1.8rem;
+  /* bump up icon size slightly */
 }
 
 /* Custom hamburger color (Gold) */
 .custom-toggler .navbar-toggler-icon {
   background-image: url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='gold' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E");
+  height:10rem;
 }
 
 /* Optional: change border around button */
@@ -79,13 +94,13 @@ header a {
 }
 
 /* Show nav on toggle */
-#nav-toggle:checked ~ nav {
+#nav-toggle:checked~nav {
   display: block;
 }
 
 /* Gold icons inside navbar */
 .text-gold {
-  color: gold !important;
+  color: goldenrod;
 }
 
 /* Navbar link hover effect */
@@ -94,11 +109,11 @@ header a {
 }
 
 .navbar-nav .nav-link:hover {
-  color: gold !important;
+  color: gold;
 }
 
 #menu {
-  font-size: 1.2rem;
+  font-size: 2rem;
   letter-spacing: 4px;
   list-style-type: none;
   color: gold;
@@ -112,7 +127,7 @@ header a {
   cursor: pointer;
 }
 
-#menu > li {
+#menu>li {
   margin-bottom: 0.5em;
 }
 
@@ -129,9 +144,11 @@ header a {
 
 /* Remove underline from social links */
 #social-networks a {
-  text-decoration: none;   /* no underline */
+  text-decoration: none;
+  /* no underline */
   color: whitesmoke;
-  font-size: 2rem;       /* make icons a good size */
+  font-size: 2rem;
+  /* make icons a good size */
   transition: color 0.3s ease, transform 0.2s ease;
 }
 
@@ -140,14 +157,54 @@ header a {
   transition: color 0.3s ease;
 }
 
-.navbar-nav .nav-link:hover {
-  color: gold;
-}
-
 /* Navbar links - gold when active */
 .navbar-nav .nav-link.active {
   color: gold;
   font-weight: bold;
+}
+
+/* Collapse menu right-aligned under hamburger on mobile */
+@media (max-width: 991px) {
+
+  /* lg breakpoint */
+  .navbar-collapse {
+    position: absolute;
+    top: 100%;
+    /* directly below navbar */
+    right: 1rem;
+    /* align to right */
+    background-color: #2a2a2a;
+    /* match navbar */
+    border: 1px solid gold;
+    padding: 0.5rem 1rem;
+    width: auto;
+    /* don't stretch full width */
+    z-index: 1000;
+    border-radius: 5px;
+
+    /* Smooth slide effect */
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease-out, opacity 0.3s ease-out;
+    opacity: 0;
+  }
+
+  .navbar-collapse.show {
+    max-height: 500px;
+    /* big enough to fit all menu items */
+    opacity: 1;
+    transition: max-height 0.3s ease-in, opacity 0.3s ease-in;
+  }
+
+  .navbar-nav {
+    flex-direction: column;
+    align-items: flex-end;
+  }
+
+  .navbar-nav .nav-link {
+    text-align: left;
+    padding: 0.5rem 0;
+  }
 }
 
 /* Social icons - gold hover */
@@ -159,5 +216,7 @@ header a {
 
 #social-networks a:hover {
   color: gold;
-  transform: scale(1.1); /* subtle zoom on hover */
+  transform: scale(1.1);
+  /* subtle zoom on hover */
 }
+
