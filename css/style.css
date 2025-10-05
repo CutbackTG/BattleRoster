@@ -34,6 +34,10 @@ h4 {
   margin: 2px;
 }
 
+strong {
+  color: goldenrod;
+}
+
 .hidden-heading {
   display: none;
 }
@@ -187,14 +191,15 @@ header a {
 
 /* Character Sheet Styles */
 .character-sheet {
-  background: #fae9ba;
+  background: radial-gradient(ellipse farthest-corner at right bottom, #FEDB37 0%, #FDB931 8%, #9f7928 30%, #8A6E2F 40%, transparent 80%),
+    radial-gradient(ellipse farthest-corner at left top, #FFFFFF 0%, #FFFFAC 8%, #D1B464 25%, #5d4a1f 62.5%, #5d4a1f 100%);
   color: #222;
-  padding: 10px;
+  padding: 20px;
   border: 3px solid #333;
   border-radius: 8px;
   max-width: 1200px;
   margin: 2rem auto;
-  font-family: "Libre Baskerville", serif;
+  font-family: "Lato", sans-serif;
 }
 
 .character-sheet h1 {
@@ -207,7 +212,7 @@ header a {
 .character-sheet h2,
 .character-sheet h3,
 .character-sheet h4 {
-  color: #222;
+  color: #010101;
   margin-bottom: 0.5rem;
 }
 
@@ -222,16 +227,16 @@ header a {
   border: 2px solid #444;
   padding: 10px;
   margin: 4px;
-  background: #fffef9;
+  background: #f8f0da;
   border-radius: 6px;
-  margin-bottom: 15px;
+  margin-bottom: 1px;
 }
 
 .character-sheet .section h3 {
   font-size: 1.2rem;
   border-bottom: 2px solid #444;
   padding-bottom: 4px;
-  margin-bottom: 8px;
+  margin-bottom: 1px;
 }
 
 /* Abilities */

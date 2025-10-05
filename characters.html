@@ -58,11 +58,11 @@
             </div>
     </nav>
 
-    <!-- Main content -->
-    <!--<div class="container-fluid bg-dark text-light py-5"> -->
-        <div class="row justify-content-center align-items-center"> 
+<!-- Main content -->
+    <div class="container-fluid bg-dark text-light py-5"> 
+        <div class="row justify-content-center align-items-center">
             <div class="character-sheet">
-                <h1>{{ character.name }}</h1>
+                <h1>{{ character.name }}</h1><a href="signup-login.html">Sign-up/Log-in to save your character sheets</a>
 
                 <div class="sheet-grid">
                     <!-- Left column -->
@@ -73,6 +73,10 @@
                             <div class="score">{{ character.strength }}</div>
                             <div class="modifier">+{{ character.str_mod }}</div>
                         </div>
+                        <div class="ability">
+                            <h4>Dexterity</h4> 
+                            <div class="score">{{ character.dexterity }}</div>
+                            <div class="modifier">+{{ character.dex_mod }}</div>
                         <!-- repeat for dex, con, int, wis, cha -->
                     </div>
 
