@@ -52,6 +52,11 @@ header a {
   color: gold;
 }
 
+.navbar-brand :hover {
+  transform: scale(1.1);
+  /* subtle zoom on hover */
+}
+
 /* Navbar */
 .nav-link {
   color: gold;
