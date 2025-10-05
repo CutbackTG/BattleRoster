@@ -1,3 +1,7 @@
+/* ---------------------- */
+/* Global + Navbar Styles */
+/* ---------------------- */
+
 /* Asterisk wildcard selector to override default styles added by the browser */
 * {
   padding: 0;
@@ -54,7 +58,6 @@ header a {
 
 .navbar-brand :hover {
   transform: scale(1.1);
-  /* subtle zoom on hover */
 }
 
 /* Navbar */
@@ -72,19 +75,14 @@ header a {
   height: auto;
 }
 
-/* Increase navbar text and icon size */
 .navbar-nav .nav-link {
   font-size: 1.4rem;
-  /* bump up text size */
   display: flex;
-  /* align icon + text */
   align-items: center;
-  /* vertically center */
 }
 
 .navbar-nav .nav-link i {
   font-size: 1.8rem;
-  /* bump up icon size slightly */
 }
 
 /* Custom hamburger color (Gold) */
@@ -93,22 +91,14 @@ header a {
   height: 10rem;
 }
 
-/* Optional: change border around button */
 .custom-toggler.navbar-toggler {
   border-color: gold;
 }
 
-/* Show nav on toggle */
-#nav-toggle:checked~nav {
-  display: block;
-}
-
-/* Gold icons inside navbar */
 .text-gold {
   color: goldenrod;
 }
 
-/* Navbar link hover effect */
 .navbar-nav .nav-link {
   transition: color 0.3s ease;
 }
@@ -148,47 +138,30 @@ header a {
   margin-bottom: 0;
 }
 
-/* Remove underline from social links */
 #social-networks a {
   text-decoration: none;
-  /* no underline */
-  color: whitesmoke;
+  color: goldenrod;
   font-size: 2rem;
-  /* make icons a good size */
   transition: color 0.3s ease, transform 0.2s ease;
 }
 
-/* Navbar links - gold hover */
-.navbar-nav .nav-link {
-  transition: color 0.3s ease;
-}
-
-/* Navbar links - gold when active */
-.navbar-nav .nav-link.active {
+#social-networks a:hover {
   color: gold;
-  font-weight: bold;
+  transform: scale(1.1);
 }
 
-/* Collapse menu right-aligned under hamburger on mobile */
+/* Mobile Navbar */
 @media (max-width: 991px) {
-
-  /* lg breakpoint */
   .navbar-collapse {
     position: absolute;
     top: 100%;
-    /* directly below navbar */
     right: 1rem;
-    /* align to right */
     background-color: #2a2a2a;
-    /* match navbar */
     border: 1px solid gold;
     padding: 0.5rem 1rem;
     width: auto;
-    /* don't stretch full width */
     z-index: 1000;
     border-radius: 5px;
-
-    /* Smooth slide effect */
     max-height: 0;
     overflow: hidden;
     transition: max-height 0.3s ease-out, opacity 0.3s ease-out;
@@ -197,7 +170,6 @@ header a {
 
   .navbar-collapse.show {
     max-height: 500px;
-    /* big enough to fit all menu items */
     opacity: 1;
     transition: max-height 0.3s ease-in, opacity 0.3s ease-in;
   }
@@ -213,25 +185,122 @@ header a {
   }
 }
 
-#welcome-adventurer-text {
-  border: 1px solid gold;
-  margin: 1px;
+/* Character Sheet Styles */
+.character-sheet {
+  background: #fae9ba;
+  color: #222;
+  padding: 10px;
+  border: 3px solid #333;
+  border-radius: 8px;
+  max-width: 1200px;
+  margin: 2rem auto;
+  font-family: "Libre Baskerville", serif;
 }
 
-#welcome-adventurer-text :hover {
-  color: gold;
-  transition: color 0.8s ease, transform 0.8s ease;
+.character-sheet h1 {
+  text-align: center;
+  font-size: 2.2rem;
+  margin-bottom: 10px;
+  color: #222;
 }
 
-/* Social icons - gold hover */
-#social-networks a {
-  color: goldenrod;
-  font-size: 2rem;
-  transition: color 0.3s ease, transform 0.2s ease;
+.character-sheet h2,
+.character-sheet h3,
+.character-sheet h4 {
+  color: #222;
+  margin-bottom: 0.5rem;
 }
 
-#social-networks a:hover {
-  color: gold;
-  transform: scale(1.1);
-  /* subtle zoom on hover */
+.sheet-grid {
+  display: grid;
+  grid-template-columns: 1fr 2fr 1fr;
+  grid-gap: 20px;
+}
+
+/* Sections */
+.character-sheet .section {
+  border: 2px solid #444;
+  padding: 10px;
+  margin: 4px;
+  background: #fffef9;
+  border-radius: 6px;
+  margin-bottom: 15px;
+}
+
+.character-sheet .section h3 {
+  font-size: 1.2rem;
+  border-bottom: 2px solid #444;
+  padding-bottom: 4px;
+  margin-bottom: 8px;
+}
+
+/* Abilities */
+.character-sheet .abilities {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.character-sheet .ability {
+  text-align: center;
+  border: 1px solid #aaa;
+  padding: 8px;
+  border-radius: 6px;
+  background: #fafafa;
+}
+
+.character-sheet .ability h4 {
+  font-size: 1rem;
+  margin-bottom: 4px;
+}
+
+.character-sheet .ability .score {
+  font-size: 1.4rem;
+  font-weight: bold;
+}
+
+.character-sheet .ability .modifier {
+  font-size: 1rem;
+  color: #555;
+}
+
+/* Skills */
+.character-sheet .skills ul {
+  list-style: none;
+  padding: 0;
+}
+
+.character-sheet .skills li {
+  border-bottom: 1px dashed #ccc;
+  padding: 3px 0;
+}
+
+/* Weapons Table */
+.character-sheet table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.character-sheet table th,
+.character-sheet table td {
+  border: 1px solid #333;
+  padding: 6px;
+  text-align: left;
+}
+
+.character-sheet table th {
+  background: #f0c75e;
+}
+
+/* Spells & Traits */
+.character-sheet .spells ul,
+.character-sheet .traits p {
+  margin: 0.5rem 0;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .sheet-grid {
+    grid-template-columns: 1fr;
+  }
 }
