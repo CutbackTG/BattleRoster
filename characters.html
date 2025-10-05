@@ -56,13 +56,15 @@
                     </li>
                 </ul>
             </div>
+        </div>
     </nav>
 
-<!-- Main content -->
+    <!-- Main content -->
     <div class="container-fluid bg-dark text-light py-5"> 
         <div class="row justify-content-center align-items-center">
             <div class="character-sheet">
-                <h1>{{ character.name }}</h1><a href="signup-login.html">Sign-up/Log-in to save your character sheets</a>
+                <h1>Character Name</h1>
+                <a href="signup-login.html">Sign-up/Log-in to save your character sheets</a>
 
                 <div class="sheet-grid">
                     <!-- Left column -->
@@ -70,14 +72,34 @@
                         <h3>Ability Scores</h3>
                         <div class="ability">
                             <h4>Strength</h4>
-                            <div class="score">{{ character.strength }}</div>
-                            <div class="modifier">+{{ character.str_mod }}</div>
+                            <div class="score">10</div>
+                            <div class="modifier">+0</div>
                         </div>
                         <div class="ability">
                             <h4>Dexterity</h4> 
-                            <div class="score">{{ character.dexterity }}</div>
-                            <div class="modifier">+{{ character.dex_mod }}</div>
-                        <!-- repeat for dex, con, int, wis, cha -->
+                            <div class="score">10</div>
+                            <div class="modifier">+0</div>
+                        </div>
+                        <div class="ability">
+                            <h4>Constitution</h4>
+                            <div class="score">10</div>
+                            <div class="modifier">+0</div>
+                        </div>
+                        <div class="ability">
+                            <h4>Intelligence</h4>
+                            <div class="score">10</div>
+                            <div class="modifier">+0</div>
+                        </div>
+                        <div class="ability">
+                            <h4>Wisdom</h4>
+                            <div class="score">10</div>
+                            <div class="modifier">+0</div>
+                        </div>
+                        <div class="ability">
+                            <h4>Charisma</h4>
+                            <div class="score">10</div>
+                            <div class="modifier">+0</div>
+                        </div>
                     </div>
 
                     <!-- Middle column -->
@@ -85,26 +107,27 @@
                         <div class="section skills">
                             <h3>Skills</h3>
                             <ul>
-                                <li>Stealth: +{{ character.stealth }}</li>
-                                <li>Arcana: +{{ character.arcana }}</li>
-                                <!-- etc -->
+                                <li>Stealth: +0</li>
+                                <li>Arcana: +0</li>
                             </ul>
                         </div>
                         <div class="section weapons">
                             <h3>Weapons</h3>
                             <table>
-                                <tr>
-                                    <th>Name</th>
-                                    <th>Bonus</th>
-                                    <th>Damage</th>
-                                </tr>
-                                {% for weapon in character.weapons.all %}
-                                <tr>
-                                    <td>{{ weapon.name }}</td>
-                                    <td>{{ weapon.attack_bonus }}</td>
-                                    <td>{{ weapon.damage }}</td>
-                                </tr>
-                                {% endfor %}
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Bonus</th>
+                                        <th>Damage</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Weapon Name</td>
+                                        <td>+0</td>
+                                        <td>1d6</td>
+                                    </tr>
+                                </tbody>
                             </table>
                         </div>
                     </div>
@@ -115,58 +138,56 @@
                             <h3>Spells</h3>
                             <h4>Cantrips</h4>
                             <ul>
-                                {% for spell in character.spells.cantrips %}
-                                <li>{{ spell }}</li>
-                                {% endfor %}
+                                <li>Spell Name</li>
                             </ul>
                         </div>
                         <div class="section traits">
                             <h3>Traits</h3>
-                            <p><strong>Personality:</strong> {{ character.personality }}</p>
-                            <p><strong>Ideals:</strong> {{ character.ideals }}</p>
-                            <p><strong>Bonds:</strong> {{ character.bonds }}</p>
-                            <p><strong>Flaws:</strong> {{ character.flaws }}</p>
+                            <p><strong>Personality:</strong> Character personality</p>
+                            <p><strong>Ideals:</strong> Character ideals</p>
+                            <p><strong>Bonds:</strong> Character bonds</p>
+                            <p><strong>Flaws:</strong> Character flaws</p>
                         </div>
                     </div>
                 </div>
             </div>
+        </div>
+    </div>
 
+    <!-- Footer -->
+    <footer id="footerSocials">
+        <ul id="social-networks" class="socials list-unstyled d-flex gap-5 justify-content-center">
+            <li>
+                <a href="https://www.facebook.com/" target="_blank" rel="noopener"
+                    aria-label="visit our Facebook page (opens in a new tab)"><i
+                        class="fa-brands fa-facebook"></i></a>
+            </li>
+            <li>
+                <a href="https://www.X.com/" target="_blank" rel="noopener"
+                    aria-label="visit our X page (opens in a new tab)"><i
+                        class="fa-brands fa-square-x-twitter"></i></a>
+            </li>
+            <li>
+                <a href="https://www.youtube.com/" target="_blank" rel="noopener"
+                    aria-label="visit our YouTube page (opens in a new tab)"><i
+                        class="fa-brands fa-youtube-square"></i></a>
+            </li>
+            <li>
+                <a href="https://www.instagram.com/" target="_blank" rel="noopener"
+                    aria-label="visit our Instagram page (opens in a new tab)"><i
+                        class="fa-brands fa-instagram"></i></a>
+            </li>
+        </ul>
+    </footer>
 
-
-
-            <!-- Footer -->
-            <footer id="footerSocials">
-                <ul id="social-networks" class="socials list-unstyled d-flex gap-5 justify-content-center">
-                    <li>
-                        <a href="https://www.facebook.com/" target="_blank" rel="noopener"
-                            aria-label="visit our Facebook page (opens in a new tab)"><i
-                                class="fa-brands fa-facebook"></i></a>
-                    </li>
-                    <li>
-                        <a href="https://www.X.com/" target="_blank" rel="noopener"
-                            aria-label="visit our X page (opens in a new tab)"><i
-                                class="fa-brands fa-square-x-twitter"></i></a>
-                    </li>
-                    <li>
-                        <a href="https://www.youtube.com/" target="_blank" rel="noopener"
-                            aria-label="visit our YouTube page (opens in a new tab)"><i
-                                class="fa-brands fa-youtube-square"></i></a>
-                    </li>
-                    <li>
-                        <a href="https://www.instagram.com/" target="_blank" rel="noopener"
-                            aria-label="visit our Instagram page (opens in a new tab)"><i
-                                class="fa-brands fa-instagram"></i></a>
-                    </li>
-                </ul>
-            </footer>
-
-            <!-- Scripts -->
-            <script src="js/main.js"></script>
-            <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"
-                integrity="sha384-ndDqU0Gzau9qJ1lfW4pNLlhNTkCfHzAVBReH9diLvGRem5+R9g2FzA8ZGN954O5Q"
-                crossorigin="anonymous"></script>
-            <!-- Font Awesome -->
-            <script src="https://kit.fontawesome.com/f84e35c3bf.js" crossorigin="anonymous"></script>
+    <!-- Scripts -->
+    <script src="js/characters.js"></script>
+    <script src="js/main.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-ndDqU0Gzau9qJ1lfW4pNLlhNTkCfHzAVBReH9diLlvGRem5+R9g2FzA8ZGN954O5Q"
+        crossorigin="anonymous"></script>
+    <!-- Font Awesome -->
+    <script src="https://kit.fontawesome.com/f84e35c3bf.js" crossorigin="anonymous"></script>
 </body>
 
 </html>
