@@ -5,13 +5,17 @@ SCOPE = [
     "https://www.googleapis.com/auth/spreadsheets",
     "https://www.googleapis.com/auth/drive.file",
     "https://www.googleapis.com/auth/drive"
-    ]
+]
 
+# Load credentials from creds.json
 CREDS = Credentials.from_service_account_file('creds.json')
 SCOPED_CREDS = CREDS.with_scopes(SCOPE)
 GSPREAD_CLIENT = gspread.authorize(SCOPED_CREDS)
+
+# Open your Google Sheet
 SHEET = GSPREAD_CLIENT.open('DnD_Character_Sheet_Template_Styled')
 
+# Access specific worksheets
 Character_Information = SHEET.worksheet('Character Info')
 Abilities = SHEET.worksheet('Abilities')
 Combat = SHEET.worksheet('Combat')
