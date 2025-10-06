@@ -1,0 +1,1 @@
+web: gunicorn battleroster_project.wsgi --log-file -
