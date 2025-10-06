@@ -69,3 +69,16 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [BASE_DIR / 'static']
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+import os
+
+# Path to service account JSON (relative to project root)
+GOOGLE_SERVICE_ACCOUNT_FILE = os.path.join(BASE_DIR, 'creds.json')
+
+# Your spreadsheet id (replace with your sheet id)
+# OR set via environment variable:
+GOOGLE_SHEETS_ID = os.environ.get('GOOGLE_SHEETS_ID', '<Y14ProN3lR8p-t9j2P7b76JBOwEIrvntHqCVBee1q6bNk>')
+# Example spreadsheet tab expected: "Characters"
+GOOGLE_SHEETS_RANGE = os.environ.get('GOOGLE_SHEETS_RANGE', 'Characters!A2:Z')
+
+AUTH_USER_MODEL = 'accounts.User'
