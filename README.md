@@ -1,270 +1,297 @@
-# Project Three: BattleRoster
-======================================  
-**Author:** *Tyler Worth*
+# BattleRoster
 
-# Project Description
+**Author:** Tyler Worth
 
-BattleRoster is designed to streamline tabletop game management for both players and dungeon masters. Players can easily create, edit, and organize their character sheets, while dungeon masters can oversee groups, manage player sheets, and coordinate campaigns.
-Built with extensibility in mind, the system supports modular character sheet templates, making it adaptable for multiple game systems such as Dungeons & Dragons or BattleTech. The site emphasizes usability with responsive design, lightweight interactivity and secure role-based permissions to protect player data. Future plans include chat integration, dice rolling tools, campaign notes, and export options, making it a comprehensive digital companion for tabletop gaming communities.
+BattleRoster is a Django-based web application designed to streamline tabletop game management for both players and dungeon masters. Players can easily create, edit, and organize their character sheets, while dungeon masters can oversee groups, manage player sheets, and coordinate campaigns.
 
-# Links
+Built with extensibility in mind, the system supports modular character sheet templates, making it adaptable for multiple game systems such as Dungeons & Dragons or BattleTech. The site emphasizes usability with responsive design, lightweight interactivity, and secure role-based permissions to protect player data.
 
-- Website Deployment: https://cutbacktg.github.io/BattleRoster/
-- Github Repository: https://github.com/CutbackTG/BattleRoster
+## 🎯 Features
 
-# Features & Architecture
+### User Roles & Authentication
+- **Player Account:** Create, edit, and delete own character sheets; invite others to groups
+- **Dungeon Master Account:** Manage all sheets in their group; send group invites
+- **Authentication:** Extended Django User model with role-based permissions (Player, DM)
 
-#User Roles & Authentication
--	Player Account: Create/edit/delete own character sheets, invite others.
--	Dungeon Master Account: Manage all sheets in their group, send invites.
--	Authentication: Extend Django User model with roles (Player, DM).  
+### Character Sheet Management
+- Full CRUD operations for character sheets
+- Fields include Name, Race, Class, Stats, Equipment, and more
+- Save individual field values dynamically
+- Support for multiple character sheets per player account
 
-#Character Sheet Management
--	CRUD operations for character sheets with fields like Name, Race, Class, Stats, etc.
--	Save individual values.
--	Create multiple character sheets per player account.
+### Group System
+- Groups contain one Dungeon Master and multiple Players
+- Group invites via email or username
+- **Permissions:** Players manage their own sheets; DMs manage all sheets in their group
 
-#Group System
--	Groups contain one DM and multiple Players.
--	Group invites via email or username.
--	Permissions: Players manage own sheets, DMs manage all in group.  
+### Game System Extensibility
+- Modular character sheet templates for different game systems
+- Currently supports D&D 5e with plans for BattleTech and other systems
+- Easy-to-extend template system for adding new game types
 
-#Game System Extensibility
--	Modular character sheet templates for D&D, BattleTech, etc.
+### Future Features
+- Real-time chat integration
+- Built-in dice rolling tools
+- Campaign notes and session logs
+- Character sheet export options (PDF, JSON)
+- Mobile app companion
 
+## 🛠️ Tech Stack
 
+- **Backend:** Django 5.2.7, Python 3.12+
+- **Frontend:** HTML5, CSS3, JavaScript, Bootstrap 5
+- **Database:** SQLite (development), PostgreSQL (production recommended)
+- **APIs:** Google Sheets API integration
+- **Authentication:** Django's built-in auth with custom user roles
+- **Version Control:** Git & GitHub
 
-# Limitations
+## 📋 Prerequisites
 
+Before you begin, ensure you have the following installed:
+- Python 3.12 or higher
+- pip (Python package manager)
+- Git
+- A code editor (VS Code, PyCharm, etc.)
 
+## 🚀 Installation & Setup
 
-# Technologies Used
+### 1. Clone the Repository
 
-- HTML5: For the structure and content of the website.
-- CSS3: For styling the site with custom layouts and designs.
-- Git: Version control to manage project files.
-- GitHub Pages: Hosting the live version of the project.
-- javaScript: for user interaction and advanced styling.
-- Bootstrap for useful containers, accordians and carousels.
-- Jest: For core functionality testing.
-- Python3:
-- Django:
+```bash
+git clone https://github.com/CutbackTG/BattleRoster.git
+cd BattleRoster
+```
 
-# Website Walkthrough
-
-**Landing section & About**
-
-
-
-# User Experience (UX)
-
-# User Stories
-
-**1. First-Time Visitor 1:**
-
-User story 1 - 
-
-**Acceptance Criteria**
-
-
-
-**2. First-Time Visitor 2:**
-
-User story 2 - 
-
-
-
-**Acceptance Criteria**
-
-
-
-**3. First-time Visitor 3**
-
-User story 3 - 
-
-
-
-**Acceptance Criteria**
-
-
-
-**3. Returning Visitor**
-
-User story 4 - 
-
-
-
-**Acceptance Criteria**
-
-
-
-Please visit section [Testing User stories from User Experience (UX)] for targeted testing to match these user defined requirements. 
-
-# Design
-
-Typography
-
-
-**Wireframes**
-
-
-
-**Colour scheme**
-
-
-
-# Testing & Accessibility
-
-W3C HTML & CSS Tests All Passed.
-
-
-
-**Accessibility - Lighthouse Rating**
-
-
-
-**Testing User Stories from User Experience (UX)**
-
-
-
-**Bugs Known**
-
-
-
-**Solved Bugs:**
-
-
-
-# Deployment
-
-**Installation**
-If you’d like to clone the project and work locally, follow these steps:
-
-**Clone the repository:**
-
-- Copy
-`git clone https://github.com/cutbacktg/BattleRoster.git`
-Navigate to the project directory:
-
-- Copy
-`cd BattleRoster`
-Open index.html in a web browser to view the site.
-
-**Deployment**
-
-This section guides you through the process of deploying your web application to Github Pages from your project repository.
-
-**Pre-requisites:**
-- A github account.
-- A github repository or clone of your web project already pushed to it.
-
-**Step 1: Prepare Your Repository**
-Check that your project is in a GitHub repository. If you haven't already created one, follow these steps:
-
-1. Create a new repository on GitHub:
-- Go to GitHub and log in.
-- Click the + icon at the top-right of the page and select New repository.
-- Name your repository (e.g., infernal-festival).
-- Make sure to initialize the repository with a README file (optional).
-- After creating the repository, you will see instructions to push an existing project.
-
-2. Push your local project to Github (if you haven't already done so):
-If you have an existing project:
-- Open your terminal or command line and navigate to the project folder.
-
-Use the following commands to push your project to Github:
-
-- `git init`  # If your project isn't already a Git repository
-- `git add .` # Add all files to the staging area
-- `git commit -m "Initial commit"`  # Commit the changes
-- `git branch -M main`  # Rename your default branch to 'main'
-- `git remote add origin https://github.com/yourusername/BattleRoster.git`  # Replace with your repository URL
-- `git push -u origin main`  # Push to GitHub
-
-**Step 2: Enable Github Pages**
-
-1. Navigate to the settings on your repository page on Github.
-- Open the repository on Github.
-- Click on the ***settings*** tab located in the top menu of your repository.
-
-2. Find the Github Pages section:
-- Scroll down until you find the ***Github Pages*** section under the ***Code and automation*** category.
-
-3. Choose a source branch for deployment:
-- In the ***Source*** dropdown, select the branch you want to deploy (usually ***main*** or ***master***)
-- After selcting your branch, Github Pages will automatically start building and deploying the website
-
-4. Select the root folder (if necessary):
-- Usually the root folder will be enough. However, if you have your site in a specific folder (like ***/docs*** etc), choose that folder instead.
-- If your website's ***index.html*** file is in the root of your repository, no folder selection is necessary.
-
-5. Save the changes:
- - After selecting the branch and folder (if applicable), Github will begin deploying your site. This may take several minutes depending upon the size of your site.
-
- **Step 3: Access your live website**
-
- Once Github Pages has finished building your site, you can access it via a URL.
-
- 1. Find your Github Pages URL:
- - In the ***Github Pages*** section under ***settings***, you will see a URL that will look like:
- https://yourusername.githuib.io/pastimez/ 
- - This URL is your live website (as stated previously, this may take a minute or two to appear, simply refresh the page periodically until it appears on the page)
- - Click the link to open your deployed website in your browser.
-
- **Step 4: Updating your website**
-
- Any time you make updates or changes to your project (e.g., editing HTML, CSS, or JavaScript), follow these steps to update your live website:
-
- 1. Make changes to your project locally
- - Edit your files as needed in your local project directory as normal.
-
- 2. Commit your changes in your Terminal or command line.
- - `git add .` (adds all changed files)
- - `git commit -m "Update website content"` (Commits your changes)
-
- 3. Push the changes to Github:
- - `git push origin main` (Push to Github main branch)
-
- 4. Wait for Github Pages to rebuild the site:
- - After pushing your changes, Github Pages will automatically rebuild your site with your new content.
- - Refresh the live URL to view your changes.
-
-**Step 5: Troubleshooting**
-
-Site not showing up after deployment?
-
-- Double-check that your index.html file is in the root directory of your repository. GitHub Pages needs this file to display your website.
-- Check for typos in your file names or references to other resources (like CSS or JS files).
-- Make sure you've committed and pushed all your files to the repository.
-
-Assets (images, CSS, etc.) not loading correctly?
-
-- Ensure the file paths for your assets are correct. GitHub Pages is case-sensitive, so make sure file names are properly capitalized.
-
-**Usage**
-
-Once the site is open in your browser, users can:
-
-Browse the site: View the event site, see the band line-up, contact for information on tickets and camping for the event and view the gallery of previous event photography.
-
-**Contributing**
-
-If you'd like to contribute to this project, feel free to fork the repository, make changes, and submit a pull request. Contributions are welcome to improve features, fix bugs, or enhance the UI.
-
-- Fork the repository.
-- Clone your forked version.
-- Make your changes and commit them.
-- Push your changes back to your fork.
-- Submit a pull request with a description of your changes.
-
-# Credits
-
-**Acknowledgements**
-
-Guidance: Special thanks to The Code Institute for their support in helping me build and refine this project.
-
-# Media:
-
-
-# References
-
+### 2. Create a Virtual Environment
+
+**Windows:**
+```bash
+python -m venv .venv
+.venv\Scripts\activate
+```
+
+**Mac/Linux:**
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+```
+
+### 3. Install Dependencies
+
+```bash
+pip install -r requirements.txt
+```
+
+If `requirements.txt` doesn't exist yet, install the core dependencies:
+```bash
+pip install django==5.2.7
+pip install google-auth google-auth-oauthlib google-api-python-client
+```
+
+Then create the requirements file:
+```bash
+pip freeze > requirements.txt
+```
+
+### 4. Environment Variables
+
+Create a `.env` file in the project root:
+
+```env
+SECRET_KEY=your-secret-key-here
+DEBUG=True
+ALLOWED_HOSTS=localhost,127.0.0.1
+
+# Database (for production)
+DATABASE_URL=your-database-url
+
+# Google API (if using Google Sheets integration)
+GOOGLE_CLIENT_ID=your-client-id
+GOOGLE_CLIENT_SECRET=your-client-secret
+```
+
+**Important:** Never commit your `.env` file to Git!
+
+### 5. Run Database Migrations
+
+```bash
+python manage.py makemigrations
+python manage.py migrate
+```
+
+### 6. Create a Superuser
+
+```bash
+python manage.py createsuperuser
+```
+
+Follow the prompts to create an admin account.
+
+### 7. Run the Development Server
+
+```bash
+python manage.py runserver
+```
+
+Visit: **http://127.0.0.1:8000/**
+
+### 8. Access the Admin Panel
+
+Visit: **http://127.0.0.1:8000/admin/**
+Login with your superuser credentials.
+
+## 📁 Project Structure
+
+```
+BattleRoster/
+├── battleroster_project/       # Main Django project settings
+│   ├── __init__.py
+│   ├── settings.py            # Project configuration
+│   ├── urls.py                # Main URL routing
+│   ├── wsgi.py                # WSGI server config
+│   └── asgi.py                # ASGI server config
+│
+├── accounts/                   # User authentication & profiles
+│   ├── models.py              # User model extensions
+│   ├── views.py               # Login, registration views
+│   ├── urls.py
+│   └── templates/
+│
+├── game_characters/            # Character management
+│   ├── models.py              # Character model
+│   ├── views.py               # CRUD operations
+│   ├── forms.py
+│   └── templates/
+│
+├── sheets/                     # Character sheets
+│   ├── models.py              # Sheet templates
+│   ├── views.py               # Sheet rendering
+│   ├── google_client.py       # Google Sheets integration
+│   └── templates/
+│
+├── static/                     # CSS, JS, images
+│   ├── css/
+│   ├── js/
+│   └── images/
+│
+├── templates/                  # Base templates
+│   └── base.html
+│
+├── manage.py                   # Django management script
+├── requirements.txt            # Python dependencies
+├── .env                        # Environment variables (not in Git)
+├── .gitignore                 # Git ignore rules
+└── README.md                   # This file
+```
+
+## 🧪 Testing
+
+Run the test suite:
+
+```bash
+python manage.py test
+```
+
+Run tests for a specific app:
+```bash
+python manage.py test accounts
+python manage.py test game_characters
+```
+
+## 🌐 Deployment
+
+BattleRoster is a Django application and requires a Python-capable hosting platform. **GitHub Pages will NOT work** as it only hosts static files.
+
+### Recommended Deployment Platforms:
+
+1. **Heroku** (Easy, free tier available)
+   - [Heroku Django Deployment Guide](https://devcenter.heroku.com/articles/django-app-configuration)
+
+2. **PythonAnywhere** (Great for beginners)
+   - [PythonAnywhere Django Tutorial](https://help.pythonanywhere.com/pages/DeployExistingDjangoProject/)
+
+3. **Railway** (Modern, simple)
+   - [Railway Django Guide](https://docs.railway.app/guides/django)
+
+4. **Render** (Free tier available)
+   - [Render Django Deployment](https://render.com/docs/deploy-django)
+
+5. **DigitalOcean** (More control, requires server management)
+   - [DigitalOcean Django Guide](https://www.digitalocean.com/community/tutorials/how-to-deploy-django)
+
+### Pre-Deployment Checklist:
+
+- [ ] Set `DEBUG=False` in production
+- [ ] Configure `ALLOWED_HOSTS`
+- [ ] Set up a production database (PostgreSQL recommended)
+- [ ] Configure static file serving (`collectstatic`)
+- [ ] Set up environment variables securely
+- [ ] Enable HTTPS/SSL
+- [ ] Set up proper SECRET_KEY management
+
+## 🔒 Security Notes
+
+- Never commit `.env` files or sensitive credentials
+- Always use environment variables for secrets
+- Keep `DEBUG=False` in production
+- Use strong `SECRET_KEY` values
+- Implement CSRF protection (Django default)
+- Use HTTPS in production
+
+## 🤝 Contributing
+
+Contributions are welcome! Here's how you can help:
+
+1. **Fork the repository**
+2. **Clone your fork:**
+   ```bash
+   git clone https://github.com/YOUR-USERNAME/BattleRoster.git
+   ```
+3. **Create a feature branch:**
+   ```bash
+   git checkout -b feature/your-feature-name
+   ```
+4. **Make your changes and commit:**
+   ```bash
+   git add .
+   git commit -m "Add: description of your feature"
+   ```
+5. **Push to your fork:**
+   ```bash
+   git push origin feature/your-feature-name
+   ```
+6. **Submit a Pull Request** with a clear description of your changes
+
+### Contribution Guidelines:
+- Follow PEP 8 style guide for Python code
+- Write clear commit messages
+- Add tests for new features
+- Update documentation as needed
+- Keep pull requests focused on a single feature/fix
+
+## 🐛 Known Issues
+
+- Google Sheets integration requires OAuth setup
+- Mobile responsiveness needs improvement in some views
+- Character sheet templates need additional game system support
+
+## 📝 License
+
+This project is open source and available under the [MIT License](LICENSE).
+
+## 🙏 Acknowledgements
+
+- **Code Institute** - For guidance and support throughout development
+- **Django Documentation** - Comprehensive framework documentation
+- **Bootstrap** - Frontend component library
+- The tabletop gaming community for inspiration
+
+## 📧 Contact
+
+**Tyler Worth**
+- GitHub: [@CutbackTG](https://github.com/CutbackTG)
+- Project Link: [https://github.com/CutbackTG/BattleRoster](https://github.com/CutbackTG/BattleRoster)
+
+---
+
+**Happy Gaming! 🎲**
