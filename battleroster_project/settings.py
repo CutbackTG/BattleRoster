@@ -23,6 +23,7 @@ INSTALLED_APPS = [
     #'parties',
     'accounts',
     'game_characters',
+    'sheets',
 ]
 
 MIDDLEWARE = [
