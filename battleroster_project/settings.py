@@ -9,7 +9,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY
 SECRET_KEY = config('SECRET_KEY', default='replace-me-change-in-production')
-DEBUG = config('DEBUG', default=False, cast=bool)
+DEBUG = False  # Set to False for production
 ALLOWED_HOSTS = ['battlerosterhost.herokuapp.com']
 
 # Installed apps
@@ -41,16 +41,13 @@ MIDDLEWARE = [
 ROOT_URLCONF = 'battleroster_project.urls'
 
 # Templates
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'templates')],  
+        'DIRS': [BASE_DIR / 'templates'],  
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
-                'django.template.context_processors.debug',
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
@@ -94,20 +91,17 @@ USE_TZ = True
 
 # Static files
 STATIC_URL = '/static/'
-STATICFILES_DIRS = [BASE_DIR / 'static']
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
-# Temporary Heroku static files hack
-if os.environ.get('DISABLE_COLLECTSTATIC'):
-    STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
-    STATIC_URL = '/static/'
+# Include local static folder in development if needed
+STATICFILES_DIRS = [BASE_DIR / 'static']
 
 # Default primary key
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Google Sheets config
-GOOGLE_SERVICE_ACCOUNT_FILE = os.path.join(BASE_DIR, 'creds.json')
+GOOGLE_SERVICE_ACCOUNT_FILE = BASE_DIR / 'creds.json'
 GOOGLE_SHEETS_ID = config('GOOGLE_SHEETS_ID', default='<Y14ProN3lR8p-t9j2P7b76JBOwEIrvntHqCVBee1q6bNk>')
 GOOGLE_SHEETS_RANGE = config('GOOGLE_SHEETS_RANGE', default='Characters!A2:Z')
 
@@ -115,13 +109,12 @@ GOOGLE_SHEETS_RANGE = config('GOOGLE_SHEETS_RANGE', default='Characters!A2:Z')
 AUTH_USER_MODEL = 'accounts.User'
 
 # Security settings for production
-if not DEBUG:
-    SECURE_SSL_REDIRECT = True
-    SESSION_COOKIE_SECURE = True
-    CSRF_COOKIE_SECURE = True
-    SECURE_BROWSER_XSS_FILTER = True
-    SECURE_CONTENT_TYPE_NOSNIFF = True
-    X_FRAME_OPTIONS = 'DENY'
+SECURE_SSL_REDIRECT = True
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
+SECURE_BROWSER_XSS_FILTER = True
+SECURE_CONTENT_TYPE_NOSNIFF = True
+X_FRAME_OPTIONS = 'DENY'
 
 # Heroku settings (call last)
 django_heroku.settings(locals())
