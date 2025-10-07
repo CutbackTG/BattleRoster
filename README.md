@@ -2,6 +2,10 @@
 
 **Author:** Tyler Worth
 
+- GitHub: [@CutbackTG](https://github.com/CutbackTG)
+- Project Link: [https://github.com/CutbackTG/BattleRoster](https://github.com/CutbackTG/BattleRoster)
+- Project URL: https://cutbacktg.github.io/BattleRoster/ 
+
 BattleRoster is a Django-based web application designed to streamline tabletop game management for both players and dungeon masters. Players can easily create, edit, and organize their character sheets, while dungeon masters can oversee groups, manage player sheets, and coordinate campaigns.
 
 Built with extensibility in mind, the system supports modular character sheet templates, making it adaptable for multiple game systems such as Dungeons & Dragons or BattleTech. The site emphasizes usability with responsive design, lightweight interactivity, and secure role-based permissions to protect player data.
@@ -285,12 +289,6 @@ This project is open source and available under the [MIT License](LICENSE).
 - **Django Documentation** - Comprehensive framework documentation
 - **Bootstrap** - Frontend component library
 - The tabletop gaming community for inspiration
-
-## 📧 Contact
-
-**Tyler Worth**
-- GitHub: [@CutbackTG](https://github.com/CutbackTG)
-- Project Link: [https://github.com/CutbackTG/BattleRoster](https://github.com/CutbackTG/BattleRoster)
 
 ---
 
