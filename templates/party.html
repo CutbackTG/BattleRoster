@@ -21,7 +21,7 @@
   <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container">
       <!-- Logo -->
-      <a class="navbar-brand" href="{% static 'index.html'%}">
+      <a class="navbar-brand" href="{% url'index.html'%}">
         <img class="home" src="{% static 'images/battleroster-logo.png'%}" alt="BattleRoster Logo" id="battleroster-logo">
       </a>
 
@@ -35,22 +35,22 @@
       <div class="collapse navbar-collapse justify-content-end" id="navMenu">
         <ul class="navbar-nav flex-column align-items-start">
           <li class="nav-item">
-            <a class="nav-link" href="{% static 'characters.html'%}">
+            <a class="nav-link" href="{% url 'characters.html'%}">
               <i class="fa-solid fa-user me-2 text-gold"></i>Characters
             </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="{% static 'party.html'%}">
+            <a class="nav-link" href="{% url 'party.html'%}">
               <i class="fa-solid fa-users me-2 text-gold"></i>Party
             </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="{% static 'signup-login.html'%}">
+            <a class="nav-link" href="{% url 'signup-login.html'%}">
               <i class="fa-solid fa-save me-2 text-gold"></i>Sign-up/Log-in
             </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="{% static 'contact.html'%}">
+            <a class="nav-link" href="{% url 'contact.html'%}">
               <i class="fa-solid fa-scroll me-2 text-gold"></i>Contact
             </a>
           </li>

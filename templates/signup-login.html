@@ -21,8 +21,9 @@
   <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container">
       <!-- Logo -->
-      <a class="navbar-brand" href="{% static 'index.html'%}">
-        <img class="home" src="{% static 'images/battleroster-logo.png'%}" alt="BattleRoster Logo" id="battleroster-logo">
+      <a class="navbar-brand" href="{% url 'index.html'%}">
+        <img class="home" src="{% static 'images/battleroster-logo.png'%}" alt="BattleRoster Logo"
+          id="battleroster-logo">
       </a>
 
       <!-- Hamburger button -->
@@ -35,64 +36,65 @@
       <div class="collapse navbar-collapse justify-content-end" id="navMenu">
         <ul class="navbar-nav flex-column align-items-start">
           <li class="nav-item">
-            <a class="nav-link" href="{% static 'characters.html'%}">
+            <a class="nav-link" href="{% url 'characters' %}">
               <i class="fa-solid fa-user me-2 text-gold"></i>Characters
             </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="{% static 'party.html'%}">
+            <a class="nav-link" href="{% url 'party' %}">
               <i class="fa-solid fa-users me-2 text-gold"></i>Party
             </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="{% static 'signup-login.html'%}">
+            <a class="nav-link" href="{% url 'signup-login' %}">
               <i class="fa-solid fa-save me-2 text-gold"></i>Sign-up/Log-in
             </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="{% static 'contact.html'%}">
+            <a class="nav-link" href="{% url 'contact' %}">
               <i class="fa-solid fa-scroll me-2 text-gold"></i>Contact
             </a>
           </li>
         </ul>
       </div>
-  </nav>
-
-  <!-- Main content -->
-  <div class="container-fluid bg-dark text-light py-5">
-    <div class="row justify-content-center align-items-center">
 
 
+      <!-- Main content -->
+      <div class="container-fluid bg-dark text-light py-5">
+        <div class="row justify-content-center align-items-center">
 
-  <!-- Footer -->
-  <footer id="footerSocials">
-    <ul id="social-networks" class="socials list-unstyled d-flex gap-5 justify-content-center">
-      <li>
-        <a href="https://www.facebook.com/" target="_blank" rel="noopener"
-          aria-label="visit our Facebook page (opens in a new tab)"><i class="fa-brands fa-facebook"></i></a>
-      </li>
-      <li>
-        <a href="https://www.X.com/" target="_blank" rel="noopener"
-          aria-label="visit our X page (opens in a new tab)"><i class="fa-brands fa-square-x-twitter"></i></a>
-      </li>
-      <li>
-        <a href="https://www.youtube.com/" target="_blank" rel="noopener"
-          aria-label="visit our YouTube page (opens in a new tab)"><i class="fa-brands fa-youtube-square"></i></a>
-      </li>
-      <li>
-        <a href="https://www.instagram.com/" target="_blank" rel="noopener"
-          aria-label="visit our Instagram page (opens in a new tab)"><i class="fa-brands fa-instagram"></i></a>
-      </li>
-    </ul>
-  </footer>
 
-  <!-- Scripts -->
-  <script src="js/main.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"
-    integrity="sha384-ndDqU0Gzau9qJ1lfW4pNLlhNTkCfHzAVBReH9diLvGRem5+R9g2FzA8ZGN954O5Q"
-    crossorigin="anonymous"></script>
-  <!-- Font Awesome -->
-  <script src="https://kit.fontawesome.com/f84e35c3bf.js" crossorigin="anonymous"></script>
+
+          <!-- Footer -->
+          <footer id="footerSocials">
+            <ul id="social-networks" class="socials list-unstyled d-flex gap-5 justify-content-center">
+              <li>
+                <a href="https://www.facebook.com/" target="_blank" rel="noopener"
+                  aria-label="visit our Facebook page (opens in a new tab)"><i class="fa-brands fa-facebook"></i></a>
+              </li>
+              <li>
+                <a href="https://www.X.com/" target="_blank" rel="noopener"
+                  aria-label="visit our X page (opens in a new tab)"><i class="fa-brands fa-square-x-twitter"></i></a>
+              </li>
+              <li>
+                <a href="https://www.youtube.com/" target="_blank" rel="noopener"
+                  aria-label="visit our YouTube page (opens in a new tab)"><i
+                    class="fa-brands fa-youtube-square"></i></a>
+              </li>
+              <li>
+                <a href="https://www.instagram.com/" target="_blank" rel="noopener"
+                  aria-label="visit our Instagram page (opens in a new tab)"><i class="fa-brands fa-instagram"></i></a>
+              </li>
+            </ul>
+          </footer>
+
+          <!-- Scripts -->
+          <script src="js/main.js"></script>
+          <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-ndDqU0Gzau9qJ1lfW4pNLlhNTkCfHzAVBReH9diLvGRem5+R9g2FzA8ZGN954O5Q"
+            crossorigin="anonymous"></script>
+          <!-- Font Awesome -->
+          <script src="https://kit.fontawesome.com/f84e35c3bf.js" crossorigin="anonymous"></script>
 </body>
 
 </html>
