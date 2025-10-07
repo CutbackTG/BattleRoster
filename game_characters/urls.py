@@ -1,10 +1,12 @@
 from django.urls import path
-from . import views as game_views
+from . import views
+
+app_name = 'game_characters'  # Optional, useful for namespacing reverses
 
 urlpatterns = [
-    path('', game_views.home_view, name='home'),  # Home page
-    path('characters/', game_views.characters_view, name='characters'),
-    path('party/', game_views.party_view, name='party'),
-    path('signup-login/', game_views.signup_login_view, name='signup_login'),
-    path('contact/', game_views.contact_view, name='contact'),
+    path('', views.home_view, name='home'),            # Home page
+    path('characters/', views.characters_view, name='characters'),
+    path('party/', views.party_view, name='party'),
+    path('signup-login/', views.signup_login_view, name='signup_login'),
+    path('contact/', views.contact_view, name='contact'),
 ]
