@@ -162,3 +162,9 @@ document.addEventListener('DOMContentLoaded', function () {
   // initial load
   fetchCharacters();
 });
+
+fetch("https://your-heroku-app.herokuapp.com/api/characters/")
+  .then(response => response.json())
+  .then(data => {
+    console.log(data);
+  });
