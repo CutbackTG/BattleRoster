@@ -41,10 +41,12 @@ MIDDLEWARE = [
 ROOT_URLCONF = 'battleroster_project.urls'
 
 # Templates
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'templates'],
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],  # <-- this should point to your templates folder
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
