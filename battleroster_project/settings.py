@@ -142,3 +142,7 @@ if not DEBUG:
     SECURE_BROWSER_XSS_FILTER = True
     SECURE_CONTENT_TYPE_NOSNIFF = True
     X_FRAME_OPTIONS = 'DENY'
+
+if os.environ.get('DISABLE_COLLECTSTATIC'):
+    STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
+    STATIC_URL = '/static/'
