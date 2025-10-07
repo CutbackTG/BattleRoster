@@ -30,7 +30,7 @@ env/
 Thumbs.db
 
 # Credentials
-creds.json
+#creds.json
 *.json
 !package.json
 !package-lock.json
