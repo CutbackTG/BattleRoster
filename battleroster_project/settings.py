@@ -4,15 +4,34 @@ import dj_database_url
 from decouple import config
 import django_heroku
 
+# -------------------------------------------------------------------
 # Base directory
+# -------------------------------------------------------------------
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# SECURITY
+# -------------------------------------------------------------------
+# Security
+# -------------------------------------------------------------------
 SECRET_KEY = config('SECRET_KEY', default='replace-me-change-in-production')
-DEBUG = False  # Set to False for production
-ALLOWED_HOSTS = ['battlerosterhost.herokuapp.com']
 
+# Allow DEBUG override via environment variable
+DEBUG = config('DEBUG', default='False').lower() == 'true'
+
+# Support multiple hosts via env var (comma-separated)
+ALLOWED_HOSTS_ENV = config('ALLOWED_HOSTS', default='')
+if ALLOWED_HOSTS_ENV:
+    ALLOWED_HOSTS = [h.strip() for h in ALLOWED_HOSTS_ENV.split(',')]
+else:
+    ALLOWED_HOSTS = [
+        'battlerosterhost.herokuapp.com',
+        'battlerosterhost-e22dbecc83dc.herokuapp.com',
+        'localhost',
+        '127.0.0.1',
+    ]
+
+# -------------------------------------------------------------------
 # Installed apps
+# -------------------------------------------------------------------
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -25,10 +44,12 @@ INSTALLED_APPS = [
     'sheets',
 ]
 
+# -------------------------------------------------------------------
 # Middleware
+# -------------------------------------------------------------------
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',  # for static files
+    'whitenoise.middleware.WhiteNoiseMiddleware',  # Static files for Heroku
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -37,14 +58,18 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+# -------------------------------------------------------------------
 # URL configuration
+# -------------------------------------------------------------------
 ROOT_URLCONF = 'battleroster_project.urls'
 
+# -------------------------------------------------------------------
 # Templates
+# -------------------------------------------------------------------
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'templates'],  
+        'DIRS': [BASE_DIR / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -56,15 +81,20 @@ TEMPLATES = [
     },
 ]
 
+# -------------------------------------------------------------------
 # WSGI
+# -------------------------------------------------------------------
 WSGI_APPLICATION = 'battleroster_project.wsgi.application'
 
+# -------------------------------------------------------------------
 # Database
+# -------------------------------------------------------------------
 if config('DATABASE_URL', default=None):
     DATABASES = {
         'default': dj_database_url.config(
             default=config('DATABASE_URL'),
-            conn_max_age=600
+            conn_max_age=600,
+            ssl_require=True
         )
     }
 else:
@@ -75,7 +105,9 @@ else:
         }
     }
 
+# -------------------------------------------------------------------
 # Password validation
+# -------------------------------------------------------------------
 AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
     {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator'},
@@ -83,38 +115,51 @@ AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'},
 ]
 
+# -------------------------------------------------------------------
 # Internationalization
+# -------------------------------------------------------------------
 LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'UTC'
 USE_I18N = True
 USE_TZ = True
 
+# -------------------------------------------------------------------
 # Static files
+# -------------------------------------------------------------------
 STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
-
-# Include local static folder in development if needed
 STATICFILES_DIRS = [BASE_DIR / 'static']
 
+# -------------------------------------------------------------------
 # Default primary key
+# -------------------------------------------------------------------
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+# -------------------------------------------------------------------
 # Google Sheets config
+# -------------------------------------------------------------------
 GOOGLE_SERVICE_ACCOUNT_FILE = BASE_DIR / 'creds.json'
 GOOGLE_SHEETS_ID = config('GOOGLE_SHEETS_ID', default='<Y14ProN3lR8p-t9j2P7b76JBOwEIrvntHqCVBee1q6bNk>')
 GOOGLE_SHEETS_RANGE = config('GOOGLE_SHEETS_RANGE', default='Characters!A2:Z')
 
+# -------------------------------------------------------------------
 # Custom user model
+# -------------------------------------------------------------------
 AUTH_USER_MODEL = 'accounts.User'
 
-# Security settings for production
-SECURE_SSL_REDIRECT = True
-SESSION_COOKIE_SECURE = True
-CSRF_COOKIE_SECURE = True
+# -------------------------------------------------------------------
+# Security settings (Heroku-friendly)
+# -------------------------------------------------------------------
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+SECURE_SSL_REDIRECT = config('SECURE_SSL_REDIRECT', default='True').lower() == 'true'
+SESSION_COOKIE_SECURE = config('SESSION_COOKIE_SECURE', default='True').lower() == 'true'
+CSRF_COOKIE_SECURE = config('CSRF_COOKIE_SECURE', default='True').lower() == 'true'
 SECURE_BROWSER_XSS_FILTER = True
 SECURE_CONTENT_TYPE_NOSNIFF = True
 X_FRAME_OPTIONS = 'DENY'
 
+# -------------------------------------------------------------------
 # Heroku settings (call last)
+# -------------------------------------------------------------------
 django_heroku.settings(locals())

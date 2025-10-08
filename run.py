@@ -1,26 +1,42 @@
-import gspread
-from google.oauth2.service_account import Credentials
+# run.py
+"""
+Utility module to access Google Sheets. Importing this module must NOT
+attempt to open local credential files at module import time.
+"""
 
-SCOPE = [
-    "https://www.googleapis.com/auth/spreadsheets",
-    "https://www.googleapis.com/auth/drive.file",
-    "https://www.googleapis.com/auth/drive"
-]
+def get_gspread_client(creds_path='creds.json'):
+    """
+    Returns an authorized gspread client, or raises a clear error if creds
+    are unavailable. Call this from code that runs only when needed (not at import).
+    """
+    try:
+        import gspread
+        from google.oauth2.service_account import Credentials
+    except Exception as e:
+        raise RuntimeError("gspread/google-auth libraries are required: " + str(e))
 
-# Load credentials from creds.json
-CREDS = Credentials.from_service_account_file('creds.json')
-SCOPED_CREDS = CREDS.with_scopes(SCOPE)
-GSPREAD_CLIENT = gspread.authorize(SCOPED_CREDS)
+    SCOPE = [
+        "https://www.googleapis.com/auth/spreadsheets",
+        "https://www.googleapis.com/auth/drive.file",
+        "https://www.googleapis.com/auth/drive",
+    ]
 
-# Open your Google Sheet
-SHEET = GSPREAD_CLIENT.open('DnD_Character_Sheet_Template_Styled')
+    try:
+        creds = Credentials.from_service_account_file(creds_path)
+    except FileNotFoundError:
+        raise FileNotFoundError(
+            f"Google service account credentials not found at {creds_path}. "
+            "On Heroku you should store credentials securely (see README)."
+        )
 
-# Access specific worksheets
-Character_Information = SHEET.worksheet('Character Info')
-Abilities = SHEET.worksheet('Abilities')
-Combat = SHEET.worksheet('Combat')
-Skills = SHEET.worksheet('Skills & Saves')
-Equipment = SHEET.worksheet('Equipment')
-Features = SHEET.worksheet('Features & Traits')
-Spells = SHEET.worksheet('Spells')
-Notes = SHEET.worksheet('Notes & Personality')
+    scoped_creds = creds.with_scopes(SCOPE)
+    client = gspread.authorize(scoped_creds)
+    return client
+
+
+# Example usage (do NOT run on module import)
+if __name__ == '__main__':
+    # quick test when run locally
+    client = get_gspread_client()
+    sheet = client.open('DnD_Character_Sheet_Template_Styled')
+    print("Works, got sheet:", sheet.title)
