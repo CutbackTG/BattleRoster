@@ -1,100 +1,113 @@
+{% extends "base.html" %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>BattleRoster | {{ view_title }}</title>
-  <link rel="stylesheet" href="{% static 'css/style.css' %}">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
-</head>
-<body class="bg-dark text-light">
 
-  <!-- Navbar -->
-  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-    <div class="container">
-      <!-- Logo -->
-      <a class="navbar-brand" href="{% url 'home' %}">
-        <img class="home" src="{% static 'images/battleroster-logo.png' %}" alt="BattleRoster Logo" id="battleroster-logo">
-      </a>
+{% block title %}My Party{% endblock %}
 
-      <!-- Hamburger button -->
-      <button class="navbar-toggler ms-auto custom-toggler" type="button" data-bs-toggle="collapse"
-        data-bs-target="#navMenu" aria-controls="navMenu" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-
-      <!-- Navbar items -->
-      <div class="collapse navbar-collapse justify-content-end" id="navMenu">
-        <ul class="navbar-nav flex-column align-items-start">
-          <li class="nav-item"><a class="nav-link" href="{% url 'characters' %}"><i class="fa-solid fa-user me-2 text-gold"></i>Characters</a></li>
-          <li class="nav-item"><a class="nav-link" href="{% url 'party' %}"><i class="fa-solid fa-users me-2 text-gold"></i>Party</a></li>
-          {% if user.is_authenticated %}
-          <li class="nav-item"><a class="nav-link" href="{% url 'logout' %}"><i class="fa-solid fa-right-from-bracket me-2 text-gold"></i>Log out</a></li>
-          {% else %}
-          <li class="nav-item"><a class="nav-link" href="{% url 'signup-login' %}"><i class="fa-solid fa-save me-2 text-gold"></i>Sign-up / Log-in</a></li>
-          {% endif %}
-          <li class="nav-item"><a class="nav-link" href="{% url 'contact' %}"><i class="fa-solid fa-scroll me-2 text-gold"></i>Contact</a></li>
-        </ul>
-      </div>
-    </div>
-  </nav>
-
-  <!-- Main Content -->
-  <div class="container py-5">
-    <h1 class="text-center mb-4">{{ view_title }}</h1>
-
-    {% if role == "player" %}
-      <p class="lead text-center">Manage your characters below:</p>
-      <div class="table-responsive">
-        <table class="table table-dark table-striped">
-          <thead><tr><th>Name</th><th>Level</th><th>Health</th><th>Mana</th></tr></thead>
-          <tbody>
-            {% for char in characters %}
-              <tr>
-                <td>{{ char.name }}</td>
-                <td>{{ char.level }}</td>
-                <td>{{ char.health }}</td>
-                <td>{{ char.mana }}</td>
-              </tr>
-            {% empty %}
-              <tr><td colspan="4" class="text-center">No characters yet.</td></tr>
-            {% endfor %}
-          </tbody>
-        </table>
-      </div>
-
-    {% elif role == "dungeon_master" %}
-      {% if error %}
-        <div class="alert alert-warning text-center">{{ error }}</div>
-      {% else %}
-        <p class="lead text-center">Manage members of <strong>{{ party.name }}</strong> below:</p>
-        <div class="table-responsive">
-          <table class="table table-dark table-striped">
-            <thead><tr><th>Player</th><th>Character</th><th>Level</th><th>Health</th><th>Mana</th></tr></thead>
-            <tbody>
-              {% for member in members %}
-                <tr>
-                  <td>{{ member.player.username }}</td>
-                  <td>{{ member.name }}</td>
-                  <td>{{ member.level }}</td>
-                  <td>{{ member.health }}</td>
-                  <td>{{ member.mana }}</td>
-                </tr>
-              {% empty %}
-                <tr><td colspan="5" class="text-center">No members in this party yet.</td></tr>
-              {% endfor %}
-            </tbody>
-          </table>
+{% block content %}
+<div class="container mt-5">
+    <!-- Bootstrap Alerts -->
+    {% if messages %}
+    <div class="mb-4">
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
-      {% endif %}
+        {% endfor %}
+    </div>
     {% endif %}
-  </div>
 
-  <!-- Footer -->
-  <footer class="text-center py-3 bg-dark border-top border-secondary">
-    <p class="mb-0">© 2025 BattleRoster</p>
-  </footer>
+    <div class="row">
+        <!-- Left: Party List -->
+        <div class="col-md-8">
+            <h2 class="mb-4">🎲 Your Party</h2>
 
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-</html>
+            {% if parties %}
+            {% for party in parties %}
+            <div class="card mb-4 shadow-sm border-0 rounded-4">
+                <div class="card-body">
+                    <h4 class="card-title">{{ party.name }}</h4>
+                    <h6 class="text-muted">{{ party.campaign_name }}</h6>
+
+                    {% if is_dm %}
+                    <p class="text-secondary mb-1"><strong>Dungeon Master:</strong> You</p>
+                    {% else %}
+                    <p class="text-secondary mb-1"><strong>Dungeon Master:</strong> {{ party.dungeon_master.username }}</p>
+                    {% endif %}
+
+                    <p class="mb-2"><strong>Members:</strong>
+                        {% for member in party.members.all %}
+                            {{ member.username }}{% if not forloop.last %}, {% endif %}
+                        {% empty %}
+                            <em>No members yet.</em>
+                        {% endfor %}
+                    </p>
+
+                    {% if is_dm %}
+                    <div class="mt-2">
+                        <form method="POST" class="d-inline">
+                            {% csrf_token %}
+                            <input type="hidden" name="party_id" value="{{ party.id }}">
+                            <input type="hidden" name="action" value="remove">
+                            <input type="text" name="username" class="form-control d-inline w-auto" placeholder="Username to remove" required>
+                            <button type="submit" class="btn btn-outline-danger btn-sm">Remove</button>
+                        </form>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+            {% else %}
+            <div class="alert alert-info">You are not part of any parties yet.</div>
+            {% endif %}
+        </div>
+
+        <!-- Right: DM Controls -->
+        {% if is_dm %}
+        <div class="col-md-4">
+            <div class="card shadow-sm border-0 rounded-4">
+                <div class="card-body">
+                    <h4 class="card-title mb-3">🧙 DM Tools</h4>
+
+                    <!-- Add Member -->
+                    <form method="POST" class="mb-4">
+                        {% csrf_token %}
+                        <input type="hidden" name="action" value="add">
+                        <div class="mb-2">
+                            <label class="form-label">Party</label>
+                            <select name="party_id" class="form-select" required>
+                                {% for party in parties %}
+                                <option value="{{ party.id }}">{{ party.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="mb-2">
+                            <label class="form-label">Username</label>
+                            <input type="text" name="username" class="form-control" placeholder="Enter username" required>
+                        </div>
+                        <button type="submit" class="btn btn-success w-100">Add Member</button>
+                    </form>
+
+                    <hr>
+
+                    <!-- Create New Party -->
+                    <form method="POST">
+                        {% csrf_token %}
+                        <input type="hidden" name="action" value="create_party">
+                        <div class="mb-2">
+                            <label class="form-label">Party Name</label>
+                            <input type="text" name="name" class="form-control" placeholder="e.g. Heroes of Dawn" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Campaign Name</label>
+                            <input type="text" name="campaign_name" class="form-control" placeholder="e.g. Rise of the Lich King" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100">Create Party</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
