@@ -1,48 +1,46 @@
 from django.shortcuts import render, redirect
-from django.contrib.auth import login, logout, authenticate
-from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.models import User
 from django.contrib import messages
 
 
-def signup_view(request):
-    """Handle new user registration."""
+def signup_login_view(request):
+    """Combined Sign-up and Log-in page."""
     if request.method == "POST":
-        form = UserCreationForm(request.POST)
-        if form.is_valid():
-            user = form.save()
-            login(request, user)
-            messages.success(request, "Account created successfully!")
-            return redirect("home")
-    else:
-        form = UserCreationForm()
+        action = request.POST.get("action")
 
-    return render(request, "signup-login.html", {"form": form, "form_type": "signup"})
+        # --- SIGNUP ---
+        if action == "signup":
+            username = request.POST.get("username")
+            password = request.POST.get("password")
+            role = request.POST.get("role")
 
+            if User.objects.filter(username=username).exists():
+                messages.error(request, "Username already exists.")
+            else:
+                user = User.objects.create_user(username=username, password=password)
+                user.save()
+                messages.success(request, "Account created successfully! You can now log in.")
+                return redirect("signup-login")
 
-def login_view(request):
-    """Handle user login."""
-    if request.method == "POST":
-        form = AuthenticationForm(request, data=request.POST)
-        if form.is_valid():
-            username = form.cleaned_data.get("username")
-            password = form.cleaned_data.get("password")
-            user = authenticate(username=username, password=password)
+        # --- LOGIN ---
+        elif action == "login":
+            username = request.POST.get("username")
+            password = request.POST.get("password")
+
+            user = authenticate(request, username=username, password=password)
             if user is not None:
                 login(request, user)
-                messages.success(request, f"Welcome back, {username}!")
+                messages.success(request, f"Welcome back, {user.username}!")
                 return redirect("home")
             else:
                 messages.error(request, "Invalid username or password.")
-        else:
-            messages.error(request, "Invalid username or password.")
-    else:
-        form = AuthenticationForm()
 
-    return render(request, "signup-login.html", {"form": form, "form_type": "login"})
+    return render(request, "signup-login.html")
 
 
 def logout_view(request):
-    """Log out the current user."""
+    """Logs out the user."""
     logout(request)
-    messages.info(request, "You have been logged out.")
+    messages.success(request, "You have been logged out successfully.")
     return redirect("home")
