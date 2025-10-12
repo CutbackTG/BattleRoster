@@ -3,7 +3,7 @@ from . import views
 
 urlpatterns = [
     # ✅ Character pages (expand as needed)
-    path('list/', views.character_list, name='character_list'),        # Show all characters
+    path('list/', views.characters_view, name='character_list'),
     path('create/', views.character_create, name='character_create'),  # Add a new character
     path('<int:pk>/', views.character_detail, name='character_detail'),# View one character
     path('<int:pk>/edit/', views.character_edit, name='character_edit'), # Edit a character
