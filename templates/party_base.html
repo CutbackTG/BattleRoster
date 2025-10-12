@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% block title %}BattleRoster | Party{% endblock %}
+
+{% block content %}
+  <div class="text-center mb-5">
+    <h1 class="display-5 fw-bold">{% block party_title %}Your Party{% endblock %}</h1>
+    <p class="text-secondary">{% block party_subtitle %}{% endblock %}</p>
+  </div>
+
+  <div class="party-content">
+    {% block party_content %}{% endblock %}
+  </div>
+{% endblock %}

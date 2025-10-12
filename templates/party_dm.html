@@ -1,0 +1,44 @@
+{% extends 'party_base.html' %}
+
+{% block party_title %}🧙 Dungeon Master Panel{% endblock %}
+{% block party_subtitle %}Manage your adventuring parties and their members{% endblock %}
+
+{% block party_content %}
+{% if parties %}
+  {% for party in parties %}
+    <div class="card mb-4 shadow">
+      <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
+        <h5 class="mb-0">{{ party.name }}</h5>
+        <a href="#" class="btn btn-outline-light btn-sm">+ Add Player</a>
+      </div>
+      <div class="card-body">
+        <h6>Players:</h6>
+        <ul class="list-group mb-3">
+          {% for member in party.members.all %}
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+              {{ member.username }}
+              <a href="#" class="btn btn-outline-danger btn-sm">Remove</a>
+            </li>
+          {% empty %}
+            <li class="list-group-item">No players yet.</li>
+          {% endfor %}
+        </ul>
+
+        <h6>Characters:</h6>
+        <ul class="list-group">
+          {% for character in party.characters.all %}
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+              {{ character.name }} ({{ character.player.username }})
+              <a href="#" class="btn btn-outline-secondary btn-sm">Edit</a>
+            </li>
+          {% empty %}
+            <li class="list-group-item">No characters yet.</li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+  {% endfor %}
+{% else %}
+  <div class="alert alert-info text-center">You haven’t created any parties yet.</div>
+{% endif %}
+{% endblock %}

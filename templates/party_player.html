@@ -1,0 +1,41 @@
+{% extends 'party_base.html' %}
+
+{% block party_title %}🎲 Your Parties{% endblock %}
+{% block party_subtitle %}View the groups you're adventuring with{% endblock %}
+
+{% block party_content %}
+{% if parties %}
+  {% for party in parties %}
+    <div class="card mb-4 shadow">
+      <div class="card-header bg-primary text-white">
+        <h5 class="mb-0">{{ party.name }}</h5>
+      </div>
+      <div class="card-body">
+        <p><strong>Dungeon Master:</strong> {{ party.dungeon_master.username }}</p>
+
+        <h6>Members:</h6>
+        <ul class="list-group mb-3">
+          {% for member in party.members.all %}
+            <li class="list-group-item">{{ member.username }}</li>
+          {% empty %}
+            <li class="list-group-item">No members yet.</li>
+          {% endfor %}
+        </ul>
+
+        <h6>Your Characters:</h6>
+        <ul class="list-group">
+          {% for character in party.characters.all %}
+            {% if character.player == user %}
+              <li class="list-group-item">{{ character.name }} (Level {{ character.level }})</li>
+            {% endif %}
+          {% empty %}
+            <li class="list-group-item">You haven’t added a character yet!</li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+  {% endfor %}
+{% else %}
+  <div class="alert alert-info text-center">You aren’t in any parties yet.</div>
+{% endif %}
+{% endblock %}
