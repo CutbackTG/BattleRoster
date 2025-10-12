@@ -24,29 +24,29 @@ def signup_login_view(request):
             # Validation checks
             if not username or not password1 or not password2:
                 messages.error(request, "All fields are required.")
-                return redirect("signup-login")
+                return redirect("signup_login")
 
             if password1 != password2:
                 messages.error(request, "Passwords do not match.")
-                return redirect("signup-login")
+                return redirect("signup_login")
 
             if len(password1) < 12:
                 messages.error(request, "Password must be at least 12 characters long.")
-                return redirect("signup-login")
+                return redirect("signup_login")
 
             if not any(char.isdigit() for char in password1) or not any(char.isalpha() for char in password1):
                 messages.error(request, "Password must contain both letters and numbers.")
-                return redirect("signup-login")
+                return redirect("signup_login")
 
             try:
                 user = User.objects.create_user(username=username, password=password1)
                 user.save()
-                messages.success(request, "Account created successfully! You are now logged in.")
                 login(request, user)
+                messages.success(request, "Account created successfully! You are now logged in.")
                 return redirect("party")
             except IntegrityError:
                 messages.error(request, "That username is already taken.")
-                return redirect("signup-login")
+                return redirect("signup_login")
 
         # -------------------- LOGIN --------------------
         elif action == "login":
@@ -57,7 +57,7 @@ def signup_login_view(request):
             if user is not None:
                 login(request, user)
 
-                # Check if guest created a temporary character
+                # If guest created a temporary character, attach it
                 temp = request.session.pop("temp_character", None)
                 if temp:
                     Character.objects.create(
@@ -74,7 +74,7 @@ def signup_login_view(request):
                 return redirect(next_page)
             else:
                 messages.error(request, "Invalid username or password.")
-                return redirect("signup-login")
+                return redirect("signup_login")
 
     # -------------------- GET REQUEST --------------------
     return render(request, "signup-login.html")
