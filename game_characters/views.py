@@ -4,7 +4,6 @@ from django.contrib import messages
 from django.contrib.auth.models import User
 from .models import Party, Character
 
-
 def home_view(request):
     """Landing page view."""
     return render(request, 'index.html')
@@ -14,9 +13,10 @@ def contact_view(request):
 
 @login_required
 def characters_view(request):
-    """Display a list of all characters belonging to the logged-in user."""
-    Character.objects.filter(player=request.user)
-    return render(request, 'characters.html', {"characters": characters})
+    """Display all characters belonging to the logged-in user."""
+    user = request.user
+    characters = Character.objects.filter(player=user)
+    return render(request, "characters.html", {"characters": characters})
 
 
 @login_required
