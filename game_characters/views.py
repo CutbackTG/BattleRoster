@@ -3,6 +3,43 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.contrib import messages
 from .models import Party, Character
+from .google_sheets import get_gsheet
+
+def characters_view(request):
+    sheet = get_gsheet("Characters")   # tab name in your Google Sheet
+    rows = sheet.get_all_records()
+
+    if request.method == "POST":
+        name = request.POST.get("name")
+        level = request.POST.get("level")
+        health = request.POST.get("health")
+        mana = request.POST.get("mana")
+
+        sheet.append_row([name, level, health, mana])
+        messages.success(request, f"Character '{name}' added successfully!")
+        return redirect("characters")
+
+    return render(request, "characters.html", {"characters": rows})
+
+
+def update_character(request, row_number):
+    sheet = get_gsheet("Characters")
+    if request.method == "POST":
+        name = request.POST["name"]
+        level = request.POST["level"]
+        health = request.POST["health"]
+        mana = request.POST["mana"]
+        sheet.update(f"A{row_number}:D{row_number}", [[name, level, health, mana]])
+        messages.success(request, "Character updated successfully.")
+        return redirect("characters")
+
+
+def delete_character(request, row_number):
+    sheet = get_gsheet("Characters")
+    sheet.delete_rows(row_number)
+    messages.success(request, "Character deleted.")
+    return redirect("characters")
+
 
 
 def home_view(request):
