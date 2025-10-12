@@ -136,8 +136,9 @@ GOOGLE_SHEETS_ID = os.getenv('GOOGLE_SHEETS_ID', '')
 GOOGLE_SHEETS_RANGE = os.getenv('GOOGLE_SHEETS_RANGE', 'Characters!A2:Z')
 
 LANGUAGE_CODE = 'en-us'
-USE_I18N = False
-USE_L10N = False
+USE_I18N = True
+USE_TZ = True
+USE_L10N = True
 
 # --- Logging ---
 LOGGING = {
