@@ -1,83 +1,81 @@
 from django.shortcuts import render, redirect
-from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
+from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 import re
 
 
+def password_is_strong(password):
+    """
+    Check that the password is at least 12 characters long,
+    includes uppercase, lowercase, a digit, and a special character.
+    """
+    pattern = re.compile(r"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{12,}$")
+    return bool(pattern.match(password))
+
+
 def signup_login_view(request):
     """
-    Handles both sign-up and log-in from one page.
-    Includes password strength and confirmation validation.
+    Combined signup and login view with server-side validation.
     """
-    if request.method == 'POST':
-        action = request.POST.get('action')
-        username = request.POST.get('username')
-        password = request.POST.get('password')
-        confirm_password = request.POST.get('confirm_password')
-        role = request.POST.get('role', 'player')
+    if request.method == "POST":
+        if "signup" in request.POST:
+            username = request.POST.get("username")
+            email = request.POST.get("email")
+            password1 = request.POST.get("password1")
+            password2 = request.POST.get("password2")
+            is_dm = request.POST.get("is_dm") == "on"
 
-        # Handle SIGN-UP
-        if action == 'signup':
-            # Check if username already exists
+            # Check for existing username
             if User.objects.filter(username=username).exists():
-                messages.error(request, 'That username is already taken. Please choose another.')
-                return redirect('signup-login')
+                messages.error(request, "That username is already taken.")
+                return redirect("signup-login")
 
-            # Validate password match
-            if password != confirm_password:
-                messages.error(request, 'Passwords do not match.')
-                return redirect('signup-login')
+            # Password match check
+            if password1 != password2:
+                messages.error(request, "Passwords do not match.")
+                return redirect("signup-login")
 
-            # Validate password strength
-            if not validate_password_strength(password):
+            # Password strength check
+            if not password_is_strong(password1):
                 messages.error(
                     request,
-                    'Password must be at least 12 characters long and include uppercase, lowercase, numbers, and special characters.'
+                    "Password too weak — must be at least 12 characters long and include uppercase, lowercase, numbers, and symbols."
                 )
-                return redirect('signup-login')
+                return redirect("signup-login")
 
-            # Create user
-            user = User.objects.create_user(username=username, password=password)
+            # Create new user
+            user = User.objects.create_user(username=username, password=password1, email=email)
             user.save()
-            messages.success(request, 'Account created successfully! You can now log in.')
-            return redirect('signup-login')
 
-        # Handle LOG-IN
-        elif action == 'login':
+            # If DM, add to Dungeon Master group or tag (future expansion)
+            if is_dm:
+                user.is_staff = True
+                user.save()
+
+            messages.success(request, f"Account created successfully! Welcome, {user.username}. You can now log in.")
+            return redirect("signup-login")
+
+        elif "login" in request.POST:
+            username = request.POST.get("username")
+            password = request.POST.get("password")
+
             user = authenticate(request, username=username, password=password)
-            if user:
+            if user is not None:
                 login(request, user)
-                messages.success(request, f'Welcome back, {user.username}!')
-                return redirect('home')
+                messages.success(request, f"Welcome back, {user.username}!")
+                return redirect("home")
             else:
-                messages.error(request, 'Invalid username or password.')
+                messages.error(request, "Invalid username or password.")
+                return redirect("signup-login")
 
-    return render(request, 'signup-login.html')
+    return render(request, "signup_login.html")
 
 
 def logout_view(request):
-    """Logs out the current user and redirects to home."""
+    """
+    Logs out the current user and redirects to home.
+    """
     logout(request)
-    messages.info(request, 'You have been logged out.')
-    return redirect('home')
-
-
-# 🔒 Password validation helper
-def validate_password_strength(password):
-    """
-    Ensures the password meets strong security criteria:
-    - At least 12 characters
-    - Includes uppercase, lowercase, number, and special character
-    """
-    if len(password) < 12:
-        return False
-    if not re.search(r"[A-Z]", password):
-        return False
-    if not re.search(r"[a-z]", password):
-        return False
-    if not re.search(r"[0-9]", password):
-        return False
-    if not re.search(r"[^A-Za-z0-9]", password):
-        return False
-    return True
+    messages.info(request, "You have been logged out successfully.")
+    return redirect("home")
