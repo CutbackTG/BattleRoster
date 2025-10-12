@@ -11,11 +11,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # --- Security ---
 SECRET_KEY = os.getenv('SECRET_KEY', 'unsafe-secret-key')
-
-# Debug mode — OFF in production
 DEBUG = os.getenv('DEBUG', 'False') == 'True'
 
-# Allowed hosts — dynamic for Heroku or local
+# --- Allowed Hosts ---
 ALLOWED_HOSTS = os.getenv(
     'ALLOWED_HOSTS',
     'localhost,127.0.0.1,battlerosterhost-e22dbecc83dc.herokuapp.com'
@@ -30,12 +28,12 @@ CSRF_TRUSTED_ORIGINS = [
 
 # --- Security headers for production ---
 if not DEBUG:
-    SECURE_SSL_REDIRECT = os.getenv('SECURE_SSL_REDIRECT', 'True') == 'True'
+    SECURE_SSL_REDIRECT = True
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
     SECURE_BROWSER_XSS_FILTER = True
     SECURE_CONTENT_TYPE_NOSNIFF = True
-    SECURE_HSTS_SECONDS = 31536000  # 1 year
+    SECURE_HSTS_SECONDS = 31536000
     SECURE_HSTS_INCLUDE_SUBDOMAINS = True
     SECURE_HSTS_PRELOAD = True
     X_FRAME_OPTIONS = 'DENY'
@@ -52,17 +50,14 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'accounts',
-    'game_characters',
-    'sheets',
-
-    # Add this
-    'django_extensions',
 
     # Your apps
     'accounts',
     'game_characters',
     'sheets',
+
+    # Developer tools
+    'django_extensions',
 ]
 
 # --- Middleware ---
@@ -84,7 +79,7 @@ ROOT_URLCONF = 'battleroster_project.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'templates'],  # ✅ main template directory
+        'DIRS': [BASE_DIR / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -100,12 +95,12 @@ TEMPLATES = [
 # --- WSGI Application ---
 WSGI_APPLICATION = 'battleroster_project.wsgi.application'
 
-# --- Database (Heroku Postgres or local SQLite) ---
+# --- Database ---
 DATABASES = {
     'default': dj_database_url.config(
         default=os.getenv('DATABASE_URL', f"sqlite:///{BASE_DIR / 'db.sqlite3'}"),
         conn_max_age=600,
-        ssl_require=not DEBUG  # ✅ use SSL only on Heroku
+        ssl_require=not DEBUG
     )
 }
 
@@ -121,6 +116,7 @@ AUTH_PASSWORD_VALIDATORS = [
 LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'UTC'
 USE_I18N = True
+USE_L10N = True
 USE_TZ = True
 
 # --- Static Files ---
@@ -129,7 +125,7 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'
 STATICFILES_DIRS = [BASE_DIR / 'static']
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
-# --- Media Files (optional) ---
+# --- Media Files ---
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
@@ -140,11 +136,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 GOOGLE_SERVICE_ACCOUNT_FILE = BASE_DIR / 'creds.json'
 GOOGLE_SHEETS_ID = os.getenv('GOOGLE_SHEETS_ID', '')
 GOOGLE_SHEETS_RANGE = os.getenv('GOOGLE_SHEETS_RANGE', 'Characters!A2:Z')
-
-LANGUAGE_CODE = 'en-us'
-USE_I18N = True
-USE_TZ = True
-USE_L10N = True
 
 # --- Logging ---
 LOGGING = {
