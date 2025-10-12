@@ -3,6 +3,8 @@ from pathlib import Path
 from dotenv import load_dotenv
 import dj_database_url
 
+AUTH_USER_MODEL = 'accounts.User'
+
 # --- Load environment variables ---
 load_dotenv()
 
@@ -149,3 +151,7 @@ LOGGING = {
         'level': 'INFO',
     },
 }
+
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/'
+LOGIN_URL = '/accounts/login/'

@@ -13,7 +13,6 @@ def signup_view(request):
         form = UserCreationForm()
     return render(request, 'accounts/signup.html', {'form': form})
 
-# Redirect for the combined navbar link
 def signup_login_redirect(request):
     if request.user.is_authenticated:
         return redirect('/')
