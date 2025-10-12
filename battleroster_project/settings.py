@@ -1,8 +1,9 @@
 import os
 from pathlib import Path
 from dotenv import load_dotenv
+import dj_database_url
 
-# Load environment variables
+# --- Load environment variables ---
 load_dotenv()
 
 # --- Base Directory ---
@@ -10,12 +11,30 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # --- Security ---
 SECRET_KEY = os.getenv('SECRET_KEY', 'unsafe-secret-key')
-DEBUG = os.getenv('DEBUG', 'True') == 'True'
-ALLOWED_HOSTS = ['*']  # Or your Heroku domain in production
 
+# Debug mode — OFF in production
+DEBUG = os.getenv('DEBUG', 'False') == 'True'
+
+# Allowed hosts — dynamic for Heroku or local
+ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',')
+
+# CSRF trusted origins — include your Heroku app
 CSRF_TRUSTED_ORIGINS = [
-    'https://battlerosterhost-e22dbecc83dc.herokuapp.com',
+    f"https://{host}"
+    for host in ALLOWED_HOSTS
+    if not host.startswith("localhost") and not host.startswith("127.")
 ]
+
+# --- Security headers for production ---
+SECURE_SSL_REDIRECT = os.getenv('SECURE_SSL_REDIRECT', 'True') == 'True'
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
+SECURE_BROWSER_XSS_FILTER = True
+SECURE_CONTENT_TYPE_NOSNIFF = True
+SECURE_HSTS_SECONDS = 31536000  # 1 year
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+SECURE_HSTS_PRELOAD = True
+X_FRAME_OPTIONS = 'DENY'
 
 # --- Installed Apps ---
 INSTALLED_APPS = [
@@ -68,7 +87,6 @@ TEMPLATES = [
 WSGI_APPLICATION = 'battleroster_project.wsgi.application'
 
 # --- Database (Heroku Postgres or local SQLite) ---
-import dj_database_url
 DATABASES = {
     'default': dj_database_url.config(
         default=os.getenv('DATABASE_URL', f"sqlite:///{BASE_DIR / 'db.sqlite3'}"),
@@ -97,7 +115,7 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'
 STATICFILES_DIRS = [BASE_DIR / 'static']
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
-# --- Media (optional) ---
+# --- Media Files (optional) ---
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
@@ -109,7 +127,7 @@ GOOGLE_SERVICE_ACCOUNT_FILE = BASE_DIR / 'creds.json'
 GOOGLE_SHEETS_ID = os.getenv('GOOGLE_SHEETS_ID', '')
 GOOGLE_SHEETS_RANGE = os.getenv('GOOGLE_SHEETS_RANGE', 'Characters!A2:Z')
 
-# --- Logging (optional, but helpful) ---
+# --- Logging ---
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
