@@ -1,46 +1,43 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.models import User
 from django.contrib import messages
-
+from django.contrib.auth.models import User
 
 def signup_login_view(request):
-    """Combined Sign-up and Log-in page."""
-    if request.method == "POST":
-        action = request.POST.get("action")
+    """
+    Handles both sign-up and log-in from one page.
+    """
+    if request.method == 'POST':
+        action = request.POST.get('action')
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        role = request.POST.get('role', 'player')
 
-        # --- SIGNUP ---
-        if action == "signup":
-            username = request.POST.get("username")
-            password = request.POST.get("password")
-            role = request.POST.get("role")
-
+        if action == 'signup':
             if User.objects.filter(username=username).exists():
-                messages.error(request, "Username already exists.")
+                messages.error(request, 'That username is already taken.')
             else:
                 user = User.objects.create_user(username=username, password=password)
                 user.save()
-                messages.success(request, "Account created successfully! You can now log in.")
-                return redirect("signup-login")
+                messages.success(request, 'Account created successfully! You can now log in.')
+                return redirect('signup-login')
 
-        # --- LOGIN ---
-        elif action == "login":
-            username = request.POST.get("username")
-            password = request.POST.get("password")
-
+        elif action == 'login':
             user = authenticate(request, username=username, password=password)
-            if user is not None:
+            if user:
                 login(request, user)
-                messages.success(request, f"Welcome back, {user.username}!")
-                return redirect("home")
+                messages.success(request, f'Welcome back, {user.username}!')
+                return redirect('home')
             else:
-                messages.error(request, "Invalid username or password.")
+                messages.error(request, 'Invalid username or password.')
 
-    return render(request, "signup-login.html")
+    return render(request, 'signup-login.html')
 
 
 def logout_view(request):
-    """Logs out the user."""
+    """
+    Logs out the current user and redirects to home.
+    """
     logout(request)
-    messages.success(request, "You have been logged out successfully.")
-    return redirect("home")
+    messages.info(request, 'You have been logged out.')
+    return redirect('home')
