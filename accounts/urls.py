@@ -1,16 +1,15 @@
-from django.contrib import admin
-from django.urls import path, include
-from django.views.generic import TemplateView
+from django.urls import path
+from django.contrib.auth import views as auth_views
+from . import views
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('accounts/', include('accounts.urls')),
-    path('characters/', include('game_characters.urls')),
-    path('sheets/', include('sheets.urls')),
-    # Serve your existing HTML files
-    path('', TemplateView.as_view(template_name='index.html'), name='home'),
-    path('characters.html', TemplateView.as_view(template_name='characters.html'), name='characters_page'),
-    path('contact.html', TemplateView.as_view(template_name='contact.html'), name='contact'),
-    path('party.html', TemplateView.as_view(template_name='party.html'), name='party'),
-    path('signup-login.html', TemplateView.as_view(template_name='signup-login.html'), name='signup_login'),
+    # Sign-up
+    path('signup/', views.signup_view, name='signup'),
+
+    # Login / Logout using Django’s built-in views
+    path('login/', auth_views.LoginView.as_view(template_name='accounts/login.html'), name='login'),
+    path('logout/', auth_views.LogoutView.as_view(next_page='/'), name='logout'),
+
+    # For your navbar link (temporary combined route)
+    path('signup-login/', views.signup_login_redirect, name='signup-login'),
 ]
