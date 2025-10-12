@@ -1,41 +1,58 @@
-{% extends 'party_base.html' %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>BattleRoster | Player Party</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
 
-{% block party_title %}🎲 Your Parties{% endblock %}
-{% block party_subtitle %}View the groups you're adventuring with{% endblock %}
+<body class="bg-dark text-light">
 
-{% block party_content %}
-{% if parties %}
-  {% for party in parties %}
-    <div class="card mb-4 shadow">
-      <div class="card-header bg-primary text-white">
-        <h5 class="mb-0">{{ party.name }}</h5>
-      </div>
-      <div class="card-body">
-        <p><strong>Dungeon Master:</strong> {{ party.dungeon_master.username }}</p>
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <div class="container">
+    <a class="navbar-brand" href="{% url 'home' %}">
+      <img src="{% static 'images/battleroster-logo.png' %}" alt="BattleRoster Logo" height="50">
+    </a>
 
-        <h6>Members:</h6>
-        <ul class="list-group mb-3">
-          {% for member in party.members.all %}
-            <li class="list-group-item">{{ member.username }}</li>
-          {% empty %}
-            <li class="list-group-item">No members yet.</li>
-          {% endfor %}
-        </ul>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
 
-        <h6>Your Characters:</h6>
-        <ul class="list-group">
-          {% for character in party.characters.all %}
-            {% if character.player == user %}
-              <li class="list-group-item">{{ character.name }} (Level {{ character.level }})</li>
-            {% endif %}
-          {% empty %}
-            <li class="list-group-item">You haven’t added a character yet!</li>
-          {% endfor %}
-        </ul>
-      </div>
+    <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+      <ul class="navbar-nav">
+        <li class="nav-item"><a class="nav-link" href="{% url 'characters' %}">Characters</a></li>
+        <li class="nav-item"><a class="nav-link active" href="{% url 'party' %}">Party</a></li>
+        <li class="nav-item"><a class="nav-link" href="{% url 'contact' %}">Contact</a></li>
+        {% if user.is_authenticated %}
+          <li class="nav-item"><a class="nav-link" href="{% url 'logout' %}">Log out</a></li>
+        {% else %}
+          <li class="nav-item"><a class="nav-link" href="{% url 'signup-login' %}">Sign-up / Log-in</a></li>
+        {% endif %}
+      </ul>
     </div>
-  {% endfor %}
-{% else %}
-  <div class="alert alert-info text-center">You aren’t in any parties yet.</div>
-{% endif %}
-{% endblock %}
+  </div>
+</nav>
+
+<!-- Main Content -->
+<div class="container py-5">
+  <div class="p-5 bg-secondary bg-opacity-25 rounded">
+    <h1 class="text-center mb-4">Your Party</h1>
+    <p class="lead text-center">Welcome, adventurer! This is your <strong>Player Party</strong> page.</p>
+    <hr class="border-light">
+    <p class="text-center">You’re viewing the player’s version of the party page.</p>
+    <p class="text-center">When you create or join a party, your allies will be listed here!</p>
+  </div>
+</div>
+
+<!-- Footer -->
+<footer class="text-center mt-5 py-3 bg-dark border-top border-secondary">
+  <small>&copy; 2025 BattleRoster Tavern</small>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
