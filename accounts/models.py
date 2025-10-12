@@ -8,6 +8,10 @@ class User(AbstractUser):
     )
     role = models.CharField(max_length=20, choices=ROLE_CHOICES, default='player')
 
+    class Meta:
+        verbose_name = "User"
+        verbose_name_plural = "Users"
+
     def is_player(self):
         return self.role == 'player'
 

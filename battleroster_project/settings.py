@@ -60,6 +60,8 @@ INSTALLED_APPS = [
     'django_extensions',
 ]
 
+AUTH_USER_MODEL = "accounts.User"
+
 # --- Middleware ---
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
