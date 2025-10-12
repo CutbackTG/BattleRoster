@@ -52,6 +52,12 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'accounts',
+    'game_characters',
+    'sheets',
+
+    # Add this
+    'django_extensions',
 
     # Your apps
     'accounts',
