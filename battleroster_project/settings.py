@@ -139,7 +139,7 @@ GOOGLE_SHEETS_ID = os.getenv('GOOGLE_SHEETS_ID', '')
 GOOGLE_SHEETS_RANGE = os.getenv('GOOGLE_SHEETS_RANGE', 'Characters!A2:Z')
 
 # --- Auth Redirects ---
-LOGIN_URL = '/accounts/signup-login/'  # ✅ Fix for redirect
+LOGIN_URL = '/accounts/signup_login/'  # ✅ Fix for redirect
 LOGIN_REDIRECT_URL = '/'               # after login
 LOGOUT_REDIRECT_URL = '/'              # after logout
 

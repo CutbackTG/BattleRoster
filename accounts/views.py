@@ -77,7 +77,7 @@ def signup_login_view(request):
                 return redirect("signup_login")
 
     # -------------------- GET REQUEST --------------------
-    return render(request, "signup-login.html")
+    return render(request, "signup_login.html")
 
 
 def logout_view(request):

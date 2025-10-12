@@ -12,5 +12,5 @@ urlpatterns = [
     path('characters.html', TemplateView.as_view(template_name='characters.html'), name='characters_page'),
     path('contact.html', TemplateView.as_view(template_name='contact.html'), name='contact'),
     path('party.html', TemplateView.as_view(template_name='party.html'), name='party'),
-    path('signup-login.html', TemplateView.as_view(template_name='signup-login.html'), name='signup_login'),
+    path('signup_login.html', TemplateView.as_view(template_name='signup_login.html'), name='signup_login'),
 ]
