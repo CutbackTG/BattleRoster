@@ -2,5 +2,9 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    path('', views.party_view, name='party'),  # main party page
+    # Characters listing (default for /characters/)
+    path('', views.characters_view, name='characters'),
+
+    # Party management (for DMs and players)
+    path('party/', views.party_view, name='party'),
 ]
