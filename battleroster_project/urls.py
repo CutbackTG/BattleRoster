@@ -1,14 +1,12 @@
 from django.contrib import admin
 from django.urls import path, include
-from game_characters import views
+from game_characters.views import home_view
 from django.conf import settings
 from django.conf.urls.static import static
 
 urlpatterns = [
+    path('', home_view, name='home'),
     path('admin/', admin.site.urls),
-    path('', views.home_view, name='home'),
-    path('accounts/', include('accounts.urls')),
-    path('characters/', include('game_characters.urls')),
 ]
 
 # ✅ Serve static & media files only in DEBUG mode (local dev)
