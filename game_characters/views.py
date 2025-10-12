@@ -9,6 +9,8 @@ def home_view(request):
     """Landing page view."""
     return render(request, 'index.html')
 
+def contact_view(request):
+    return render(request, "contact.html")
 
 @login_required
 def characters_view(request):
