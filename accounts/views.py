@@ -18,6 +18,7 @@ def signup_login_view(request):
                 messages.error(request, 'That username is already taken.')
             else:
                 user = User.objects.create_user(username=username, password=password)
+                # optionally store role later if you add a Profile model
                 user.save()
                 messages.success(request, 'Account created successfully! You can now log in.')
                 return redirect('signup-login')
