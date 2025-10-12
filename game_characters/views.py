@@ -71,3 +71,22 @@ def party_view(request):
 
 def contact_view(request):
     return render(request, "contact.html")
+
+@login_required
+def party_player_view(request):
+    """
+    View for regular players to see their party and characters.
+    """
+    user = request.user
+    parties = Party.objects.filter(members=user)
+    return render(request, 'party_player.html', {'parties': parties})
+
+
+@login_required
+def party_dm_view(request):
+    """
+    View for Dungeon Masters to manage their party members.
+    """
+    user = request.user
+    parties = Party.objects.filter(dungeon_master=user)
+    return render(request, 'party_dm.html', {'parties': parties})
