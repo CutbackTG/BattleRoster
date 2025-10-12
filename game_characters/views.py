@@ -93,3 +93,7 @@ def party_view(request):
         "parties": parties,
         "guest_mode": guest_mode,
     })
+
+def contact_view(request):
+    """Render the contact page."""
+    return render(request, "contact.html")
