@@ -1,113 +1,91 @@
-{% extends "base.html" %}
+{% extends 'base.html' %}
 {% load static %}
-
-{% block title %}My Party{% endblock %}
-
 {% block content %}
-<div class="container mt-5">
-    <!-- Bootstrap Alerts -->
-    {% if messages %}
-    <div class="mb-4">
-        {% for message in messages %}
-        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
-            {{ message }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+
+<div class="container mt-4">
+  <h2 class="mb-3">Party Management</h2>
+
+  {% if guest_mode %}
+  <div class="alert alert-warning" role="alert">
+    <strong>Guest Mode:</strong> You can view parties, but to create or manage them, please
+    <a href="{% url 'signup_login' %}" class="alert-link">log in or sign up</a>.
+  </div>
+  {% endif %}
+
+  <!-- Party Display -->
+  {% if parties %}
+  <div class="row">
+    {% for party in parties %}
+    <div class="col-md-6 mb-4">
+      <div class="card h-100">
+        <div class="card-header bg-dark text-light">
+          <strong>{{ party.name }}</strong>
+          <span class="text-muted d-block small">Campaign: {{ party.campaign_name }}</span>
         </div>
-        {% endfor %}
-    </div>
-    {% endif %}
-
-    <div class="row">
-        <!-- Left: Party List -->
-        <div class="col-md-8">
-            <h2 class="mb-4">🎲 Your Party</h2>
-
-            {% if parties %}
-            {% for party in parties %}
-            <div class="card mb-4 shadow-sm border-0 rounded-4">
-                <div class="card-body">
-                    <h4 class="card-title">{{ party.name }}</h4>
-                    <h6 class="text-muted">{{ party.campaign_name }}</h6>
-
-                    {% if is_dm %}
-                    <p class="text-secondary mb-1"><strong>Dungeon Master:</strong> You</p>
-                    {% else %}
-                    <p class="text-secondary mb-1"><strong>Dungeon Master:</strong> {{ party.dungeon_master.username }}</p>
-                    {% endif %}
-
-                    <p class="mb-2"><strong>Members:</strong>
-                        {% for member in party.members.all %}
-                            {{ member.username }}{% if not forloop.last %}, {% endif %}
-                        {% empty %}
-                            <em>No members yet.</em>
-                        {% endfor %}
-                    </p>
-
-                    {% if is_dm %}
-                    <div class="mt-2">
-                        <form method="POST" class="d-inline">
-                            {% csrf_token %}
-                            <input type="hidden" name="party_id" value="{{ party.id }}">
-                            <input type="hidden" name="action" value="remove">
-                            <input type="text" name="username" class="form-control d-inline w-auto" placeholder="Username to remove" required>
-                            <button type="submit" class="btn btn-outline-danger btn-sm">Remove</button>
-                        </form>
-                    </div>
-                    {% endif %}
-                </div>
-            </div>
+        <div class="card-body">
+          <h6>Members:</h6>
+          <ul class="list-group mb-3">
+            {% for member in party.members.all %}
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+              {{ member.username }}
+              {% if not guest_mode and user.role == 'dungeon_master' %}
+              <form method="POST" class="m-0">
+                {% csrf_token %}
+                <input type="hidden" name="party_id" value="{{ party.id }}">
+                <input type="hidden" name="username" value="{{ member.username }}">
+                <input type="hidden" name="action" value="remove">
+                <button type="submit" class="btn btn-sm btn-outline-danger">Remove</button>
+              </form>
+              {% endif %}
+            </li>
             {% endfor %}
-            {% else %}
-            <div class="alert alert-info">You are not part of any parties yet.</div>
-            {% endif %}
+          </ul>
+
+          {% if not guest_mode and user.role == 'dungeon_master' %}
+          <form method="POST" class="d-flex gap-2">
+            {% csrf_token %}
+            <input type="hidden" name="party_id" value="{{ party.id }}">
+            <input type="hidden" name="action" value="add">
+            <input type="text" name="username" class="form-control" placeholder="Add member by username" required>
+            <button type="submit" class="btn btn-primary">Add</button>
+          </form>
+          {% elif guest_mode %}
+          <p class="text-muted small">Login to manage party members.</p>
+          {% endif %}
         </div>
-
-        <!-- Right: DM Controls -->
-        {% if is_dm %}
-        <div class="col-md-4">
-            <div class="card shadow-sm border-0 rounded-4">
-                <div class="card-body">
-                    <h4 class="card-title mb-3">🧙 DM Tools</h4>
-
-                    <!-- Add Member -->
-                    <form method="POST" class="mb-4">
-                        {% csrf_token %}
-                        <input type="hidden" name="action" value="add">
-                        <div class="mb-2">
-                            <label class="form-label">Party</label>
-                            <select name="party_id" class="form-select" required>
-                                {% for party in parties %}
-                                <option value="{{ party.id }}">{{ party.name }}</option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                        <div class="mb-2">
-                            <label class="form-label">Username</label>
-                            <input type="text" name="username" class="form-control" placeholder="Enter username" required>
-                        </div>
-                        <button type="submit" class="btn btn-success w-100">Add Member</button>
-                    </form>
-
-                    <hr>
-
-                    <!-- Create New Party -->
-                    <form method="POST">
-                        {% csrf_token %}
-                        <input type="hidden" name="action" value="create_party">
-                        <div class="mb-2">
-                            <label class="form-label">Party Name</label>
-                            <input type="text" name="name" class="form-control" placeholder="e.g. Heroes of Dawn" required>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Campaign Name</label>
-                            <input type="text" name="campaign_name" class="form-control" placeholder="e.g. Rise of the Lich King" required>
-                        </div>
-                        <button type="submit" class="btn btn-primary w-100">Create Party</button>
-                    </form>
-                </div>
-            </div>
-        </div>
-        {% endif %}
+      </div>
     </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <p class="text-muted">No parties found.</p>
+  {% endif %}
+
+  <!-- Create New Party (for DMs) -->
+  {% if not guest_mode and user.role == 'dungeon_master' %}
+  <div class="card mt-4">
+    <div class="card-header bg-primary text-white">
+      <strong>Create a New Party</strong>
+    </div>
+    <div class="card-body">
+      <form method="POST">
+        {% csrf_token %}
+        <input type="hidden" name="action" value="create_party">
+        <div class="row g-3">
+          <div class="col-md-5">
+            <input type="text" name="name" class="form-control" placeholder="Party Name" required>
+          </div>
+          <div class="col-md-5">
+            <input type="text" name="campaign_name" class="form-control" placeholder="Campaign Name" required>
+          </div>
+          <div class="col-md-2">
+            <button type="submit" class="btn btn-success w-100">Create</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+  {% endif %}
 </div>
+
 {% endblock %}
