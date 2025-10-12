@@ -163,3 +163,5 @@ X_FRAME_OPTIONS = 'DENY'
 # Heroku settings (call last)
 # -------------------------------------------------------------------
 django_heroku.settings(locals())
+
+'DIRS': [BASE_DIR / "templates"]
