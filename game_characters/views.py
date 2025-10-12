@@ -15,7 +15,7 @@ def contact_view(request):
 @login_required
 def characters_view(request):
     """Display a list of all characters belonging to the logged-in user."""
-    characters = Character.objects.filter(owner=request.user)
+    Character.objects.filter(player=request.user)
     return render(request, 'characters.html', {"characters": characters})
 
 
