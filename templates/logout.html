@@ -1,0 +1,77 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Logout confirmation page for BattleRoster users.">
+    <meta name="keywords" content="logout, user, account, battleroster, tabletop, games">
+    <title>BattleRoster | Logged Out</title>
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body class="bg-dark text-light">
+
+    <!-- Navbar -->
+    <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container">
+      <!-- Logo -->
+      <a class="navbar-brand" href="{% url 'home' %}">
+        <img class="home" src="{% static 'images/battleroster-logo.png' %}" alt="BattleRoster Logo" id="battleroster-logo">
+      </a>
+
+      <!-- Hamburger button -->
+      <button class="navbar-toggler ms-auto custom-toggler" type="button" data-bs-toggle="collapse"
+        data-bs-target="#navMenu" aria-controls="navMenu" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <!-- Navbar items -->
+      <div class="collapse navbar-collapse justify-content-end" id="navMenu">
+        <ul class="navbar-nav">
+          <li class="nav-item"><a class="nav-link" href="{% url 'characters' %}">Characters</a></li>
+          <li class="nav-item"><a class="nav-link" href="{% url 'party' %}">Party</a></li>
+          <li class="nav-item"><a class="nav-link" href="{% url 'contact' %}">Contact</a></li>
+
+          {% if user.is_authenticated %}
+            <li class="nav-item"><a class="nav-link" href="{% url 'logout' %}">Log out</a></li>
+          {% else %}
+            <li class="nav-item"><a class="nav-link" href="{% url 'signup-login' %}">Sign-up / Log-in</a></li>
+          {% endif %}
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+    <!-- Main logout message -->
+    <div class="container py-5 text-center">
+        <div class="card bg-secondary bg-opacity-25 border-light p-5 mx-auto" style="max-width: 600px;">
+            <h1 class="text-gold mb-4">You’ve been logged out</h1>
+            <p class="lead mb-4">Thanks for playing! You can log back in anytime to continue managing your characters and parties.</p>
+
+            <a href="{% url 'signup-login' %}" class="btn btn-primary me-2">Log Back In</a>
+            <a href="{% url 'home' %}" class="btn btn-outline-light">Return Home</a>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="mt-5 py-4 bg-dark text-center">
+        <ul class="list-inline mb-2">
+            <li class="list-inline-item"><a href="https://facebook.com" target="_blank"><i class="fa-brands fa-facebook text-gold"></i></a></li>
+            <li class="list-inline-item"><a href="https://x.com" target="_blank"><i class="fa-brands fa-square-x-twitter text-gold"></i></a></li>
+            <li class="list-inline-item"><a href="https://youtube.com" target="_blank"><i class="fa-brands fa-youtube text-gold"></i></a></li>
+            <li class="list-inline-item"><a href="https://instagram.com" target="_blank"><i class="fa-brands fa-instagram text-gold"></i></a></li>
+        </ul>
+        <p class="text-muted small mb-0">© 2025 BattleRoster</p>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="{% static 'js/main.js' %}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://kit.fontawesome.com/f84e35c3bf.js" crossorigin="anonymous"></script>
+</body>
+</html>

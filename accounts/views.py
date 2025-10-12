@@ -1,3 +1,4 @@
+# accounts/views.py
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
@@ -18,7 +19,6 @@ def signup_login_view(request):
                 messages.error(request, 'That username is already taken.')
             else:
                 user = User.objects.create_user(username=username, password=password)
-                # optionally store role later if you add a Profile model
                 user.save()
                 messages.success(request, 'Account created successfully! You can now log in.')
                 return redirect('signup-login')
@@ -37,8 +37,8 @@ def signup_login_view(request):
 
 def logout_view(request):
     """
-    Logs out the current user and redirects to home.
+    Logs out the current user and shows confirmation.
     """
     logout(request)
-    messages.info(request, 'You have been logged out.')
-    return redirect('home')
+    messages.info(request, "You have been logged out successfully.")
+    return render(request, "logout.html")

@@ -3,8 +3,6 @@ from pathlib import Path
 from dotenv import load_dotenv
 import dj_database_url
 
-AUTH_USER_MODEL = 'accounts.User'
-
 # --- Load environment variables ---
 load_dotenv()
 
@@ -15,7 +13,6 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.getenv('SECRET_KEY', 'unsafe-secret-key')
 DEBUG = os.getenv('DEBUG', 'False') == 'True'
 
-# --- Allowed Hosts ---
 ALLOWED_HOSTS = os.getenv(
     'ALLOWED_HOSTS',
     'localhost,127.0.0.1,battlerosterhost-e22dbecc83dc.herokuapp.com'
@@ -53,7 +50,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    # Your apps
+    # Local apps
     'accounts',
     'game_characters',
     'sheets',
@@ -65,7 +62,7 @@ INSTALLED_APPS = [
 # --- Middleware ---
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',  # ✅ Handles static files on Heroku
+    'whitenoise.middleware.WhiteNoiseMiddleware',  # Handles static files on Heroku
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -100,9 +97,9 @@ WSGI_APPLICATION = 'battleroster_project.wsgi.application'
 # --- Database ---
 DATABASES = {
     'default': dj_database_url.config(
-        default=os.getenv('DATABASE_URL', f"sqlite:///{BASE_DIR / 'db.sqlite3'}"),
+        default=f"sqlite:///{BASE_DIR / 'db.sqlite3'}",
         conn_max_age=600,
-        ssl_require=not DEBUG
+        ssl_require=not DEBUG,
     )
 }
 
@@ -134,6 +131,13 @@ MEDIA_ROOT = BASE_DIR / 'media'
 # --- Default Primary Key ---
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+# --- Custom User Model ---
+AUTH_USER_MODEL = 'accounts.User'
+
+# --- Login/Logout Redirects ---
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/'
+
 # --- Google Sheets Integration ---
 GOOGLE_SERVICE_ACCOUNT_FILE = BASE_DIR / 'creds.json'
 GOOGLE_SHEETS_ID = os.getenv('GOOGLE_SHEETS_ID', '')
@@ -143,15 +147,6 @@ GOOGLE_SHEETS_RANGE = os.getenv('GOOGLE_SHEETS_RANGE', 'Characters!A2:Z')
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
-    'handlers': {
-        'console': {'class': 'logging.StreamHandler'},
-    },
-    'root': {
-        'handlers': ['console'],
-        'level': 'INFO',
-    },
+    'handlers': {'console': {'class': 'logging.StreamHandler'}},
+    'root': {'handlers': ['console'], 'level': 'INFO'},
 }
-
-LOGIN_REDIRECT_URL = '/'
-LOGOUT_REDIRECT_URL = '/'
-LOGIN_URL = '/accounts/login/'

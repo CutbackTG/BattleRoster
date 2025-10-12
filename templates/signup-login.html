@@ -1,18 +1,18 @@
 {% load static %}
-{% load messages %}
-
 <!DOCTYPE html>
 <html lang="en-US">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="BattleRoster account management for players and dungeon masters.">
-  <title>BattleRoster | Account Management</title>
+  <meta name="description"
+    content="BattleRoster account management for players and dungeon masters.">
+  <meta name="keywords"
+    content="sign up, login, account, dungeon master, player, tabletop, roster">
+  <title>BattleRoster | Sign-up / Log-in</title>
 
-  <!-- CSS -->
   <link rel="stylesheet" href="{% static 'css/style.css' %}">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
-  <script src="https://kit.fontawesome.com/f84e35c3bf.js" crossorigin="anonymous"></script>
 </head>
 
 <body class="bg-dark text-light">
@@ -23,107 +23,91 @@
       <a class="navbar-brand" href="{% url 'home' %}">
         <img src="{% static 'images/battleroster-logo.png' %}" alt="BattleRoster Logo" id="battleroster-logo">
       </a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu"
-        aria-controls="navMenu" aria-expanded="false" aria-label="Toggle navigation">
+
+      <button class="navbar-toggler ms-auto custom-toggler" type="button" data-bs-toggle="collapse"
+        data-bs-target="#navMenu" aria-controls="navMenu" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
 
       <div class="collapse navbar-collapse justify-content-end" id="navMenu">
         <ul class="navbar-nav">
-          <li class="nav-item"><a class="nav-link" href="{% url 'characters' %}"><i class="fa-solid fa-user me-2 text-gold"></i>Characters</a></li>
-          <li class="nav-item"><a class="nav-link" href="{% url 'party' %}"><i class="fa-solid fa-users me-2 text-gold"></i>Party</a></li>
-          <li class="nav-item"><a class="nav-link" href="{% url 'signup-login' %}"><i class="fa-solid fa-save me-2 text-gold"></i>Sign-up/Log-in</a></li>
-          <li class="nav-item"><a class="nav-link" href="{% url 'contact' %}"><i class="fa-solid fa-scroll me-2 text-gold"></i>Contact</a></li>
+          <li class="nav-item"><a class="nav-link" href="{% url 'characters' %}">Characters</a></li>
+          <li class="nav-item"><a class="nav-link" href="{% url 'party' %}">Party</a></li>
+          <li class="nav-item"><a class="nav-link" href="{% url 'contact' %}">Contact</a></li>
+
+          {% if user.is_authenticated %}
+            <li class="nav-item"><a class="nav-link" href="{% url 'logout' %}">Log out</a></li>
+          {% else %}
+            <li class="nav-item active"><a class="nav-link" href="{% url 'signup-login' %}">Sign-up / Log-in</a></li>
+          {% endif %}
         </ul>
       </div>
     </div>
   </nav>
 
-  <!-- Flash Messages -->
-  <div class="container mt-4">
-    {% if messages %}
+  <!-- Messages -->
+  {% if messages %}
+    <div class="container mt-3">
       {% for message in messages %}
-        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
-          {{ message }}
-          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
+        <div class="alert alert-{{ message.tags }}">{{ message }}</div>
       {% endfor %}
-    {% endif %}
-  </div>
+    </div>
+  {% endif %}
 
-  <!-- Main content -->
+  <!-- Page Content -->
   <div class="container py-5">
     <div class="row justify-content-center">
       <div class="col-md-6">
-        <div class="card bg-secondary bg-opacity-75 p-4 border-0 shadow-lg">
-          <h2 class="text-center mb-4">Account Management</h2>
 
-          <!-- LOGIN FORM -->
-          <form method="POST" action="{% url 'signup-login' %}">
+        <div class="card bg-secondary bg-opacity-50 border-0 shadow-lg p-4 rounded-4">
+          <h2 class="text-center mb-4">Sign-up / Log-in</h2>
+
+          <!-- Form -->
+          <form method="POST">
             {% csrf_token %}
-            <input type="hidden" name="action" value="login">
-
             <div class="mb-3">
-              <label for="login-username" class="form-label">Username</label>
-              <input type="text" name="username" id="login-username" class="form-control" required>
-            </div>
-            <div class="mb-3">
-              <label for="login-password" class="form-label">Password</label>
-              <input type="password" name="password" id="login-password" class="form-control" required>
-            </div>
-            <button type="submit" class="btn btn-primary w-100">Log In</button>
-          </form>
-
-          <hr class="my-4 text-light">
-
-          <!-- SIGNUP FORM -->
-          <form method="POST" action="{% url 'signup-login' %}">
-            {% csrf_token %}
-            <input type="hidden" name="action" value="signup">
-
-            <div class="mb-3">
-              <label for="signup-username" class="form-label">New Username</label>
-              <input type="text" name="username" id="signup-username" class="form-control" required>
-            </div>
-            <div class="mb-3">
-              <label for="signup-password" class="form-label">New Password</label>
-              <input type="password" name="password" id="signup-password" class="form-control" required>
+              <label for="username" class="form-label">Username</label>
+              <input type="text" name="username" id="username" class="form-control" required>
             </div>
 
             <div class="mb-3">
-              <label for="signup-role" class="form-label">Account Type</label>
-              <select name="role" id="signup-role" class="form-select">
+              <label for="password" class="form-label">Password</label>
+              <input type="password" name="password" id="password" class="form-control" required>
+            </div>
+
+            <div class="mb-3">
+              <label for="role" class="form-label">Role</label>
+              <select name="role" id="role" class="form-select">
                 <option value="player">Player</option>
                 <option value="dungeon_master">Dungeon Master</option>
               </select>
             </div>
 
-            <button type="submit" class="btn btn-success w-100">Sign Up</button>
-          </form>
-
-          {% if user.is_authenticated %}
-            <hr class="my-4 text-light">
-            <div class="text-center">
-              <p>Logged in as <strong>{{ user.username }}</strong></p>
-              <a href="{% url 'logout' %}" class="btn btn-outline-light">Log Out</a>
+            <div class="d-flex justify-content-between">
+              <button type="submit" name="action" value="signup" class="btn btn-success w-50 me-2">Sign Up</button>
+              <button type="submit" name="action" value="login" class="btn btn-primary w-50 ms-2">Log In</button>
             </div>
-          {% endif %}
+          </form>
         </div>
+
       </div>
     </div>
   </div>
 
   <!-- Footer -->
-  <footer id="footerSocials" class="py-4 text-center bg-dark">
-    <ul id="social-networks" class="list-unstyled d-flex justify-content-center gap-4">
-      <li><a href="https://www.facebook.com/" target="_blank" rel="noopener"><i class="fa-brands fa-facebook"></i></a></li>
-      <li><a href="https://www.x.com/" target="_blank" rel="noopener"><i class="fa-brands fa-x-twitter"></i></a></li>
-      <li><a href="https://www.youtube.com/" target="_blank" rel="noopener"><i class="fa-brands fa-youtube"></i></a></li>
-      <li><a href="https://www.instagram.com/" target="_blank" rel="noopener"><i class="fa-brands fa-instagram"></i></a></li>
+  <footer id="footerSocials" class="mt-5">
+    <ul id="social-networks" class="socials list-unstyled d-flex gap-5 justify-content-center">
+      <li><a href="https://www.facebook.com/" target="_blank" rel="noopener" aria-label="visit our Facebook page (opens in a new tab)"><i class="fa-brands fa-facebook"></i></a></li>
+      <li><a href="https://www.X.com/" target="_blank" rel="noopener" aria-label="visit our X page (opens in a new tab)"><i class="fa-brands fa-square-x-twitter"></i></a></li>
+      <li><a href="https://www.youtube.com/" target="_blank" rel="noopener" aria-label="visit our YouTube page (opens in a new tab)"><i class="fa-brands fa-youtube-square"></i></a></li>
+      <li><a href="https://www.instagram.com/" target="_blank" rel="noopener" aria-label="visit our Instagram page (opens in a new tab)"><i class="fa-brands fa-instagram"></i></a></li>
     </ul>
   </footer>
 
   <!-- Scripts -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="{% static 'js/main.js' %}"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+  <script src="https://kit.fontawesome.com/f84e35c3bf.js" crossorigin="anonymous"></script>
 </body>
+
 </html>
