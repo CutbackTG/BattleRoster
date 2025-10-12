@@ -16,12 +16,13 @@ SECRET_KEY = os.getenv('SECRET_KEY', 'unsafe-secret-key')
 DEBUG = os.getenv('DEBUG', 'False') == 'True'
 
 # Allowed hosts — dynamic for Heroku or local
-ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',')
+ALLOWED_HOSTS = os.getenv(
+    'ALLOWED_HOSTS',
+    'localhost,127.0.0.1,battlerosterhost-e22dbecc83dc.herokuapp.com'
+).split(',')
 
 # --- CSRF Trusted Origins ---
 CSRF_TRUSTED_ORIGINS = [
-    'https://battlerosterhost-e22dbecc83dc.herokuapp.com',
-] + [
     f"https://{host}"
     for host in ALLOWED_HOSTS
     if not host.startswith("localhost") and not host.startswith("127.")
@@ -61,7 +62,7 @@ INSTALLED_APPS = [
 # --- Middleware ---
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',  # ✅ for static files on Heroku
+    'whitenoise.middleware.WhiteNoiseMiddleware',  # ✅ Handles static files on Heroku
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -98,7 +99,7 @@ DATABASES = {
     'default': dj_database_url.config(
         default=os.getenv('DATABASE_URL', f"sqlite:///{BASE_DIR / 'db.sqlite3'}"),
         conn_max_age=600,
-        ssl_require=False
+        ssl_require=not DEBUG  # ✅ use SSL only on Heroku
     )
 }
 
