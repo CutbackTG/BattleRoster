@@ -1,81 +1,73 @@
-from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth.decorators import login_required
+from django.shortcuts import render, redirect
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 from django.conf import settings
 from .models import Character, Party
 
-# ----------------------------------------
-# Homepage
-# ----------------------------------------
 def home_view(request):
     return render(request, 'index.html')
 
 
-# ----------------------------------------
-# Characters page
-# ----------------------------------------
-@login_required
 def characters_view(request):
-    """Display all characters for the current user."""
-    characters = Character.objects.filter(player=request.user)
-    return render(request, 'characters.html', {'characters': characters})
+    """
+    Allows guests to create ONE character (stored in session).
+    Logged-in users can create unlimited characters tied to their account.
+    """
+    characters = []
+    
+    # If user is logged in, load their characters from DB
+    if request.user.is_authenticated:
+        characters = Character.objects.filter(player=request.user)
+    else:
+        # For guests, load characters stored in session
+        characters = request.session.get("guest_characters", [])
+
+    # Handle form submissions
+    if request.method == "POST":
+        name = request.POST.get("name")
+        char_class = request.POST.get("class")
+        level = request.POST.get("level")
+
+        # Guest logic
+        if not request.user.is_authenticated:
+            guest_characters = request.session.get("guest_characters", [])
+            if len(guest_characters) >= 1:
+                # Too many guest characters – trigger modal
+                messages.error(request, "Creating more than one character requires an account.")
+                return redirect("characters")
+            
+            # Add guest character to session
+            new_character = {"name": name, "char_class": char_class, "level": level}
+            guest_characters.append(new_character)
+            request.session["guest_characters"] = guest_characters
+            request.session.modified = True
+
+            messages.success(request, f"Temporary character '{name}' created!")
+            return redirect("characters")
+
+        # Logged-in user logic
+        else:
+            Character.objects.create(
+                name=name,
+                char_class=char_class,
+                level=level,
+                player=request.user
+            )
+            messages.success(request, f"Character '{name}' created successfully!")
+            return redirect("characters")
+
+    return render(request, "characters.html", {"characters": characters})
 
 
-# ----------------------------------------
-# Contact page
-# ----------------------------------------
-def contact_view(request):
-    return render(request, 'contact.html')
-
-
-# ----------------------------------------
-# Party redirector — sends user to correct view
-# ----------------------------------------
 @login_required
 def party_view(request):
-    """Redirect the user to their role-specific party page."""
+    """
+    Shows the party for the logged-in user (Player or Dungeon Master).
+    """
     user = request.user
-    if hasattr(user, 'role') and user.role == 'dungeon_master':
-        return redirect('party-dm')
-    else:
-        return redirect('party-player')
+    parties = Party.objects.filter(dungeon_master=user) if user.role == "dungeon_master" else Party.objects.filter(members=user)
+    return render(request, "party.html", {"parties": parties})
 
 
-# ----------------------------------------
-# Player Party Page
-# ----------------------------------------
-@login_required
-def party_player_view(request):
-    """
-    Show the player's current party and allow them to manage or request to join.
-    """
-    try:
-        party = Party.objects.get(members=request.user)
-    except Party.DoesNotExist:
-        party = None
-
-    context = {
-        'party': party,
-        'is_dungeon_master': hasattr(request.user, 'role') and request.user.role == 'dungeon_master'
-    }
-    return render(request, 'party_player.html', context)
-
-
-# ----------------------------------------
-# Dungeon Master Party Page
-# ----------------------------------------
-@login_required
-def party_dm_view(request):
-    """
-    Show the Dungeon Master's controlled party and allow CRUD operations on members.
-    """
-    if not hasattr(request.user, 'role') or request.user.role != 'dungeon_master':
-        messages.error(request, "You must be a Dungeon Master to access this page.")
-        return redirect('party-player')
-
-    parties = Party.objects.filter(dungeon_master=request.user)
-    context = {
-        'parties': parties,
-        'is_dungeon_master': True
-    }
-    return render(request, 'party_dm.html', context)
+def contact_view(request):
+    return render(request, "contact.html")
