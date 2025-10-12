@@ -11,6 +11,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # --- Security ---
 SECRET_KEY = os.getenv('SECRET_KEY', 'unsafe-secret-key')
+
 DEBUG = os.getenv('DEBUG', 'False') == 'True'
 
 ALLOWED_HOSTS = os.getenv(
@@ -27,12 +28,12 @@ CSRF_TRUSTED_ORIGINS = [
 
 # --- Security headers for production ---
 if not DEBUG:
-    SECURE_SSL_REDIRECT = True
+    SECURE_SSL_REDIRECT = os.getenv('SECURE_SSL_REDIRECT', 'True') == 'True'
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
     SECURE_BROWSER_XSS_FILTER = True
     SECURE_CONTENT_TYPE_NOSNIFF = True
-    SECURE_HSTS_SECONDS = 31536000
+    SECURE_HSTS_SECONDS = 31536000  # 1 year
     SECURE_HSTS_INCLUDE_SUBDOMAINS = True
     SECURE_HSTS_PRELOAD = True
     X_FRAME_OPTIONS = 'DENY'
@@ -50,19 +51,19 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    # Local apps
+    # Your apps
     'accounts',
     'game_characters',
     'sheets',
 
-    # Developer tools
+    # Dev tools
     'django_extensions',
 ]
 
 # --- Middleware ---
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',  # Handles static files on Heroku
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -97,9 +98,9 @@ WSGI_APPLICATION = 'battleroster_project.wsgi.application'
 # --- Database ---
 DATABASES = {
     'default': dj_database_url.config(
-        default=f"sqlite:///{BASE_DIR / 'db.sqlite3'}",
+        default=os.getenv('DATABASE_URL', f"sqlite:///{BASE_DIR / 'db.sqlite3'}"),
         conn_max_age=600,
-        ssl_require=not DEBUG,
+        ssl_require=not DEBUG
     )
 }
 
@@ -115,7 +116,6 @@ AUTH_PASSWORD_VALIDATORS = [
 LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'UTC'
 USE_I18N = True
-USE_L10N = True
 USE_TZ = True
 
 # --- Static Files ---
@@ -131,17 +131,15 @@ MEDIA_ROOT = BASE_DIR / 'media'
 # --- Default Primary Key ---
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# --- Custom User Model ---
-AUTH_USER_MODEL = 'accounts.User'
-
-# --- Login/Logout Redirects ---
-LOGIN_REDIRECT_URL = '/'
-LOGOUT_REDIRECT_URL = '/'
-
 # --- Google Sheets Integration ---
 GOOGLE_SERVICE_ACCOUNT_FILE = BASE_DIR / 'creds.json'
 GOOGLE_SHEETS_ID = os.getenv('GOOGLE_SHEETS_ID', '')
 GOOGLE_SHEETS_RANGE = os.getenv('GOOGLE_SHEETS_RANGE', 'Characters!A2:Z')
+
+# --- Auth Redirects ---
+LOGIN_URL = '/accounts/signup-login/'  # ✅ Fix for redirect
+LOGIN_REDIRECT_URL = '/'               # after login
+LOGOUT_REDIRECT_URL = '/'              # after logout
 
 # --- Logging ---
 LOGGING = {
