@@ -1,15 +1,21 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
-from django.contrib import messages
-from accounts.models import User
 from .models import Party, Character
+from django.contrib.auth.models import User
+from django.contrib import messages
+
+
+def home_view(request):
+    """Landing page view."""
+    return render(request, 'index.html')
 
 
 @login_required
 def party_view(request):
+    """Display and manage the user's party information."""
     user = request.user
 
-    # Get parties for this user
+    # Determine if the user is a Dungeon Master or a Player
     if hasattr(user, "role") and user.role == "dungeon_master":
         parties = Party.objects.filter(dungeon_master=user)
         is_dm = True
@@ -21,7 +27,7 @@ def party_view(request):
     if request.method == "POST":
         action = request.POST.get("action")
 
-        # 🧱 Create new party (for DMs)
+        # 🧱 Create a new party (only for DMs)
         if action == "create_party" and is_dm:
             name = request.POST.get("name")
             campaign_name = request.POST.get("campaign_name")
@@ -37,7 +43,7 @@ def party_view(request):
                 messages.success(request, f"Party '{party.name}' created successfully!")
             return redirect("party")
 
-        # 🧍 Add / Remove party members (for DMs)
+        # 🧍 Add or Remove party members (for DMs)
         elif action in ["add", "remove"] and is_dm:
             party_id = request.POST.get("party_id")
             username = request.POST.get("username")
@@ -72,7 +78,7 @@ def party_view(request):
             messages.error(request, "Invalid action or insufficient permissions.")
             return redirect("party")
 
-    # Render the page
+    # Render the Party page
     return render(request, "game_characters/party.html", {
         "parties": parties,
         "is_dm": is_dm,
