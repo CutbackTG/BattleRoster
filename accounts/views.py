@@ -12,6 +12,10 @@ def signup_login_view(request):
     Also checks for any guest-created character and saves it to the user upon login.
     """
 
+    # ✅ Redirect logged-in users away from the login page
+    if request.user.is_authenticated:
+        return redirect("characters")
+
     if request.method == "POST":
         action = request.POST.get("action")
 
@@ -43,7 +47,7 @@ def signup_login_view(request):
                 user.save()
                 login(request, user)
                 messages.success(request, "Account created successfully! You are now logged in.")
-                return redirect("characters")  # ✅ redirect to characters page
+                return redirect("characters")  # ✅ Redirect to Characters page
             except IntegrityError:
                 messages.error(request, "That username is already taken.")
                 return redirect("signup-login")
@@ -57,7 +61,7 @@ def signup_login_view(request):
             if user is not None:
                 login(request, user)
 
-                # If guest created a temporary character, attach it
+                # Attach any guest-created character
                 temp = request.session.pop("temp_character", None)
                 if temp:
                     Character.objects.create(
@@ -70,9 +74,7 @@ def signup_login_view(request):
                     messages.success(request, f"Your character '{temp['name']}' has been saved to your account!")
 
                 messages.success(request, f"Welcome back, {username}!")
-
-                # ✅ Always go to the characters page after login
-                return redirect("characters")
+                return redirect("characters")  # ✅ Redirect to Characters page
             else:
                 messages.error(request, "Invalid username or password.")
                 return redirect("signup-login")
