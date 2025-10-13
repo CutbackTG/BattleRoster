@@ -1,10 +1,8 @@
 from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib.auth.models import User
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth import get_user_model
 from .models import Character, Party
-
-User = get_user_model()
 
 
 def home_view(request):
@@ -14,7 +12,7 @@ def home_view(request):
 
 @login_required
 def characters_view(request):
-    """Display user's characters and allow creation."""
+    """Show all characters for the logged-in user."""
     user = request.user
     characters = Character.objects.filter(player=user)
 
@@ -41,26 +39,43 @@ def characters_view(request):
 
 
 @login_required
+def update_character(request, character_id):
+    """Edit an existing character belonging to the logged-in user."""
+    character = get_object_or_404(Character, id=character_id, player=request.user)
+
+    if request.method == "POST":
+        character.name = request.POST.get("name")
+        character.level = request.POST.get("level")
+        character.health = request.POST.get("health")
+        character.mana = request.POST.get("mana")
+        character.save()
+        messages.success(request, f"{character.name} updated successfully!")
+        return redirect("characters")
+
+    return render(request, "update_character.html", {"character": character})
+
+
+@login_required
 def delete_character(request, character_id):
-    """Delete a user's character."""
+    """Delete a character belonging to the logged-in user."""
     character = get_object_or_404(Character, id=character_id, player=request.user)
     character.delete()
-    messages.success(request, f"Character '{character.name}' deleted.")
+    messages.success(request, f"Character '{character.name}' deleted successfully.")
     return redirect("characters")
 
 
 @login_required
 def party_view(request):
-    """Display parties and allow DMs to add/remove members."""
+    """Display and manage parties for the logged-in user."""
     user = request.user
 
-    if user.role == "dungeon_master":
+    if user.is_dungeon_master():
         parties = Party.objects.filter(dungeon_master=user)
     else:
         parties = Party.objects.filter(members=user)
 
-    # Handle adding/removing members (DM only)
-    if request.method == "POST" and user.role == "dungeon_master":
+    # Dungeon Masters can add/remove users from their parties
+    if request.method == "POST" and user.is_dungeon_master():
         action = request.POST.get("action")
         party_id = request.POST.get("party_id")
         username = request.POST.get("username")
