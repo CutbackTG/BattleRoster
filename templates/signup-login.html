@@ -16,21 +16,19 @@
 </head>
 <body>
 
-  <!-- Navbar items -->
-      <div class="collapse navbar-collapse justify-content-end" id="navMenu">
-        <ul class="navbar-nav flex-column align-items-start">
-          <li class="nav-item"><a class="nav-link" href="{% url 'characters' %}"><i class="fa-solid fa-user me-2 text-gold"></i>Characters</a></li>
-          <li class="nav-item"><a class="nav-link" href="{% url 'party' %}"><i class="fa-solid fa-users me-2 text-gold"></i>Party</a></li>
-          {% if user.is_authenticated %}
-          <li class="nav-item"><a class="nav-link" href="{% url 'logout' %}"><i class="fa-solid fa-right-from-bracket me-2 text-gold"></i>Log out</a></li>
-          {% else %}
-          <li class="nav-item"><a class="nav-link" href="{% url 'signup_login' %}"><i class="fa-solid fa-save me-2 text-gold"></i>Sign-up / Log-in</a></li>
-          {% endif %}
-          <li class="nav-item"><a class="nav-link" href="{% url 'contact' %}"><i class="fa-solid fa-scroll me-2 text-gold"></i>Contact</a></li>
-        </ul>
-      </div>
-    </div>
-  </nav>
+  <!-- Navbar -->
+  <div class="collapse navbar-collapse justify-content-end" id="navMenu">
+    <ul class="navbar-nav flex-column align-items-start">
+      <li class="nav-item"><a class="nav-link" href="{% url 'characters' %}"><i class="fa-solid fa-user me-2 text-gold"></i>Characters</a></li>
+      <li class="nav-item"><a class="nav-link" href="{% url 'party' %}"><i class="fa-solid fa-users me-2 text-gold"></i>Party</a></li>
+      {% if user.is_authenticated %}
+        <li class="nav-item"><a class="nav-link" href="{% url 'logout' %}"><i class="fa-solid fa-right-from-bracket me-2 text-gold"></i>Log out</a></li>
+      {% else %}
+        <li class="nav-item"><a class="nav-link" href="{% url 'signup-login' %}"><i class="fa-solid fa-save me-2 text-gold"></i>Sign-up / Log-in</a></li>
+      {% endif %}
+      <li class="nav-item"><a class="nav-link" href="{% url 'contact' %}"><i class="fa-solid fa-scroll me-2 text-gold"></i>Contact</a></li>
+    </ul>
+  </div>
 
   <!-- Page Container -->
   <div class="container py-5" style="max-width: 600px;">
@@ -49,18 +47,21 @@
     <!-- Tabs -->
     <ul class="nav nav-tabs mb-3" id="authTab" role="tablist">
       <li class="nav-item" role="presentation">
-        <button class="nav-link active" id="signup-tab" data-bs-toggle="tab" data-bs-target="#signup" type="button" role="tab">Sign Up</button>
+        <button class="nav-link {% if not request.session.active_tab or request.session.active_tab == 'signup' %}active{% endif %}" id="signup-tab" data-bs-toggle="tab" data-bs-target="#signup" type="button" role="tab">Sign Up</button>
       </li>
       <li class="nav-item" role="presentation">
-        <button class="nav-link" id="login-tab" data-bs-toggle="tab" data-bs-target="#login" type="button" role="tab">Log In</button>
+        <button class="nav-link {% if request.session.active_tab == 'login' %}active{% endif %}" id="login-tab" data-bs-toggle="tab" data-bs-target="#login" type="button" role="tab">Log In</button>
       </li>
     </ul>
 
     <div class="tab-content" id="authTabContent">
       <!-- SIGN UP -->
-      <div class="tab-pane fade show active" id="signup" role="tabpanel">
+      <div class="tab-pane fade {% if not request.session.active_tab or request.session.active_tab == 'signup' %}show active{% endif %}" id="signup" role="tabpanel">
         <form method="POST" class="p-4 bg-secondary rounded shadow">
           {% csrf_token %}
+          <input type="hidden" name="action" value="signup">
+          <input type="hidden" name="active_tab" value="signup">
+
           <div class="mb-3">
             <label for="username" class="form-label">Username</label>
             <input type="text" name="username" class="form-control" id="username" required>
@@ -90,14 +91,17 @@
             <label class="form-check-label" for="is_dm">I am a Dungeon Master</label>
           </div>
 
-          <button type="submit" name="signup" id="signupBtn" class="btn btn-primary w-100" disabled>Sign Up</button>
+          <button type="submit" id="signupBtn" class="btn btn-primary w-100" disabled>Sign Up</button>
         </form>
       </div>
 
       <!-- LOG IN -->
-      <div class="tab-pane fade" id="login" role="tabpanel">
+      <div class="tab-pane fade {% if request.session.active_tab == 'login' %}show active{% endif %}" id="login" role="tabpanel">
         <form method="POST" class="p-4 bg-secondary rounded shadow">
           {% csrf_token %}
+          <input type="hidden" name="action" value="login">
+          <input type="hidden" name="active_tab" value="login">
+
           <div class="mb-3">
             <label for="login_username" class="form-label">Username</label>
             <input type="text" name="username" class="form-control" id="login_username" required>
@@ -108,7 +112,7 @@
             <input type="password" name="password" class="form-control" id="login_password" required>
           </div>
 
-          <button type="submit" name="login" class="btn btn-success w-100">Log In</button>
+          <button type="submit" class="btn btn-success w-100">Log In</button>
         </form>
       </div>
     </div>

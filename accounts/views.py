@@ -6,18 +6,15 @@ from django.db import IntegrityError
 from game_characters.models import Character
 
 
-def signup_login_view(request):
+def signup-login_view(request):
     """
     Handles both signup and login on the same page.
     Also checks for any guest-created character and saves it to the user upon login.
     """
 
-    # ✅ Redirect logged-in users away from the login page
-    if request.user.is_authenticated:
-        return redirect("characters")
-
     if request.method == "POST":
         action = request.POST.get("action")
+        request.session['active_tab'] = action  # 👈 remember which tab was used
 
         # -------------------- SIGNUP --------------------
         if action == "signup":
@@ -46,8 +43,12 @@ def signup_login_view(request):
                 user = User.objects.create_user(username=username, password=password1)
                 user.save()
                 login(request, user)
+
+                # ✅ clear tab memory after success
+                request.session.pop('active_tab', None)
+
                 messages.success(request, "Account created successfully! You are now logged in.")
-                return redirect("characters")  # ✅ Redirect to Characters page
+                return redirect("characters")  # go straight to characters
             except IntegrityError:
                 messages.error(request, "That username is already taken.")
                 return redirect("signup-login")
@@ -61,7 +62,7 @@ def signup_login_view(request):
             if user is not None:
                 login(request, user)
 
-                # Attach any guest-created character
+                # If guest created a temporary character, attach it
                 temp = request.session.pop("temp_character", None)
                 if temp:
                     Character.objects.create(
@@ -73,8 +74,11 @@ def signup_login_view(request):
                     )
                     messages.success(request, f"Your character '{temp['name']}' has been saved to your account!")
 
+                # ✅ clear tab memory after success
+                request.session.pop('active_tab', None)
+
                 messages.success(request, f"Welcome back, {username}!")
-                return redirect("characters")  # ✅ Redirect to Characters page
+                return redirect("characters")  # always go to characters
             else:
                 messages.error(request, "Invalid username or password.")
                 return redirect("signup-login")
