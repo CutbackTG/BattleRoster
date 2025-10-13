@@ -16,8 +16,9 @@ DEBUG = os.getenv('DEBUG', 'False') == 'True'
 
 ALLOWED_HOSTS = os.getenv(
     'ALLOWED_HOSTS',
-    'localhost,127.0.0.1,battlerosterhost-e22dbecc83dc.herokuapp.com'
+    'localhost,127.0.0.1,battlerosterhost.herokuapp.com'
 ).split(',')
+
 
 # --- CSRF Trusted Origins ---
 CSRF_TRUSTED_ORIGINS = [
