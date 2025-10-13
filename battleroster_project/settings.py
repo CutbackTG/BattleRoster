@@ -127,10 +127,6 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'
 STATICFILES_DIRS = [BASE_DIR / 'static']
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
-# --- Media Files ---
-MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR / 'media'
-
 # --- Default Primary Key ---
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
@@ -140,8 +136,8 @@ GOOGLE_SHEETS_ID = os.getenv('GOOGLE_SHEETS_ID', '')
 GOOGLE_SHEETS_RANGE = os.getenv('GOOGLE_SHEETS_RANGE', 'Characters!A2:Z')
 
 # --- Auth Redirects ---
-LOGIN_URL = '/accounts/signup_login/'  # ✅ Fix for redirect
-LOGIN_REDIRECT_URL = '/'               # after login
+LOGIN_URL = '/accounts/signup-login/'  # Fix for redirect
+LOGIN_REDIRECT_URL = '/characters/'              # after login
 LOGOUT_REDIRECT_URL = '/'              # after logout
 
 # --- Logging ---
