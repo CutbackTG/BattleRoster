@@ -21,29 +21,3 @@ class User(AbstractUser):
 
     def __str__(self):
         return f"{self.username} ({self.get_role_display()})"
-
-
-class Character(models.Model):
-    """A character belonging to a user (player)."""
-    name = models.CharField(max_length=100)
-    level = models.PositiveIntegerField(default=1)
-    health = models.PositiveIntegerField(default=100)
-    mana = models.PositiveIntegerField(default=50)
-    player = models.ForeignKey(User, on_delete=models.CASCADE, related_name='characters')
-
-    def __str__(self):
-        return f"{self.name} (Lv. {self.level})"
-
-
-class Party(models.Model):
-    """A party that can include multiple players, led by a Dungeon Master."""
-    name = models.CharField(max_length=100)
-    dungeon_master = models.ForeignKey(
-        User, on_delete=models.CASCADE, related_name='owned_parties'
-    )
-    members = models.ManyToManyField(
-        User, related_name='parties', blank=True
-    )
-
-    def __str__(self):
-        return f"{self.name} (DM: {self.dungeon_master.username})"
