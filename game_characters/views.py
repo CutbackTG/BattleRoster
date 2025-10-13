@@ -5,42 +5,6 @@ from django.contrib import messages
 from .models import Party, Character
 from .google_sheets import get_gsheet
 
-def characters_view(request):
-    sheet = get_gsheet("Characters")   # tab name in your Google Sheet
-    rows = sheet.get_all_records()
-
-    if request.method == "POST":
-        name = request.POST.get("name")
-        level = request.POST.get("level")
-        health = request.POST.get("health")
-        mana = request.POST.get("mana")
-
-        sheet.append_row([name, level, health, mana])
-        messages.success(request, f"Character '{name}' added successfully!")
-        return redirect("characters")
-
-    return render(request, "characters.html", {"characters": rows})
-
-
-def update_character(request, row_number):
-    sheet = get_gsheet("Characters")
-    if request.method == "POST":
-        name = request.POST["name"]
-        level = request.POST["level"]
-        health = request.POST["health"]
-        mana = request.POST["mana"]
-        sheet.update(f"A{row_number}:D{row_number}", [[name, level, health, mana]])
-        messages.success(request, "Character updated successfully.")
-        return redirect("characters")
-
-
-def delete_character(request, row_number):
-    sheet = get_gsheet("Characters")
-    sheet.delete_rows(row_number)
-    messages.success(request, "Character deleted.")
-    return redirect("characters")
-
-
 
 def home_view(request):
     """Landing page view."""
@@ -48,13 +12,16 @@ def home_view(request):
 
 
 def characters_view(request):
-    """Show character list and allow limited character creation for guests."""
+    """
+    Display the user's characters.
+    Allow logged-in users to add characters directly from this page.
+    """
     user = request.user
     guest_mode = not user.is_authenticated
 
-    # Guest users see demo characters (not saved to DB)
+    # Guests see no saved characters
     if guest_mode:
-        characters = []  # no stored characters
+        characters = []
     else:
         characters = Character.objects.filter(player=user)
 
@@ -64,21 +31,25 @@ def characters_view(request):
         health = request.POST.get("health")
         mana = request.POST.get("mana")
 
-        if guest_mode:
-            messages.warning(request, "Login required to save your character.")
-        else:
-            if not all([name, level, health, mana]):
-                messages.error(request, "All fields are required.")
-            else:
-                Character.objects.create(
-                    name=name,
-                    level=level,
-                    health=health,
-                    mana=mana,
-                    player=user
-                )
-                messages.success(request, f"Character '{name}' created successfully!")
+        # Validation
+        if not all([name, level, health, mana]):
+            messages.error(request, "All fields are required.")
             return redirect("characters")
+
+        if guest_mode:
+            messages.warning(request, "Please log in to save characters.")
+            return redirect("signup_login")
+
+        # Create the new character
+        Character.objects.create(
+            name=name,
+            level=level,
+            health=health,
+            mana=mana,
+            player=user
+        )
+        messages.success(request, f"Character '{name}' created successfully!")
+        return redirect("characters")
 
     return render(request, "characters.html", {
         "characters": characters,
@@ -86,21 +57,45 @@ def characters_view(request):
     })
 
 
+@login_required
+def update_character(request, row_number):
+    """Update a character’s details."""
+    sheet = get_gsheet("Characters")
+
+    if request.method == "POST":
+        name = request.POST.get("name")
+        level = request.POST.get("level")
+        health = request.POST.get("health")
+        mana = request.POST.get("mana")
+
+        sheet.update(f"A{row_number}:D{row_number}", [[name, level, health, mana]])
+        messages.success(request, "Character updated successfully.")
+        return redirect("characters")
+
+
+@login_required
+def delete_character(request, row_number):
+    """Delete a character by its row number in the Google Sheet."""
+    sheet = get_gsheet("Characters")
+    sheet.delete_rows(row_number)
+    messages.success(request, "Character deleted.")
+    return redirect("characters")
+
+
 def party_view(request):
-    """Display the user's party info or show guest preview."""
+    """Display parties depending on the user’s role."""
     user = request.user
     guest_mode = not user.is_authenticated
 
     if guest_mode:
         messages.info(request, "Login to manage or join parties.")
-        parties = Party.objects.all()[:3]  # show a few sample parties (or none)
+        parties = Party.objects.all()[:3]
     else:
         if hasattr(user, "role") and user.role == "dungeon_master":
             parties = Party.objects.filter(dungeon_master=user)
         else:
             parties = Party.objects.filter(members=user)
 
-    # Only allow add/remove for logged-in Dungeon Masters
     if request.method == "POST" and not guest_mode:
         action = request.POST.get("action")
         party_id = request.POST.get("party_id")
@@ -130,6 +125,7 @@ def party_view(request):
         "parties": parties,
         "guest_mode": guest_mode,
     })
+
 
 def contact_view(request):
     """Render the contact page."""
