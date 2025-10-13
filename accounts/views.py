@@ -43,7 +43,7 @@ def signup_login_view(request):
                 user.save()
                 login(request, user)
                 messages.success(request, "Account created successfully! You are now logged in.")
-                return redirect("party")
+                return redirect("characters")  # ✅ redirect to characters page
             except IntegrityError:
                 messages.error(request, "That username is already taken.")
                 return redirect("signup-login")
@@ -70,8 +70,9 @@ def signup_login_view(request):
                     messages.success(request, f"Your character '{temp['name']}' has been saved to your account!")
 
                 messages.success(request, f"Welcome back, {username}!")
-                next_page = request.GET.get("next", "party")
-                return redirect(next_page)
+
+                # ✅ Always go to the characters page after login
+                return redirect("characters")
             else:
                 messages.error(request, "Invalid username or password.")
                 return redirect("signup-login")
