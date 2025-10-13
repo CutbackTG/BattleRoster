@@ -1,128 +1,437 @@
 {% load static %}
 <!DOCTYPE html>
-<html lang="en-US">
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Manage your BattleRoster characters synced with Google Sheets.">
-  <title>BattleRoster | Characters</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>BattleRoster — Characters</title>
+
+  <!-- your project's stylesheet (keeps original styling) -->
   <link rel="stylesheet" href="{% static 'css/style.css' %}">
+  <!-- Bootstrap (index.html also used it) -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    /* Small layout sugar for the boxes */
+    .sheet-box {
+      border: 1px solid #dcdcdc;
+      border-radius: 10px;
+      padding: 16px;
+      margin-bottom: 18px;
+      background: #fff;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.03);
+    }
+    .sheet-title { font-weight:700; margin-bottom:8px; }
+    .row-actions { white-space:nowrap; }
+    .editable-cell { min-width: 120px; }
+    .table-responsive { max-height: 320px; overflow:auto; }
+    .small-muted { font-size:0.9rem; color:#666; }
+    .mb-10 { margin-bottom:10px; }
+  </style>
 </head>
-
-<body class="bg-dark text-light">
-
-  <!-- Navbar -->
+<body>
+  <!-- Navbar (copied style from index) -->
   <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container">
       <a class="navbar-brand" href="{% url 'home' %}">
-        <img src="{% static 'images/battleroster-logo.png' %}" alt="BattleRoster Logo" id="battleroster-logo">
+        <img class="home" src="{% static 'images/battleroster-logo.png' %}" alt="BattleRoster Logo" height="36">
       </a>
-
-      <button class="navbar-toggler ms-auto" type="button" data-bs-toggle="collapse"
-        data-bs-target="#navMenu" aria-controls="navMenu" aria-expanded="false" aria-label="Toggle navigation">
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarsExample"
+              aria-controls="navbarsExample" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
-
-      <div class="collapse navbar-collapse justify-content-end" id="navMenu">
-        <ul class="navbar-nav flex-column align-items-start">
-          <li class="nav-item"><a class="nav-link" href="{% url 'characters' %}"><i class="fa-solid fa-user me-2 text-gold"></i>Characters</a></li>
-          <li class="nav-item"><a class="nav-link" href="{% url 'party' %}"><i class="fa-solid fa-users me-2 text-gold"></i>Party</a></li>
+      <div id="navbarsExample" class="collapse navbar-collapse">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item"><a class="nav-link" href="{% url 'party' %}">Party</a></li>
+          <li class="nav-item"><a class="nav-link" href="{% url 'home' %}">Home</a></li>
           {% if user.is_authenticated %}
-            <li class="nav-item"><a class="nav-link" href="{% url 'logout' %}"><i class="fa-solid fa-right-from-bracket me-2 text-gold"></i>Log out</a></li>
+            <li class="nav-item"><a class="nav-link" href="{% url 'logout' %}">Logout</a></li>
           {% else %}
-            <li class="nav-item"><a class="nav-link" href="{% url 'signup_login' %}"><i class="fa-solid fa-save me-2 text-gold"></i>Sign-up / Log-in</a></li>
+            <li class="nav-item"><a class="nav-link" href="{% url 'signup-login' %}">Login / Signup</a></li>
           {% endif %}
-          <li class="nav-item"><a class="nav-link" href="{% url 'contact' %}"><i class="fa-solid fa-scroll me-2 text-gold"></i>Contact</a></li>
         </ul>
       </div>
     </div>
   </nav>
 
-  <!-- Messages -->
-  {% if messages %}
-    <div class="container mt-3">
-      {% for message in messages %}
-        <div class="alert alert-{{ message.tags }}">{{ message }}</div>
-      {% endfor %}
-    </div>
-  {% endif %}
-
-  <!-- Main content -->
-  <div class="container py-5">
-    <h1 class="text-center mb-4">Your Characters</h1>
-    <p class="text-center text-muted">Manage your characters below. These will sync automatically with Google Sheets.</p>
-
-    <!-- Character Table -->
-    <div class="table-responsive bg-secondary bg-opacity-50 rounded-3 p-3 shadow">
-      <table class="table table-dark table-striped align-middle">
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Level</th>
-            <th>Health</th>
-            <th>Mana</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody id="characterTable">
-          {% for character in characters %}
-            <tr>
-              <td>{{ character.name }}</td>
-              <td>{{ character.level }}</td>
-              <td>{{ character.health }}</td>
-              <td>{{ character.mana }}</td>
-              <td>
-                {% if user.is_authenticated %}
-                  <a href="{% url 'edit_character' character.id %}" class="btn btn-sm btn-warning">Edit</a>
-                  <a href="{% url 'delete_character' character.id %}" class="btn btn-sm btn-danger">Delete</a>
-                {% else %}
-                  <span class="text-muted">Login required</span>
-                {% endif %}
-              </td>
-            </tr>
-          {% empty %}
-            <tr><td colspan="5" class="text-center">No characters yet.</td></tr>
-          {% endfor %}
-        </tbody>
-      </table>
-    </div>
-
-    <!-- Add Character Form -->
-    <div class="mt-5">
-      <h3 class="text-center">Add New Character</h3>
-      <form method="POST" class="bg-secondary bg-opacity-50 p-4 rounded-3 shadow">
-        {% csrf_token %}
-        <div class="row g-3">
-          <div class="col-md-3"><input type="text" name="name" class="form-control" placeholder="Name" required></div>
-          <div class="col-md-2"><input type="number" name="level" class="form-control" placeholder="Level" min="1" required></div>
-          <div class="col-md-3"><input type="number" name="health" class="form-control" placeholder="Health" min="0" required></div>
-          <div class="col-md-3"><input type="number" name="mana" class="form-control" placeholder="Mana" min="0" required></div>
-          <div class="col-md-1 d-grid"><button type="submit" name="action" value="create" class="btn btn-success">+</button></div>
-        </div>
-      </form>
-    </div>
-
-    {% if not user.is_authenticated %}
-      <div class="alert alert-warning text-center mt-5">
-        You can create a character as a guest, but saving or editing requires an account.
-        <a href="{% url 'signup_login' %}" class="alert-link">Sign up or Log in here</a>.
+  <main class="container my-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <h1 class="h3">Characters — Google Sheets CRUD</h1>
+      <div>
+        <button id="authorize_button" class="btn btn-outline-primary btn-sm">Authorize</button>
+        <button id="signout_button" class="btn btn-outline-secondary btn-sm">Sign out</button>
       </div>
-    {% endif %}
-  </div>
+    </div>
 
-  <!-- Footer -->
-  <footer id="footerSocials" class="mt-5">
-    <ul id="social-networks" class="socials list-unstyled d-flex gap-5 justify-content-center">
-      <li><a href="https://www.facebook.com/" target="_blank" rel="noopener"><i class="fa-brands fa-facebook"></i></a></li>
-      <li><a href="https://www.X.com/" target="_blank" rel="noopener"><i class="fa-brands fa-square-x-twitter"></i></a></li>
-      <li><a href="https://www.youtube.com/" target="_blank" rel="noopener"><i class="fa-brands fa-youtube-square"></i></a></li>
-      <li><a href="https://www.instagram.com/" target="_blank" rel="noopener"><i class="fa-brands fa-instagram"></i></a></li>
-    </ul>
-  </footer>
+    <p class="small-muted">This page connects to a Google Sheets spreadsheet client-side and allows editing rows directly from here.
+      Each box corresponds to a tab in your sheet. After authorizing with Google, click the load button for any box to fetch data.</p>
 
-  <script src="{% static 'js/main.js' %}"></script>
+    <div id="alerts"></div>
+
+    <!-- Eight boxes — one per sheet tab per your spreadsheet layout -->
+    <div id="sheets-container">
+      <!-- We'll dynamically inject boxes via JS, but provide initial placeholders -->
+    </div>
+  </main>
+
+  <!-- Google API client library -->
+  <script src="https://apis.google.com/js/api.js"></script>
+  <!-- Bootstrap JS for dropdowns etc -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="https://kit.fontawesome.com/f84e35c3bf.js" crossorigin="anonymous"></script>
+
+  <script>
+  const CLIENT_ID = '113008499398677582862';
+  const SPREADSHEET_ID = '14ProN3lR8p-t9j2P7b76JBOwEIrvntHqCVBee1q6bNk';
+
+  // Discovery docs and scopes for the Google Sheets API
+  const DISCOVERY_DOCS = ["https://sheets.googleapis.com/$discovery/rest?version=v4"];
+  const SCOPES = "https://www.googleapis.com/auth/spreadsheets";
+
+  let gapiInited = false;
+  let gisInited = false;
+
+  const sheetTabs = [
+    { index: 0, title: "Character Info (tab 1)" },
+    { index: 1, title: "Abilities (tab 2)" },
+    { index: 2, title: "Combat (tab 3)" },
+    { index: 3, title: "Skills & Saves (tab 4)" },
+    { index: 4, title: "Equipment (tab 5)" },
+    { index: 5, title: "Features & Traits (tab 6)" },
+    { index: 6, title: "Spells (tab 7)" },
+    { index: 7, title: "Notes & Personality (tab 8)" }
+  ];
+
+  // Client state
+  let gapiLoaded = false;
+  let isSignedIn = false;
+
+  // Utility: show alert messages in page
+  function showAlert(message, type='info', timeout=6000) {
+    const alerts = document.getElementById('alerts');
+    const id = 'al_' + Math.random().toString(36).slice(2,9);
+    const div = document.createElement('div');
+    div.id = id;
+    div.className = `alert alert-${type} alert-dismissible fade show`;
+    div.role = 'alert';
+    div.innerHTML = message + '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>';
+    alerts.appendChild(div);
+    if (timeout) setTimeout(()=>{ try { bootstrap.Alert.getOrCreateInstance(div).close(); } catch(e){} }, timeout);
+  }
+
+  // Initialize UI boxes
+  function initBoxes() {
+    const container = document.getElementById('sheets-container');
+    container.innerHTML = '';
+    sheetTabs.forEach((tab, i) => {
+      const box = document.createElement('div');
+      box.className = 'sheet-box';
+      box.id = `box-${i}`;
+
+      box.innerHTML = `
+        <div class="d-flex justify-content-between align-items-start mb-2">
+          <div>
+            <div class="sheet-title">${tab.title}</div>
+            <div class="small-muted">Tab index: ${tab.index} — client-side editable table</div>
+          </div>
+          <div class="text-end">
+            <button class="btn btn-sm btn-outline-primary me-1" onclick="loadSheet(${tab.index})">Load</button>
+            <button class="btn btn-sm btn-outline-success me-1" onclick="appendEmptyRow(${tab.index})">Add Row</button>
+            <button class="btn btn-sm btn-outline-secondary" onclick="refreshSheet(${tab.index})">Refresh</button>
+          </div>
+        </div>
+
+        <div class="table-responsive">
+          <table class="table table-sm table-bordered" id="table-${tab.index}">
+            <thead id="thead-${tab.index}"><tr><th>Loading...</th></tr></thead>
+            <tbody id="tbody-${tab.index}"></tbody>
+          </table>
+        </div>
+      `;
+      container.appendChild(box);
+    });
+  }
+
+  // Render functions
+  function renderSheet(tabIndex, dataRows) {
+    // dataRows: array of arrays (rows). First row is header.
+    const thead = document.getElementById(`thead-${tabIndex}`);
+    const tbody = document.getElementById(`tbody-${tabIndex}`);
+    thead.innerHTML = '';
+    tbody.innerHTML = '';
+
+    if (!dataRows || dataRows.length === 0) {
+      thead.innerHTML = '<tr><th>No data</th></tr>';
+      return;
+    }
+    const header = dataRows[0];
+    // build header
+    const htr = document.createElement('tr');
+    header.forEach((h) => {
+      const th = document.createElement('th');
+      th.textContent = h || '';
+      htr.appendChild(th);
+    });
+    // actions column
+    const actionTh = document.createElement('th');
+    actionTh.textContent = 'Actions';
+    htr.appendChild(actionTh);
+
+    thead.appendChild(htr);
+
+    // data rows
+    for (let r = 1; r < dataRows.length; r++) {
+      const row = dataRows[r];
+      const tr = document.createElement('tr');
+      tr.dataset.rowIndex = r; // 1-based relative to dataRows (since 0 is header)
+      // create editable cells
+      header.forEach((colName, cidx) => {
+        const td = document.createElement('td');
+        td.className = 'editable-cell';
+        // prefer value if exists else empty string
+        const val = (row && row[cidx] !== undefined) ? row[cidx] : '';
+        // use contenteditable for quick edits
+        td.contentEditable = "true";
+        td.innerText = val;
+        tr.appendChild(td);
+      });
+
+      // actions
+      const actionsTd = document.createElement('td');
+      actionsTd.className = 'row-actions';
+      actionsTd.innerHTML = `
+        <button class="btn btn-sm btn-primary me-1" onclick="updateRow(${tabIndex}, ${r})">Save</button>
+        <button class="btn btn-sm btn-danger" onclick="deleteRow(${tabIndex}, ${r})">Delete</button>
+      `;
+      tr.appendChild(actionsTd);
+      tbody.appendChild(tr);
+    }
+  }
+
+  // Google API: init & auth
+  function handleClientLoad() {
+    gapi.load('client:auth2', initClient);
+  }
+
+  async function initClient() {
+    try {
+      await gapi.client.init({
+        apiKey: API_KEY,
+        discoveryDocs: DISCOVERY_DOCS,
+      });
+      // gapi.auth2 is available; we will rely on gapi.auth2 for sign in
+      gapi.auth2.init({ client_id: CLIENT_ID, scope: SCOPES }).then(() => {
+        gapiLoaded = true;
+        const authInstance = gapi.auth2.getAuthInstance();
+        updateSigninStatus(authInstance.isSignedIn.get());
+        authInstance.isSignedIn.listen(updateSigninStatus);
+        document.getElementById('authorize_button').addEventListener('click', ()=>authInstance.signIn());
+        document.getElementById('signout_button').addEventListener('click', ()=>authInstance.signOut());
+        showAlert('Google API initialized. Click "Authorize" to connect.', 'success', 4000);
+      });
+    } catch (err) {
+      console.error('gapi.client.init error', err);
+      showAlert('Failed to initialize Google API: ' + err.message, 'danger', 10000);
+    }
+  }
+
+  function updateSigninStatus(signedIn) {
+    isSignedIn = signedIn;
+    document.getElementById('authorize_button').style.display = signedIn ? 'none' : 'inline-block';
+    document.getElementById('signout_button').style.display = signedIn ? 'inline-block' : 'none';
+    if (signedIn) showAlert('Signed in to Google. You can now load and edit sheets.', 'info', 4000);
+    else showAlert('Not signed in. Please authorize to enable CRUD operations.', 'warning', 4000);
+  }
+
+  // Load a sheet tab's values and render
+  async function loadSheet(tabIndex) {
+    if (!gapiLoaded || !isSignedIn) {
+      showAlert('You must be signed in to Google to load sheet data.', 'warning');
+      return;
+    }
+    try {
+      // We will read the sheet by index using the Sheets API: we request the spreadsheet metadata to get sheet name
+      const meta = await gapi.client.sheets.spreadsheets.get({
+        spreadsheetId: SPREADSHEET_ID,
+        fields: 'sheets(properties(title,index))'
+      });
+      const sheets = meta.result.sheets;
+      const sheet = sheets.find(s => s.properties.index === tabIndex);
+      if (!sheet) {
+        showAlert('No sheet tab found at index ' + tabIndex, 'danger');
+        return;
+      }
+      const title = sheet.properties.title;
+      // fetch values (entire sheet)
+      const resp = await gapi.client.sheets.spreadsheets.values.get({
+        spreadsheetId: SPREADSHEET_ID,
+        range: `'${title}'`
+      });
+
+      const values = resp.result.values || [];
+      // Render into table
+      renderSheet(tabIndex, values);
+      showAlert(`Loaded "${title}" (${values.length} rows).`, 'success', 3000);
+    } catch (err) {
+      console.error(err);
+      showAlert('Error loading sheet: ' + (err.result?.error?.message || err.message), 'danger', 10000);
+    }
+  }
+
+  // Refresh: alias to load
+  function refreshSheet(tabIndex) { loadSheet(tabIndex); }
+
+  // Append empty row (create)
+  async function appendEmptyRow(tabIndex) {
+    if (!gapiLoaded || !isSignedIn) return showAlert('Sign in required', 'warning');
+    try {
+      const meta = await gapi.client.sheets.spreadsheets.get({
+        spreadsheetId: SPREADSHEET_ID,
+        fields: 'sheets(properties(title,index))'
+      });
+      const sheet = meta.result.sheets.find(s => s.properties.index === tabIndex);
+      if (!sheet) return showAlert('No sheet found', 'danger');
+      const title = sheet.properties.title;
+
+      // Get headers to determine number of columns. If none, create a single column entry "value".
+      const hdrResp = await gapi.client.sheets.spreadsheets.values.get({
+        spreadsheetId: SPREADSHEET_ID,
+        range: `'${title}'!1:1`
+      });
+      const headers = (hdrResp.result.values && hdrResp.result.values[0]) || ['value'];
+      const emptyRow = headers.map(_ => '');
+
+      // Append
+      await gapi.client.sheets.spreadsheets.values.append({
+        spreadsheetId: SPREADSHEET_ID,
+        range: `'${title}'`,
+        valueInputOption: 'USER_ENTERED',
+        resource: { values: [emptyRow] }
+      });
+      showAlert('Row appended. Refreshing...', 'success', 1500);
+      setTimeout(()=> loadSheet(tabIndex), 800);
+    } catch (err) {
+      console.error(err);
+      showAlert('Append failed: ' + (err.result?.error?.message || err.message), 'danger', 8000);
+    }
+  }
+
+  // Update a row: read the edited row from DOM and push into sheet using A1-range where possible.
+  async function updateRow(tabIndex, relativeRowIndex) {
+    // relativeRowIndex: integer index in values array where 1 is first data row (header is row 0)
+    if (!gapiLoaded || !isSignedIn) return showAlert('Sign in required', 'warning');
+    try {
+      // get sheet meta to find the sheet name
+      const meta = await gapi.client.sheets.spreadsheets.get({
+        spreadsheetId: SPREADSHEET_ID,
+        fields: 'sheets(properties(title,index,gridProperties))'
+      });
+      const sheet = meta.result.sheets.find(s => s.properties.index === tabIndex);
+      if (!sheet) return showAlert('No sheet found', 'danger');
+      const title = sheet.properties.title;
+
+      // fetch header to determine column count
+      const hdrResp = await gapi.client.sheets.spreadsheets.values.get({
+        spreadsheetId: SPREADSHEET_ID,
+        range: `'${title}'!1:1`
+      });
+      const headers = (hdrResp.result.values && hdrResp.result.values[0]) || ['value'];
+      const colCount = headers.length;
+
+      // Build the row values from DOM cells
+      const tbody = document.getElementById(`tbody-${tabIndex}`);
+      const tr = tbody.querySelector(`tr[data-row-index='${relativeRowIndex}']`);
+      if (!tr) return showAlert('Edited row not found in the table', 'danger');
+
+      const cells = Array.from(tr.querySelectorAll('td.editable-cell'));
+      // if columns mismatch, pad with '' to colCount
+      const values = cells.map(td => td.innerText.trim());
+      while (values.length < colCount) values.push('');
+
+      // We need to compute the A1 range for the specific row number in sheet:
+      // get total number of header rows before the data: header is row 1.
+      // So spreadsheet row number = 1 (header) + relativeRowIndex
+      const sheetRowNumber = 1 + relativeRowIndex;
+      // columns A.. convert column count to letter range
+      const lastColLetter = columnToLetter(values.length);
+      const range = `'${title}'!A${sheetRowNumber}:${lastColLetter}${sheetRowNumber}`;
+
+      // update
+      await gapi.client.sheets.spreadsheets.values.update({
+        spreadsheetId: SPREADSHEET_ID,
+        range: range,
+        valueInputOption: 'USER_ENTERED',
+        resource: { values: [values] }
+      });
+
+      showAlert('Row updated.', 'success', 2500);
+      // refresh to ensure server-side formulas, formatting, etc. are reloaded
+      setTimeout(()=> loadSheet(tabIndex), 500);
+    } catch (err) {
+      console.error(err);
+      showAlert('Update failed: ' + (err.result?.error?.message || err.message), 'danger', 8000);
+    }
+  }
+
+  // Delete a row — we will delete the row via batchUpdate deleteDimension
+  async function deleteRow(tabIndex, relativeRowIndex) {
+    if (!gapiLoaded || !isSignedIn) return showAlert('Sign in required', 'warning');
+    if (!confirm("Delete this row from the sheet? This action is permanent.")) return;
+    try {
+      const meta = await gapi.client.sheets.spreadsheets.get({
+        spreadsheetId: SPREADSHEET_ID,
+        fields: 'sheets(properties(title,sheetId,index))'
+      });
+      const sheet = meta.result.sheets.find(s => s.properties.index === tabIndex);
+      if (!sheet) return showAlert('No sheet found', 'danger');
+      const sheetId = sheet.properties.sheetId;
+      // compute zero-indexed row to delete: header row is 0; data rows start at 1
+      const sheetRowToDeleteZeroIndexed = relativeRowIndex; // because relativeRowIndex = 1..n corresponds to index 1
+      // Use batchUpdate to delete the row
+      await gapi.client.sheets.spreadsheets.batchUpdate({
+        spreadsheetId: SPREADSHEET_ID,
+        resource: {
+          requests: [
+            {
+              deleteDimension: {
+                range: {
+                  sheetId: sheetId,
+                  dimension: "ROWS",
+                  startIndex: sheetRowToDeleteZeroIndexed,
+                  endIndex: sheetRowToDeleteZeroIndexed + 1
+                }
+              }
+            }
+          ]
+        }
+      });
+      showAlert('Row deleted. Refreshing...', 'success', 1500);
+      setTimeout(()=> loadSheet(tabIndex), 700);
+    } catch (err) {
+      console.error(err);
+      showAlert('Delete failed: ' + (err.result?.error?.message || err.message), 'danger', 8000);
+    }
+  }
+
+  // Helpers
+  function columnToLetter(colNum) {
+    // colNum is 1-based count of columns
+    let letter = '', temp;
+    while (colNum > 0) {
+      temp = (colNum - 1) % 26;
+      letter = String.fromCharCode(temp + 65) + letter;
+      colNum = Math.floor((colNum - temp - 1) / 26);
+    }
+    return letter;
+  }
+
+  // On page load
+  window.addEventListener('load', () => {
+    initBoxes();
+    handleClientLoad();
+
+    // Hide signout initially
+    document.getElementById('signout_button').style.display = 'none';
+  });
+
+  </script>
 </body>
 </html>
