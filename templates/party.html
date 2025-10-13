@@ -1,91 +1,94 @@
-{% extends 'base.html' %}
 {% load static %}
-{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Your Party | BattleRoster</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body class="bg-dark text-light">
 
-<div class="container mt-4">
-  <h2 class="mb-3">Party Management</h2>
-
-  {% if guest_mode %}
-  <div class="alert alert-warning" role="alert">
-    <strong>Guest Mode:</strong> You can view parties, but to create or manage them, please
-    <a href="{% url 'signup_login' %}" class="alert-link">log in or sign up</a>.
-  </div>
-  {% endif %}
-
-  <!-- Party Display -->
-  {% if parties %}
-  <div class="row">
-    {% for party in parties %}
-    <div class="col-md-6 mb-4">
-      <div class="card h-100">
-        <div class="card-header bg-dark text-light">
-          <strong>{{ party.name }}</strong>
-          <span class="text-muted d-block small">Campaign: {{ party.campaign_name }}</span>
-        </div>
-        <div class="card-body">
-          <h6>Members:</h6>
-          <ul class="list-group mb-3">
-            {% for member in party.members.all %}
-            <li class="list-group-item d-flex justify-content-between align-items-center">
-              {{ member.username }}
-              {% if not guest_mode and user.role == 'dungeon_master' %}
-              <form method="POST" class="m-0">
-                {% csrf_token %}
-                <input type="hidden" name="party_id" value="{{ party.id }}">
-                <input type="hidden" name="username" value="{{ member.username }}">
-                <input type="hidden" name="action" value="remove">
-                <button type="submit" class="btn btn-sm btn-outline-danger">Remove</button>
-              </form>
-              {% endif %}
-            </li>
-            {% endfor %}
-          </ul>
-
-          {% if not guest_mode and user.role == 'dungeon_master' %}
-          <form method="POST" class="d-flex gap-2">
-            {% csrf_token %}
-            <input type="hidden" name="party_id" value="{{ party.id }}">
-            <input type="hidden" name="action" value="add">
-            <input type="text" name="username" class="form-control" placeholder="Add member by username" required>
-            <button type="submit" class="btn btn-primary">Add</button>
-          </form>
-          {% elif guest_mode %}
-          <p class="text-muted small">Login to manage party members.</p>
+  <!-- NAVBAR (same as homepage) -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-secondary py-3 shadow-sm">
+    <div class="container-fluid">
+      <a class="navbar-brand text-gold fw-bold fs-4" href="{% url 'home' %}">
+        <i class="fa-solid fa-dragon me-2"></i>BattleRoster
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu" aria-controls="navMenu" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse justify-content-end" id="navMenu">
+        <ul class="navbar-nav align-items-lg-center gap-2">
+          <li class="nav-item"><a class="nav-link" href="{% url 'characters' %}"><i class="fa-solid fa-user text-gold me-1"></i>Characters</a></li>
+          <li class="nav-item"><a class="nav-link" href="{% url 'party' %}"><i class="fa-solid fa-users text-gold me-1"></i>Party</a></li>
+          <li class="nav-item"><a class="nav-link" href="{% url 'contact' %}"><i class="fa-solid fa-scroll text-gold me-1"></i>Contact</a></li>
+          {% if user.is_authenticated %}
+            <li class="nav-item"><a class="nav-link" href="{% url 'logout' %}"><i class="fa-solid fa-right-from-bracket text-gold me-1"></i>Logout</a></li>
+          {% else %}
+            <li class="nav-item"><a class="nav-link" href="{% url 'signup_login' %}"><i class="fa-solid fa-user-shield text-gold me-1"></i>Sign Up / Log In</a></li>
           {% endif %}
-        </div>
+        </ul>
       </div>
     </div>
-    {% endfor %}
-  </div>
-  {% else %}
-  <p class="text-muted">No parties found.</p>
-  {% endif %}
+  </nav>
 
-  <!-- Create New Party (for DMs) -->
-  {% if not guest_mode and user.role == 'dungeon_master' %}
-  <div class="card mt-4">
-    <div class="card-header bg-primary text-white">
-      <strong>Create a New Party</strong>
-    </div>
-    <div class="card-body">
-      <form method="POST">
-        {% csrf_token %}
-        <input type="hidden" name="action" value="create_party">
-        <div class="row g-3">
-          <div class="col-md-5">
-            <input type="text" name="name" class="form-control" placeholder="Party Name" required>
-          </div>
-          <div class="col-md-5">
-            <input type="text" name="campaign_name" class="form-control" placeholder="Campaign Name" required>
-          </div>
-          <div class="col-md-2">
-            <button type="submit" class="btn btn-success w-100">Create</button>
-          </div>
+  <!-- HERO HEADER -->
+  <header class="text-center py-5 bg-dark border-bottom border-gold">
+    <h1 class="display-4 text-gold fw-bold">Your Party</h1>
+    <p class="lead text-muted">View and manage the adventurers who fight beside you.</p>
+  </header>
+
+  <!-- MAIN CONTENT -->
+  <main class="container py-5">
+    {% if messages %}
+      {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+          {{ message }}
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
-      </form>
-    </div>
-  </div>
-  {% endif %}
-</div>
+      {% endfor %}
+    {% endif %}
 
-{% endblock %}
+    {% if party %}
+      <div class="table-responsive">
+        <table class="table table-dark table-striped table-bordered align-middle text-center">
+          <thead class="table-gold">
+            <tr>
+              <th>Name</th>
+              <th>Class</th>
+              <th>Level</th>
+              <th>Health</th>
+              <th>Mana</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for member in party %}
+              <tr>
+                <td class="text-gold fw-semibold">{{ member.name }}</td>
+                <td>{{ member.character_class }}</td>
+                <td>{{ member.level }}</td>
+                <td>{{ member.health }}</td>
+                <td>{{ member.mana }}</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    {% else %}
+      <div class="alert alert-warning text-center">
+        You haven’t added any adventurers to your party yet!
+      </div>
+    {% endif %}
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="bg-secondary text-center text-light py-4 mt-5 border-top border-gold">
+    <p class="mb-1 text-gold fw-bold">BattleRoster © 2025</p>
+    <p class="small text-muted mb-0">For DMs and heroes alike — unite your team and prepare for your campaign.</p>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
