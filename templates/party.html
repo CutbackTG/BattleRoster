@@ -1,92 +1,156 @@
 {% load static %}
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en-US">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Your Party | BattleRoster</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="{% static 'css/style.css' %}">
+  <style>
+    body {
+      background-color: #1a1a1a;
+      color: #fff;
+      font-family: "Poppins", sans-serif;
+    }
+    .navbar {
+      background-color: rgba(69, 64, 61, 0.9);
+    }
+    .nav-link {
+      color: #f5deb3 !important;
+    }
+    .nav-link:hover {
+      color: #ffd700 !important;
+    }
+    footer {
+      background-color: rgba(69, 64, 61, 0.9);
+      color: #dcdcdc;
+      padding: 20px 0;
+      text-align: center;
+    }
+    .bg-panel {
+      background-color: rgba(255, 255, 255, 0.05);
+      border-radius: 10px;
+      padding: 20px;
+      margin-top: 30px;
+    }
+    .btn-primary {
+      background-color: #c19a6b;
+      border-color: #c19a6b;
+    }
+    .btn-primary:hover {
+      background-color: #a67c52;
+      border-color: #a67c52;
+    }
+    table {
+      color: #fff;
+    }
+  </style>
 </head>
-<body class="bg-dark text-light">
+<body>
 
-  <!-- NAVBAR (same as homepage) -->
-  <nav class="navbar navbar-expand-lg navbar-dark bg-secondary py-3 shadow-sm">
-    <div class="container-fluid">
-      <a class="navbar-brand text-gold fw-bold fs-4" href="{% url 'home' %}">
-        <i class="fa-solid fa-dragon me-2"></i>BattleRoster
-      </a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu" aria-controls="navMenu" aria-expanded="false" aria-label="Toggle navigation">
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-dark sticky-top shadow-sm">
+    <div class="container">
+      <a class="navbar-brand fw-bold text-gold" href="{% url 'home' %}">⚔️ BattleRoster</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
         <span class="navbar-toggler-icon"></span>
       </button>
-      <div class="collapse navbar-collapse justify-content-end" id="navMenu">
-        <ul class="navbar-nav align-items-lg-center gap-2">
-          <li class="nav-item"><a class="nav-link" href="{% url 'characters' %}"><i class="fa-solid fa-user text-gold me-1"></i>Characters</a></li>
-          <li class="nav-item"><a class="nav-link" href="{% url 'party' %}"><i class="fa-solid fa-users text-gold me-1"></i>Party</a></li>
-          <li class="nav-item"><a class="nav-link" href="{% url 'contact' %}"><i class="fa-solid fa-scroll text-gold me-1"></i>Contact</a></li>
+
+      <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+        <ul class="navbar-nav">
+          <li class="nav-item"><a class="nav-link" href="{% url 'characters' %}">Characters</a></li>
+          <li class="nav-item"><a class="nav-link active" href="{% url 'party' %}">Party</a></li>
+          <li class="nav-item"><a class="nav-link" href="{% url 'contact' %}">Contact</a></li>
           {% if user.is_authenticated %}
-            <li class="nav-item"><a class="nav-link" href="{% url 'logout' %}"><i class="fa-solid fa-right-from-bracket text-gold me-1"></i>Logout</a></li>
+            <li class="nav-item"><a class="nav-link" href="{% url 'logout' %}">Logout</a></li>
           {% else %}
-            <li class="nav-item"><a class="nav-link" href="{% url 'signup_login' %}"><i class="fa-solid fa-user-shield text-gold me-1"></i>Sign Up / Log In</a></li>
+            <li class="nav-item"><a class="nav-link" href="{% url 'signup_login' %}">Sign Up / Log In</a></li>
           {% endif %}
         </ul>
       </div>
     </div>
   </nav>
 
-  <!-- HERO HEADER -->
-  <header class="text-center py-5 bg-dark border-bottom border-gold">
-    <h1 class="display-4 text-gold fw-bold">Your Party</h1>
-    <p class="lead text-muted">View and manage the adventurers who fight beside you.</p>
-  </header>
+  <!-- Main Content -->
+  <div class="container my-5">
+    <h1 class="text-center text-warning mb-4">Your Party</h1>
 
-  <!-- MAIN CONTENT -->
-  <main class="container py-5">
+    <!-- Django Messages -->
     {% if messages %}
       {% for message in messages %}
         <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
           {{ message }}
-          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+          <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         </div>
       {% endfor %}
     {% endif %}
 
-    {% if party %}
-      <div class="table-responsive">
-        <table class="table table-dark table-striped table-bordered align-middle text-center">
-          <thead class="table-gold">
+    <!-- Party List -->
+    <div class="bg-panel shadow-sm">
+      {% if parties %}
+        <table class="table table-dark table-hover align-middle">
+          <thead>
             <tr>
-              <th>Name</th>
-              <th>Class</th>
-              <th>Level</th>
-              <th>Health</th>
-              <th>Mana</th>
+              <th>Party Name</th>
+              <th>Dungeon Master</th>
+              <th>Members</th>
+              {% if not guest_mode %}
+              <th>Actions</th>
+              {% endif %}
             </tr>
           </thead>
           <tbody>
-            {% for member in party %}
-              <tr>
-                <td class="text-gold fw-semibold">{{ member.name }}</td>
-                <td>{{ member.character_class }}</td>
-                <td>{{ member.level }}</td>
-                <td>{{ member.health }}</td>
-                <td>{{ member.mana }}</td>
-              </tr>
+            {% for p in parties %}
+            <tr>
+              <td>{{ p.name }}</td>
+              <td>{{ p.dungeon_master.username }}</td>
+              <td>
+                {% if p.members.all %}
+                  {% for member in p.members.all %}
+                    {{ member.username }}{% if not forloop.last %}, {% endif %}
+                  {% endfor %}
+                {% else %}
+                  <span class="text-muted">No members</span>
+                {% endif %}
+              </td>
+
+              {% if not guest_mode %}
+              <td>
+                {% if user == p.dungeon_master %}
+                  <form method="POST" action="{% url 'party' %}">
+                    {% csrf_token %}
+                    <input type="hidden" name="party_id" value="{{ p.id }}">
+                    <div class="input-group">
+                      <input type="text" name="username" class="form-control form-control-sm" placeholder="Username">
+                      <button name="action" value="add" class="btn btn-success btn-sm">Add</button>
+                      <button name="action" value="remove" class="btn btn-danger btn-sm">Remove</button>
+                    </div>
+                  </form>
+                {% else %}
+                  <span class="text-muted">Members only</span>
+                {% endif %}
+              </td>
+              {% endif %}
+            </tr>
             {% endfor %}
           </tbody>
         </table>
-      </div>
-    {% else %}
-      <div class="alert alert-warning text-center">
-        You haven’t added any adventurers to your party yet!
+      {% else %}
+        <p class="text-center text-secondary mt-4">No parties found.</p>
+      {% endif %}
+    </div>
+
+    {% if guest_mode %}
+      <div class="alert alert-warning mt-4 text-center">
+        You are in guest mode. <a href="{% url 'signup_login' %}" class="alert-link">Log in</a> to manage or join parties.
       </div>
     {% endif %}
-  </main>
+  </div>
 
-  <!-- FOOTER -->
-  <footer class="bg-secondary text-center text-light py-4 mt-5 border-top border-gold">
-    <p class="mb-1 text-gold fw-bold">BattleRoster © 2025</p>
-    <p class="small text-muted mb-0">For DMs and heroes alike — unite your team and prepare for your campaign.</p>
+  <!-- Footer -->
+  <footer>
+    <p class="mb-0">&copy; {{ now.year }} BattleRoster. All Rights Reserved.</p>
   </footer>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
