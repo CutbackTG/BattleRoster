@@ -1,29 +1,22 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth.decorators import login_required
-from django.contrib.auth.models import User
 from django.contrib import messages
-from .models import Party, Character
-from .google_sheets import get_gsheet
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth import get_user_model
+from .models import Character, Party
+
+User = get_user_model()
 
 
 def home_view(request):
     """Landing page view."""
-    return render(request, 'index.html')
+    return render(request, "index.html")
 
 
+@login_required
 def characters_view(request):
-    """
-    Display the user's characters.
-    Allow logged-in users to add characters directly from this page.
-    """
+    """Display user's characters and allow creation."""
     user = request.user
-    guest_mode = not user.is_authenticated
-
-    # Guests see no saved characters
-    if guest_mode:
-        characters = []
-    else:
-        characters = Character.objects.filter(player=user)
+    characters = Character.objects.filter(player=user)
 
     if request.method == "POST":
         name = request.POST.get("name")
@@ -31,72 +24,43 @@ def characters_view(request):
         health = request.POST.get("health")
         mana = request.POST.get("mana")
 
-        # Validation
         if not all([name, level, health, mana]):
             messages.error(request, "All fields are required.")
-            return redirect("characters")
-
-        if guest_mode:
-            messages.warning(request, "Please log in to save characters.")
-            return redirect("signup_login")
-
-        # Create the new character
-        Character.objects.create(
-            name=name,
-            level=level,
-            health=health,
-            mana=mana,
-            player=user
-        )
-        messages.success(request, f"Character '{name}' created successfully!")
+        else:
+            Character.objects.create(
+                name=name,
+                level=level,
+                health=health,
+                mana=mana,
+                player=user,
+            )
+            messages.success(request, f"Character '{name}' created successfully!")
         return redirect("characters")
 
-    return render(request, "characters.html", {
-        "characters": characters,
-        "guest_mode": guest_mode,
-    })
+    return render(request, "characters.html", {"characters": characters})
 
 
 @login_required
-def update_character(request, row_number):
-    """Update a character’s details."""
-    sheet = get_gsheet("Characters")
-
-    if request.method == "POST":
-        name = request.POST.get("name")
-        level = request.POST.get("level")
-        health = request.POST.get("health")
-        mana = request.POST.get("mana")
-
-        sheet.update(f"A{row_number}:D{row_number}", [[name, level, health, mana]])
-        messages.success(request, "Character updated successfully.")
-        return redirect("characters")
-
-
-@login_required
-def delete_character(request, row_number):
-    """Delete a character by its row number in the Google Sheet."""
-    sheet = get_gsheet("Characters")
-    sheet.delete_rows(row_number)
-    messages.success(request, "Character deleted.")
+def delete_character(request, character_id):
+    """Delete a user's character."""
+    character = get_object_or_404(Character, id=character_id, player=request.user)
+    character.delete()
+    messages.success(request, f"Character '{character.name}' deleted.")
     return redirect("characters")
 
 
+@login_required
 def party_view(request):
-    """Display parties depending on the user’s role."""
+    """Display parties and allow DMs to add/remove members."""
     user = request.user
-    guest_mode = not user.is_authenticated
 
-    if guest_mode:
-        messages.info(request, "Login to manage or join parties.")
-        parties = Party.objects.all()[:3]
+    if user.role == "dungeon_master":
+        parties = Party.objects.filter(dungeon_master=user)
     else:
-        if hasattr(user, "role") and user.role == "dungeon_master":
-            parties = Party.objects.filter(dungeon_master=user)
-        else:
-            parties = Party.objects.filter(members=user)
+        parties = Party.objects.filter(members=user)
 
-    if request.method == "POST" and not guest_mode:
+    # Handle adding/removing members (DM only)
+    if request.method == "POST" and user.role == "dungeon_master":
         action = request.POST.get("action")
         party_id = request.POST.get("party_id")
         username = request.POST.get("username")
@@ -121,10 +85,7 @@ def party_view(request):
             messages.info(request, f"{username} removed from {party.name}.")
         return redirect("party")
 
-    return render(request, "party.html", {
-        "parties": parties,
-        "guest_mode": guest_mode,
-    })
+    return render(request, "party.html", {"parties": parties})
 
 
 def contact_view(request):
