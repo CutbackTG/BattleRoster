@@ -1,7 +1,6 @@
 from django.db import models
 from django.conf import settings
 
-
 class Character(models.Model):
     """A D&D-style character associated with a user or anonymous player."""
     name = models.CharField(max_length=100)

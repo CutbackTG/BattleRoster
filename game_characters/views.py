@@ -1,108 +1,91 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from django.contrib.auth import get_user_model
-from .models import Character, Party
-User = get_user_model()
+from .models import Character
 
+def index_view(request):
+    """Render the homepage."""
+    return render(request, "index.html")
 
-
-def home_view(request):
-    """Landing page view."""
-    return render(request, 'index.html')
-
-
+@login_required
 def characters_view(request):
-    """Character creation and list view."""
-    user = request.user
-    guest_mode = not user.is_authenticated
+    """Display user's characters and handle creation."""
+    characters = Character.objects.filter(player=request.user).order_by('name')
 
     if request.method == "POST":
+        # Create new character
         name = request.POST.get("name")
-        level = request.POST.get("level", 1)
+        level = request.POST.get("level") or 1
         race = request.POST.get("race")
         class_type = request.POST.get("class_type")
-        strength = request.POST.get("strength", 10)
-        dexterity = request.POST.get("dexterity", 10)
-        constitution = request.POST.get("constitution", 10)
-        intelligence = request.POST.get("intelligence", 10)
-        wisdom = request.POST.get("wisdom", 10)
-        charisma = request.POST.get("charisma", 10)
-        equipment = request.POST.get("equipment")
-        weapons = request.POST.get("weapons")
-        spells = request.POST.get("spells")
+        health = request.POST.get("health") or 100
+        mana = request.POST.get("mana") or 50
+        strength = request.POST.get("strength") or 10
+        dexterity = request.POST.get("dexterity") or 10
+        constitution = request.POST.get("constitution") or 10
+        intelligence = request.POST.get("intelligence") or 10
+        wisdom = request.POST.get("wisdom") or 10
+        charisma = request.POST.get("charisma") or 10
+        equipment = request.POST.get("equipment", "")
+        weapons = request.POST.get("weapons", "")
+        spells = request.POST.get("spells", "")
 
-        if not name:
-            messages.error(request, "Character name is required.")
-        else:
-            if guest_mode:
-                messages.info(request, "Guest character created (not saved).")
-            else:
-                Character.objects.create(
-                    name=name,
-                    level=level,
-                    race=race,
-                    class_type=class_type,
-                    strength=strength,
-                    dexterity=dexterity,
-                    constitution=constitution,
-                    intelligence=intelligence,
-                    wisdom=wisdom,
-                    charisma=charisma,
-                    equipment=equipment,
-                    weapons=weapons,
-                    spells=spells,
-                    player=user
-                )
-                messages.success(request, f"Character '{name}' created successfully!")
-
+        Character.objects.create(
+            player=request.user,
+            name=name,
+            level=level,
+            race=race,
+            class_type=class_type,
+            health=health,
+            mana=mana,
+            strength=strength,
+            dexterity=dexterity,
+            constitution=constitution,
+            intelligence=intelligence,
+            wisdom=wisdom,
+            charisma=charisma,
+            equipment=equipment,
+            weapons=weapons,
+            spells=spells,
+        )
+        messages.success(request, f"Character '{name}' created successfully!")
         return redirect("characters")
 
-    characters = Character.objects.filter(player=user) if user.is_authenticated else []
-    return render(request, "characters.html", {"characters": characters, "guest_mode": guest_mode})
+    return render(request, "characters.html", {"characters": characters})
+    
+
+@login_required
+def character_update(request, pk):
+    """Edit an existing character."""
+    character = get_object_or_404(Character, pk=pk, player=request.user)
+
+    if request.method == "POST":
+        character.name = request.POST.get("name")
+        character.level = request.POST.get("level") or 1
+        character.race = request.POST.get("race")
+        character.class_type = request.POST.get("class_type")
+        character.health = request.POST.get("health") or 100
+        character.mana = request.POST.get("mana") or 50
+        character.strength = request.POST.get("strength") or 10
+        character.dexterity = request.POST.get("dexterity") or 10
+        character.constitution = request.POST.get("constitution") or 10
+        character.intelligence = request.POST.get("intelligence") or 10
+        character.wisdom = request.POST.get("wisdom") or 10
+        character.charisma = request.POST.get("charisma") or 10
+        character.equipment = request.POST.get("equipment", "")
+        character.weapons = request.POST.get("weapons", "")
+        character.spells = request.POST.get("spells", "")
+        character.save()
+        messages.success(request, f"Character '{character.name}' updated successfully!")
+        return redirect("characters")
+
+    return render(request, "character_edit.html", {"character": character})
 
 
-def party_view(request):
-    """Display the user's party info or show guest preview."""
-    user = request.user
-    guest_mode = not user.is_authenticated
-
-    if guest_mode:
-        messages.info(request, "Login to manage or join parties.")
-        parties = Party.objects.all()[:3]
-    else:
-        if hasattr(user, "role") and user.role == "dungeon_master":
-            parties = Party.objects.filter(dungeon_master=user)
-        else:
-            parties = Party.objects.filter(members=user)
-
-    if request.method == "POST" and not guest_mode:
-        action = request.POST.get("action")
-        party_id = request.POST.get("party_id")
-        username = request.POST.get("username")
-
-        try:
-            party = Party.objects.get(id=party_id, dungeon_master=user)
-        except Party.DoesNotExist:
-            messages.error(request, "Party not found or permission denied.")
-            return redirect("party")
-
-        try:
-            target_user = User.objects.get(username=username)
-        except User.DoesNotExist:
-            messages.error(request, f"User '{username}' does not exist.")
-            return redirect("party")
-
-        if action == "add":
-            party.members.add(target_user)
-            messages.success(request, f"{username} added to {party.name}.")
-        elif action == "remove":
-            party.members.remove(target_user)
-            messages.info(request, f"{username} removed from {party.name}.")
-        return redirect("party")
-
-    return render(request, "party.html", {"parties": parties, "guest_mode": guest_mode})
-
-
-def contact_view(request):
-    """Render the contact page."""
-    return render(request, "contact.html")
+@login_required
+def character_delete(request, pk):
+    """Delete a character."""
+    character = get_object_or_404(Character, pk=pk, player=request.user)
+    character.delete()
+    messages.success(request, f"Character '{character.name}' deleted successfully!")
+    return redirect("characters")
