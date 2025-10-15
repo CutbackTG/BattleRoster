@@ -3,6 +3,8 @@ from django.contrib.auth import authenticate, login, logout, get_user_model
 from django.contrib import messages
 from django.db import IntegrityError
 from game_characters.models import Character
+
+# Always reference the custom user model dynamically
 User = get_user_model()
 
 
@@ -14,7 +16,7 @@ def signup_login_view(request):
 
     if request.method == "POST":
         action = request.POST.get("action")
-        request.session['active_tab'] = action  # remember which tab was used
+        request.session["active_tab"] = action  # remember which tab was used
 
         # -------------------- SIGNUP --------------------
         if action == "signup":
@@ -35,21 +37,22 @@ def signup_login_view(request):
                 messages.error(request, "Password must be at least 12 characters long.")
                 return redirect("signup_login")
 
-            if not any(char.isdigit() for char in password1) or not any(char.isalpha() for char in password1):
+            if not any(c.isdigit() for c in password1) or not any(c.isalpha() for c in password1):
                 messages.error(request, "Password must contain both letters and numbers.")
                 return redirect("signup_login")
 
             try:
-                # ✅ Use custom user model
+                # Use the dynamically loaded User model
                 user = User.objects.create_user(username=username, password=password1)
                 user.save()
                 login(request, user)
 
-                # Clear tab memory after success
-                request.session.pop('active_tab', None)
+                # Clear tab memory
+                request.session.pop("active_tab", None)
 
                 messages.success(request, "Account created successfully! You are now logged in.")
                 return redirect("characters")
+
             except IntegrityError:
                 messages.error(request, "That username is already taken.")
                 return redirect("signup_login")
@@ -73,11 +76,15 @@ def signup_login_view(request):
                         mana=temp["mana"],
                         player=user,
                     )
-                    messages.success(request, f"Your character '{temp['name']}' has been saved to your account!")
+                    messages.success(
+                        request,
+                        f"Your character '{temp['name']}' has been saved to your account!",
+                    )
 
-                request.session.pop('active_tab', None)
+                request.session.pop("active_tab", None)
                 messages.success(request, f"Welcome back, {username}!")
                 return redirect("characters")
+
             else:
                 messages.error(request, "Invalid username or password.")
                 return redirect("signup_login")
