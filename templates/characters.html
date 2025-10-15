@@ -12,18 +12,34 @@
 
 <body>
   <!-- Navbar -->
-  {% include 'navbar.html' %}
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container">
+      <!-- Logo -->
+      <a class="navbar-brand" href="{% url 'home' %}">
+        <img class="home" src="{% static 'images/battleroster-logo.png' %}" alt="BattleRoster Logo" id="battleroster-logo">
+      </a>
 
-  <div class="container mt-5">
-    <h1 class="mb-4 text-center">Character Creator</h1>
+      <!-- Hamburger button -->
+      <button class="navbar-toggler ms-auto custom-toggler" type="button" data-bs-toggle="collapse"
+        data-bs-target="#navMenu" aria-controls="navMenu" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
 
-    {% if messages %}
-    <div class="mb-4">
-      {% for message in messages %}
-      <div class="alert alert-{{ message.tags }}">{{ message }}</div>
-      {% endfor %}
+      <!-- Navbar items -->
+      <div class="collapse navbar-collapse justify-content-end" id="navMenu">
+        <ul class="navbar-nav flex-column align-items-start">
+          <li class="nav-item"><a class="nav-link" href="{% url 'characters' %}"><i class="fa-solid fa-user me-2 text-gold"></i>Characters</a></li>
+          <li class="nav-item"><a class="nav-link" href="{% url 'party' %}"><i class="fa-solid fa-users me-2 text-gold"></i>Party</a></li>
+          {% if user.is_authenticated %}
+          <li class="nav-item"><a class="nav-link" href="{% url 'logout' %}"><i class="fa-solid fa-right-from-bracket me-2 text-gold"></i>Log out</a></li>
+          {% else %}
+          <li class="nav-item"><a class="nav-link" href="{% url 'signup_login' %}"><i class="fa-solid fa-save me-2 text-gold"></i>Sign-up / Log-in</a></li>
+          {% endif %}
+          <li class="nav-item"><a class="nav-link" href="{% url 'contact' %}"><i class="fa-solid fa-scroll me-2 text-gold"></i>Contact</a></li>
+        </ul>
+      </div>
     </div>
-    {% endif %}
+  </nav>
 
     <div class="row">
       <!-- Left Vertical Tabs -->
