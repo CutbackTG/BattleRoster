@@ -1,86 +1,93 @@
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import render, redirect
+from django.contrib import messages
+from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from .models import Character, Party
-from django.contrib.auth import get_user_model
 
-User = get_user_model()
 
-# ------------------------------
-# HOME PAGE
-# ------------------------------
-def index(request):
-    """Homepage view."""
+def home_view(request):
+    """Landing page view."""
     return render(request, "index.html")
 
 
-# ------------------------------
-# CHARACTER PAGE
-# ------------------------------
 def characters_view(request):
     """
-    View for creating and viewing characters.
-    Anonymous users can still create characters,
-    but characters won’t be tied to a registered user.
+    Displays the character list and handles both guest and user character creation.
+    Guests’ characters are session-based (temporary).
     """
-    characters = None
 
-    if request.user.is_authenticated:
-        characters = Character.objects.filter(player=request.user)
+    user = request.user
+    guest_mode = not user.is_authenticated
+
+    # Get characters for authenticated users
+    if not guest_mode:
+        characters = Character.objects.filter(player=user)
     else:
-        characters = Character.objects.none()  # No saved characters for anonymous users
+        # Retrieve temporary guest characters from session
+        characters = request.session.get("guest_characters", [])
 
     if request.method == "POST":
-        name = request.POST.get("name")
-        level = request.POST.get("level", 1)
-        health = request.POST.get("health", 100)
-        mana = request.POST.get("mana", 50)
+        # Extract all form fields
+        data = {
+            "name": request.POST.get("name"),
+            "race": request.POST.get("race"),
+            "char_class": request.POST.get("char_class"),
+            "background": request.POST.get("background"),
+            "alignment": request.POST.get("alignment"),
+            "level": request.POST.get("level", 1),
+            "strength": request.POST.get("strength", 10),
+            "dexterity": request.POST.get("dexterity", 10),
+            "constitution": request.POST.get("constitution", 10),
+            "intelligence": request.POST.get("intelligence", 10),
+            "wisdom": request.POST.get("wisdom", 10),
+            "charisma": request.POST.get("charisma", 10),
+            "traits": request.POST.get("traits"),
+            "ideals": request.POST.get("ideals"),
+            "bonds": request.POST.get("bonds"),
+            "flaws": request.POST.get("flaws"),
+            "equipment": request.POST.get("equipment"),
+            "weapons": request.POST.get("weapons"),
+            "spells": request.POST.get("spells"),
+            "notes": request.POST.get("notes"),
+        }
 
-        if name:
-            if request.user.is_authenticated:
-                Character.objects.create(
-                    name=name,
-                    level=level,
-                    health=health,
-                    mana=mana,
-                    player=request.user,
-                )
-            else:
-                # Create a character not linked to a registered user
-                Character.objects.create(
-                    name=name,
-                    level=level,
-                    health=health,
-                    mana=mana,
-                    player=None,
-                )
+        if not data["name"]:
+            messages.error(request, "Character must have a name.")
             return redirect("characters")
 
-    context = {
-        "characters": characters,
-    }
-    return render(request, "characters.html", context)
+        if guest_mode:
+            # Save to session
+            guest_chars = request.session.get("guest_characters", [])
+            guest_chars.append(data)
+            request.session["guest_characters"] = guest_chars
+            messages.info(request, f"Temporary character '{data['name']}' created.")
+        else:
+            # Save to DB
+            Character.objects.create(player=user, **data)
+            messages.success(request, f"Character '{data['name']}' saved to your account.")
+
+        return redirect("characters")
+
+    return render(
+        request,
+        "characters.html",
+        {"characters": characters, "guest_mode": guest_mode},
+    )
 
 
-# ------------------------------
-# PARTY PAGE
-# ------------------------------
 @login_required
 def party_view(request):
-    """View to manage parties for logged-in users."""
-    parties = Party.objects.filter(members=request.user) | Party.objects.filter(dungeon_master=request.user)
+    """Display or manage parties."""
+    user = request.user
 
-    if request.method == "POST":
-        name = request.POST.get("name")
-        if name:
-            Party.objects.create(name=name, dungeon_master=request.user)
-            return redirect("party")
+    if user.role == "dungeon_master":
+        parties = Party.objects.filter(dungeon_master=user)
+    else:
+        parties = Party.objects.filter(members=user)
 
     return render(request, "party.html", {"parties": parties})
 
 
-# ------------------------------
-# CONTACT PAGE
-# ------------------------------
 def contact_view(request):
-    """Simple contact page view."""
+    """Contact page."""
     return render(request, "contact.html")
