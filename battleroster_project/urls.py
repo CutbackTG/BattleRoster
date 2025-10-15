@@ -14,11 +14,11 @@ urlpatterns = [
     path('characters/', include('game_characters.urls')),
 
     # Accounts URLs (signup/login/logout)
-    path('accounts/', include('accounts.urls')),
+    path('accounts/', include('accounts.urls')), 
 
     #Party page
     path('party/', game_views.party_view, name='party'),
-    
+
     # Contact page
     path('contact/', sheets_views.contact_view, name='contact'),
 
