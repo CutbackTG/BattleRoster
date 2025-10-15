@@ -6,5 +6,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', game_views.home_view, name='home'),
     path('characters/', include('game_characters.urls')),
+    path('accounts/', include('django.contrib.auth.urls')),
     path('accounts/', include('accounts.urls')),
 ]

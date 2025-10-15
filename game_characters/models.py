@@ -1,21 +1,17 @@
 from django.db import models
 from django.conf import settings
 
-User = settings.AUTH_USER_MODEL
-
 
 class Character(models.Model):
-    """Full D&D-style character model."""
-
-    # Basic Info
+    """A D&D-style character associated with a user or anonymous player."""
     name = models.CharField(max_length=100)
-    race = models.CharField(max_length=100, blank=True)
-    char_class = models.CharField(max_length=100, blank=True)
-    background = models.CharField(max_length=100, blank=True)
-    alignment = models.CharField(max_length=100, blank=True)
     level = models.PositiveIntegerField(default=1)
+    race = models.CharField(max_length=100, blank=True, null=True)
+    class_type = models.CharField(max_length=100, blank=True, null=True)
+    health = models.PositiveIntegerField(default=100)
+    mana = models.PositiveIntegerField(default=50)
 
-    # Core Stats
+    # Core attributes
     strength = models.PositiveIntegerField(default=10)
     dexterity = models.PositiveIntegerField(default=10)
     constitution = models.PositiveIntegerField(default=10)
@@ -23,37 +19,53 @@ class Character(models.Model):
     wisdom = models.PositiveIntegerField(default=10)
     charisma = models.PositiveIntegerField(default=10)
 
-    # Personality
-    traits = models.TextField(blank=True)
-    ideals = models.TextField(blank=True)
-    bonds = models.TextField(blank=True)
-    flaws = models.TextField(blank=True)
+    # Text fields for freeform input
+    equipment = models.TextField(blank=True, null=True)
+    weapons = models.TextField(blank=True, null=True)
+    spells = models.TextField(blank=True, null=True)
 
-    # Inventory
-    equipment = models.TextField(blank=True)
-    weapons = models.TextField(blank=True)
-
-    # Spells & Notes
-    spells = models.TextField(blank=True)
-    notes = models.TextField(blank=True)
-
-    # Owner
+    # Link to a player (optional for anonymous users)
     player = models.ForeignKey(
-        User, on_delete=models.CASCADE, related_name="characters", null=True, blank=True
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name='game_characters',
+        blank=True,
+        null=True
     )
 
     def __str__(self):
-        return f"{self.name} (Lv.{self.level})"
+        return f"{self.name} (Lv. {self.level})"
 
 
 class Party(models.Model):
-    """Party of characters led by a Dungeon Master."""
-
+    """A party that can include multiple players, led by a Dungeon Master."""
     name = models.CharField(max_length=100)
     dungeon_master = models.ForeignKey(
-        User, on_delete=models.CASCADE, related_name="owned_parties"
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name='game_owned_parties'
     )
-    members = models.ManyToManyField(User, related_name="parties", blank=True)
+    members = models.ManyToManyField(
+        settings.AUTH_USER_MODEL,
+        related_name='game_parties',
+        blank=True
+    )
 
     def __str__(self):
         return f"{self.name} (DM: {self.dungeon_master.username})"
+
+
+class Campaign(models.Model):
+    """Optional: a campaign to group parties or adventures."""
+    title = models.CharField(max_length=200)
+    description = models.TextField(blank=True, null=True)
+    dungeon_master = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name='campaigns'
+    )
+    parties = models.ManyToManyField(Party, blank=True, related_name='campaigns')
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.title

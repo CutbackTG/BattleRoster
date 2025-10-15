@@ -1,93 +1,108 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
-from django.contrib.auth.models import User
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth import get_user_model
 from .models import Character, Party
+
+User = get_user_model()
 
 
 def home_view(request):
     """Landing page view."""
-    return render(request, "index.html")
+    return render(request, 'index.html')
 
 
 def characters_view(request):
-    """
-    Displays the character list and handles both guest and user character creation.
-    Guests’ characters are session-based (temporary).
-    """
-
+    """Character creation and list view."""
     user = request.user
     guest_mode = not user.is_authenticated
 
-    # Get characters for authenticated users
-    if not guest_mode:
-        characters = Character.objects.filter(player=user)
-    else:
-        # Retrieve temporary guest characters from session
-        characters = request.session.get("guest_characters", [])
-
     if request.method == "POST":
-        # Extract all form fields
-        data = {
-            "name": request.POST.get("name"),
-            "race": request.POST.get("race"),
-            "char_class": request.POST.get("char_class"),
-            "background": request.POST.get("background"),
-            "alignment": request.POST.get("alignment"),
-            "level": request.POST.get("level", 1),
-            "strength": request.POST.get("strength", 10),
-            "dexterity": request.POST.get("dexterity", 10),
-            "constitution": request.POST.get("constitution", 10),
-            "intelligence": request.POST.get("intelligence", 10),
-            "wisdom": request.POST.get("wisdom", 10),
-            "charisma": request.POST.get("charisma", 10),
-            "traits": request.POST.get("traits"),
-            "ideals": request.POST.get("ideals"),
-            "bonds": request.POST.get("bonds"),
-            "flaws": request.POST.get("flaws"),
-            "equipment": request.POST.get("equipment"),
-            "weapons": request.POST.get("weapons"),
-            "spells": request.POST.get("spells"),
-            "notes": request.POST.get("notes"),
-        }
+        name = request.POST.get("name")
+        level = request.POST.get("level", 1)
+        race = request.POST.get("race")
+        class_type = request.POST.get("class_type")
+        strength = request.POST.get("strength", 10)
+        dexterity = request.POST.get("dexterity", 10)
+        constitution = request.POST.get("constitution", 10)
+        intelligence = request.POST.get("intelligence", 10)
+        wisdom = request.POST.get("wisdom", 10)
+        charisma = request.POST.get("charisma", 10)
+        equipment = request.POST.get("equipment")
+        weapons = request.POST.get("weapons")
+        spells = request.POST.get("spells")
 
-        if not data["name"]:
-            messages.error(request, "Character must have a name.")
-            return redirect("characters")
-
-        if guest_mode:
-            # Save to session
-            guest_chars = request.session.get("guest_characters", [])
-            guest_chars.append(data)
-            request.session["guest_characters"] = guest_chars
-            messages.info(request, f"Temporary character '{data['name']}' created.")
+        if not name:
+            messages.error(request, "Character name is required.")
         else:
-            # Save to DB
-            Character.objects.create(player=user, **data)
-            messages.success(request, f"Character '{data['name']}' saved to your account.")
+            if guest_mode:
+                messages.info(request, "Guest character created (not saved).")
+            else:
+                Character.objects.create(
+                    name=name,
+                    level=level,
+                    race=race,
+                    class_type=class_type,
+                    strength=strength,
+                    dexterity=dexterity,
+                    constitution=constitution,
+                    intelligence=intelligence,
+                    wisdom=wisdom,
+                    charisma=charisma,
+                    equipment=equipment,
+                    weapons=weapons,
+                    spells=spells,
+                    player=user
+                )
+                messages.success(request, f"Character '{name}' created successfully!")
 
         return redirect("characters")
 
-    return render(
-        request,
-        "characters.html",
-        {"characters": characters, "guest_mode": guest_mode},
-    )
+    characters = Character.objects.filter(player=user) if user.is_authenticated else []
+    return render(request, "characters.html", {"characters": characters, "guest_mode": guest_mode})
 
 
-@login_required
 def party_view(request):
-    """Display or manage parties."""
+    """Display the user's party info or show guest preview."""
     user = request.user
+    guest_mode = not user.is_authenticated
 
-    if user.role == "dungeon_master":
-        parties = Party.objects.filter(dungeon_master=user)
+    if guest_mode:
+        messages.info(request, "Login to manage or join parties.")
+        parties = Party.objects.all()[:3]
     else:
-        parties = Party.objects.filter(members=user)
+        if hasattr(user, "role") and user.role == "dungeon_master":
+            parties = Party.objects.filter(dungeon_master=user)
+        else:
+            parties = Party.objects.filter(members=user)
 
-    return render(request, "party.html", {"parties": parties})
+    if request.method == "POST" and not guest_mode:
+        action = request.POST.get("action")
+        party_id = request.POST.get("party_id")
+        username = request.POST.get("username")
+
+        try:
+            party = Party.objects.get(id=party_id, dungeon_master=user)
+        except Party.DoesNotExist:
+            messages.error(request, "Party not found or permission denied.")
+            return redirect("party")
+
+        try:
+            target_user = User.objects.get(username=username)
+        except User.DoesNotExist:
+            messages.error(request, f"User '{username}' does not exist.")
+            return redirect("party")
+
+        if action == "add":
+            party.members.add(target_user)
+            messages.success(request, f"{username} added to {party.name}.")
+        elif action == "remove":
+            party.members.remove(target_user)
+            messages.info(request, f"{username} removed from {party.name}.")
+        return redirect("party")
+
+    return render(request, "party.html", {"parties": parties, "guest_mode": guest_mode})
 
 
 def contact_view(request):
-    """Contact page."""
+    """Render the contact page."""
     return render(request, "contact.html")
