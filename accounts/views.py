@@ -3,8 +3,6 @@ from django.contrib.auth import authenticate, login, logout, get_user_model
 from django.contrib import messages
 from django.db import IntegrityError
 from game_characters.models import Character
-
-# ✅ Use the active custom user model
 User = get_user_model()
 
 
