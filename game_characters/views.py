@@ -7,6 +7,9 @@ def index_view(request):
     """Render the homepage."""
     return render(request, "index.html")
 
+def party_view(request):
+    return render(request, 'party.html')
+
 @login_required
 def characters_view(request):
     """Display user's characters and handle creation."""
