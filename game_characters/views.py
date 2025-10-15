@@ -3,6 +3,9 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from .models import Character
 
+def index_view(request):
+    return render(request, "index.html")
+
 @login_required
 def character_update(request, pk):
     attributes = ["Strength", "Dexterity", "Constitution", "Intelligence", "Wisdom", "Charisma"]
