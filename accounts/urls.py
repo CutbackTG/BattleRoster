@@ -1,11 +1,7 @@
-from django.contrib import admin
-from django.urls import path, include
-from game_characters import views as game_views  # import your views
+from django.urls import path
+from . import views
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('', game_views.index_view, name='home'),  # homepage
-    path('accounts/', include('accounts.urls')),
-    path('characters/', game_views.characters_view, name='characters'),
-    path('party/', game_views.party_view, name='party'), 
+    path("", views.signup_login_view, name="signup_login"),  # Sign-up / Login page
+    path("logout/", views.logout_view, name="logout"),       # Logout
 ]
