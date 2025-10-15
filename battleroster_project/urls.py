@@ -1,7 +1,8 @@
 from django.contrib import admin
 from django.urls import path, include
 from game_characters import views as game_views
-from sheets import views as sheets_views  # assuming contact page is handled in sheets app
+from sheets import views as sheets_views
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -17,4 +18,5 @@ urlpatterns = [
 
     # Contact page
     path('contact/', sheets_views.contact_view, name='contact'),
+
 ]
