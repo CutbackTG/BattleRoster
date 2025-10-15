@@ -1,9 +1,11 @@
 from django.shortcuts import render, redirect
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import authenticate, login, logout, get_user_model
 from django.contrib import messages
-from django.contrib.auth.models import User
 from django.db import IntegrityError
 from game_characters.models import Character
+
+# ✅ use the custom user model (not django.contrib.auth.models.User)
+User = get_user_model()
 
 
 def signup_login_view(request):
@@ -14,7 +16,7 @@ def signup_login_view(request):
 
     if request.method == "POST":
         action = request.POST.get("action")
-        request.session['active_tab'] = action  # 👈 remember which tab was used
+        request.session['active_tab'] = action  # remember which tab was used
 
         # -------------------- SIGNUP --------------------
         if action == "signup":
@@ -44,7 +46,7 @@ def signup_login_view(request):
                 user.save()
                 login(request, user)
 
-                # ✅ clear tab memory after success
+                # clear tab memory after success
                 request.session.pop('active_tab', None)
 
                 messages.success(request, "Account created successfully! You are now logged in.")
@@ -74,7 +76,7 @@ def signup_login_view(request):
                     )
                     messages.success(request, f"Your character '{temp['name']}' has been saved to your account!")
 
-                # ✅ clear tab memory after success
+                # clear tab memory after success
                 request.session.pop('active_tab', None)
 
                 messages.success(request, f"Welcome back, {username}!")
