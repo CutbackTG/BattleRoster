@@ -1,16 +1,19 @@
+from django.contrib import admin
 from django.urls import path
-from . import views
+from game_characters import views as game_views
+from sheets import views as sheets_views  # for contact form
 
 urlpatterns = [
-    # List & create characters
-    path("", views.characters_view, name="characters"),
+    path('admin/', admin.site.urls),
 
-    # Edit a character
-    path("edit/<int:pk>/", views.character_update, name="character_update"),
+    # Home page
+    path('', game_views.index_view, name='home'),
 
-    # Delete a character
-    path("delete/<int:pk>/", views.character_delete, name="character_delete"),
+    # Character pages
+    path('characters/', game_views.characters_view, name='characters'),
+    path('characters/edit/<int:pk>/', game_views.character_update, name='character_update'),
+    path('characters/delete/<int:pk>/', game_views.character_delete, name='character_delete'),
 
-    # Party page
-    path("party/", views.party_view, name="party"),
+    # Contact page
+    path('contact/', sheets_views.contact_view, name='contact'),
 ]
