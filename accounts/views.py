@@ -4,7 +4,7 @@ from django.contrib import messages
 from django.db import IntegrityError
 from game_characters.models import Character
 
-# ✅ use the custom user model (not django.contrib.auth.models.User)
+# ✅ Use the active custom user model
 User = get_user_model()
 
 
@@ -42,15 +42,16 @@ def signup_login_view(request):
                 return redirect("signup_login")
 
             try:
+                # ✅ Use custom user model
                 user = User.objects.create_user(username=username, password=password1)
                 user.save()
                 login(request, user)
 
-                # clear tab memory after success
+                # Clear tab memory after success
                 request.session.pop('active_tab', None)
 
                 messages.success(request, "Account created successfully! You are now logged in.")
-                return redirect("characters")  # go straight to characters
+                return redirect("characters")
             except IntegrityError:
                 messages.error(request, "That username is already taken.")
                 return redirect("signup_login")
@@ -76,11 +77,9 @@ def signup_login_view(request):
                     )
                     messages.success(request, f"Your character '{temp['name']}' has been saved to your account!")
 
-                # clear tab memory after success
                 request.session.pop('active_tab', None)
-
                 messages.success(request, f"Welcome back, {username}!")
-                return redirect("characters")  # always go to characters
+                return redirect("characters")
             else:
                 messages.error(request, "Invalid username or password.")
                 return redirect("signup_login")
