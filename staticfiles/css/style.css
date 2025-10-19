@@ -1,0 +1,752 @@
+/* Global + Navbar Styles */
+
+/* Asterisk wildcard selector to override default styles added by the browser */
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+/* Character Sheet Styles */
+.character-sheet {
+  background: radial-gradient(ellipse farthest-corner at right bottom, #FEDB37 0%, #FDB931 8%, #9f7928 30%, #8A6E2F 40%, transparent 80%),
+    radial-gradient(ellipse farthest-corner at left top, #FFFFFF 0%, #FFFFAC 8%, #D1B464 25%, #5d4a1f 62.5%, #5d4a1f 100%);
+  color: #222;
+  padding: 20px;
+  border: 3px solid #333;
+  border-radius: 8px;
+  max-width: 1200px;
+  margin: 2rem auto;
+  font-family: "Lato", sans-serif;
+}
+
+.character-sheet h1 {
+  text-align: center;
+  font-size: 2.2rem;
+  margin-bottom: 10px;
+  color: #222;
+}
+
+.character-sheet h2,
+.character-sheet h3,
+.character-sheet h4 {
+  color: #010101;
+  margin-bottom: 0.5rem;
+}
+
+.sheet-grid {
+  display: grid;
+  grid-template-columns: 1fr 2fr 1fr;
+  grid-gap: 20px;
+}
+
+/* Sections */
+.character-sheet .section {
+  border: 2px solid #444;
+  padding: 10px;
+  margin: 4px;
+  background: #f7e7ba;
+  border-radius: 6px;
+  margin-bottom: 1px;
+}
+
+.character-sheet .section h3 {
+  font-size: 1.2rem;
+  border-bottom: 2px solid #444;
+  padding-bottom: 4px;
+  margin-bottom: 1px;
+}
+
+/* Abilities */
+.character-sheet .abilities {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.character-sheet .ability {
+  text-align: center;
+  border: 1px solid #aaa;
+  padding: 8px;
+  border-radius: 6px;
+  background: #f7e7ba;
+}
+
+.character-sheet .ability h4 {
+  font-size: 1rem;
+  margin-bottom: 4px;
+}
+
+.character-sheet .ability .score {
+  font-size: 1.4rem;
+  font-weight: bold;
+}
+
+.character-sheet .ability .modifier {
+  font-size: 1rem;
+  color: #555;
+}
+
+/* Skills */
+.character-sheet .skills ul {
+  list-style: none;
+  padding: 0;
+}
+
+.character-sheet .skills li {
+  border-bottom: 1px dashed #ccc;
+  padding: 3px 0;
+}
+
+/* Weapons Table */
+.character-sheet table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.character-sheet table th,
+.character-sheet table td {
+  border: 1px solid #333;
+  padding: 6px;
+  text-align: left;
+}
+
+.character-sheet table th {
+  background: #f0c75e;
+}
+
+/* Spells & Traits */
+.character-sheet .spells ul,
+.character-sheet .traits p {
+  margin: 0.5rem 0;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .sheet-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Character Cards */
+.character-grid .card {
+  background: linear-gradient(145deg, #1e1e1e, #2c2c2c);
+  color: gold;
+  border: 2px solid goldenrod;
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 0 10px rgba(218, 165, 32, 0.2);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Subtle texture overlay for parchment effect */
+.character-grid .card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at center, rgba(255, 215, 0, 0.05), transparent 70%);
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+/* Card hover effect */
+.character-grid .card:hover {
+  box-shadow: 0 0 20px rgba(218, 165, 32, 0.6);
+  transform: translateY(-5px);
+  border-color: gold;
+}
+
+/* Character name */
+.character-grid .card h5 {
+  font-family: "Oswald", sans-serif;
+  color: gold;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  border-bottom: 1px solid goldenrod;
+  padding-bottom: 0.3rem;
+  margin-bottom: 0.5rem;
+}
+
+/* Character level/class */
+.character-grid .card p {
+  color: #f8f0da;
+  font-size: 1rem;
+  margin-bottom: 1rem;
+}
+
+/* Buttons */
+.character-grid .btn-warning {
+  background-color: goldenrod;
+  border: none;
+  color: #1a1a1a;
+  font-weight: bold;
+  transition: all 0.3s ease;
+}
+
+.character-grid .btn-warning:hover {
+  background-color: gold;
+  color: #000;
+  box-shadow: 0 0 10px gold;
+}
+
+.character-grid .btn-danger {
+  background-color: #a33;
+  border: none;
+  font-weight: bold;
+  transition: all 0.3s ease;
+}
+
+.character-grid .btn-danger:hover {
+  background-color: #e00;
+  box-shadow: 0 0 10px #f55;
+}
+
+.form-group {
+    margin-bottom: 1rem;
+}
+
+.alert {
+    padding: 1rem;
+    border-radius: 6px;
+}
+
+.alert-warning {
+    background: #fff3cd;
+    color: #856404;
+}
+
+/* Character Creation Form */
+
+form {
+  background-color: #1e1e1e;
+  border: 2px solid gold;
+  border-radius: 10px;
+  padding: 2rem;
+  margin-top: 1rem;
+  box-shadow: 0 0 20px rgba(218, 165, 32, 0.3);
+}
+
+label.form-label {
+  color: gold;
+  font-weight: bold;
+  letter-spacing: 1px;
+}
+
+input.form-control,
+textarea.form-control {
+  background-color: #2a2a2a;
+  color: gold;
+  border: 1px solid goldenrod;
+  border-radius: 6px;
+  transition: all 0.3s ease;
+}
+
+input.form-control:focus,
+textarea.form-control:focus {
+  background-color: #333;
+  border-color: gold;
+  color: #fff;
+  box-shadow: 0 0 8px gold;
+}
+
+.input-group-text {
+  background-color: #2a2a2a;
+  color: gold;
+  border: 1px solid goldenrod;
+}
+
+.nav-pills .nav-link {
+  background-color: #2a2a2a;
+  color: goldenrod;
+  border: 1px solid goldenrod;
+  border-radius: 6px;
+  margin-bottom: 8px;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+.nav-pills .nav-link.active,
+.nav-pills .nav-link:hover {
+  background-color: goldenrod;
+  color: #1a1a1a;
+  border-color: gold;
+  box-shadow: 0 0 10px gold;
+}
+
+.bottom-center {
+  text-align: center;
+}
+
+button.btn-primary {
+  background-color: goldenrod;
+  border: none;
+  color: #1a1a1a;
+  font-weight: bold;
+  letter-spacing: 1px;
+  padding: 0.6rem 1.5rem;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+button.btn-primary:hover {
+  background-color: gold;
+  color: #000;
+  box-shadow: 0 0 10px gold;
+}
+
+#character-tabs {
+  margin-top: 1rem;
+  padding: 1rem;
+  border-right: 2px solid goldenrod;
+}
+
+.tab-content {
+  background-color: #2a2a2a;
+  padding: 1.5rem;
+  border-radius: 10px;
+  border: 1px solid goldenrod;
+}
+
+h4.mb-3,
+h4.mt-4 {
+  border-bottom: 1px solid goldenrod;
+  padding-bottom: 0.5rem;
+  margin-bottom: 1rem;
+  color: gold;
+  text-shadow: 0 0 4px goldenrod;
+}
+
+/* General styles */
+body {
+  background-color: #2a2a2a;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  color: gold;
+  font-family: "Lato", sans-serif;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-family: "Oswald", sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: gold;
+  margin: 2px;
+}
+
+strong {
+  color: goldenrod;
+}
+
+.hidden-heading {
+  display: none;
+}
+
+/* Header */
+header {
+  background-color: #2a2a2a;
+  padding: 0 1rem;
+  position: fixed;
+  z-index: 99;
+  width: 100%;
+  box-shadow: 0 2px 2px #1a1a1a;
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+header a {
+  text-decoration: none;
+  color: gold;
+}
+
+.navbar-brand :hover {
+  transform: scale(1.1);
+}
+
+/* Navbar */
+.nav-link {
+  color: gold;
+}
+
+.navbar {
+  border-bottom: 3px solid gold;
+}
+
+#battleroster-logo {
+  width: 200px;
+  max-width: 200px;
+  height: auto;
+}
+
+.navbar-nav .nav-link {
+  font-size: 1.4rem;
+  display: flex;
+  align-items: center;
+}
+
+.navbar-nav .nav-link i {
+  font-size: 1.8rem;
+}
+
+/* Custom hamburger color (Gold) */
+.custom-toggler .navbar-toggler-icon {
+  background-image: url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='gold' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E");
+  height: 10rem;
+}
+
+.custom-toggler.navbar-toggler {
+  border-color: gold;
+}
+
+.text-gold {
+  color: goldenrod;
+}
+
+.navbar-nav .nav-link {
+  transition: color 0.3s ease;
+}
+
+.navbar-nav .nav-link:hover {
+  color: gold;
+}
+
+#menu {
+  font-size: 2rem;
+  letter-spacing: 4px;
+  list-style-type: none;
+  color: gold;
+  padding: 0 1rem;
+  margin: 0;
+}
+
+.nav-toggle-label {
+  font-size: 6rem;
+  color: gold;
+  cursor: pointer;
+}
+
+#menu>li {
+  margin-bottom: 0.5em;
+}
+
+/* Footer */
+#social-networks {
+  background-color: #1a1a1a;
+  z-index: 4;
+  align-items: center;
+  padding: 15px 0;
+  display: flex;
+  justify-content: space-evenly;
+  list-style-type: none;
+  margin-bottom: 0;
+}
+
+#social-networks a {
+  text-decoration: none;
+  color: goldenrod;
+  font-size: 2rem;
+  transition: color 0.3s ease, transform 0.2s ease;
+}
+
+#social-networks a:hover {
+  color: gold;
+  transform: scale(1.1);
+}
+
+/* Mobile Navbar */
+@media (max-width: 991px) {
+  .navbar-collapse {
+    position: absolute;
+    top: 100%;
+    right: 1rem;
+    background-color: #2a2a2a;
+    border: 1px solid gold;
+    padding: 0.5rem 1rem;
+    width: auto;
+    z-index: 1000;
+    border-radius: 5px;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease-out, opacity 0.3s ease-out;
+    opacity: 0;
+  }
+
+  .navbar-collapse.show {
+    max-height: 500px;
+    opacity: 1;
+    transition: max-height 0.3s ease-in, opacity 0.3s ease-in;
+  }
+
+  .navbar-nav {
+    flex-direction: column;
+    align-items: flex-end;
+  }
+
+  .navbar-nav .nav-link {
+    text-align: left;
+    padding: 0.5rem 0;
+  }
+}
+
+/* Character Sheet Styles */
+.character-sheet {
+  background: radial-gradient(ellipse farthest-corner at right bottom, #FEDB37 0%, #FDB931 8%, #9f7928 30%, #8A6E2F 40%, transparent 80%),
+    radial-gradient(ellipse farthest-corner at left top, #FFFFFF 0%, #FFFFAC 8%, #D1B464 25%, #5d4a1f 62.5%, #5d4a1f 100%);
+  color: #222;
+  padding: 20px;
+  border: 3px solid #333;
+  border-radius: 8px;
+  max-width: 1200px;
+  margin: 2rem auto;
+  font-family: "Lato", sans-serif;
+}
+
+.character-sheet h1 {
+  text-align: center;
+  font-size: 2.2rem;
+  margin-bottom: 10px;
+  color: #222;
+}
+
+.character-sheet h2,
+.character-sheet h3,
+.character-sheet h4 {
+  color: #010101;
+  margin-bottom: 0.5rem;
+}
+
+.sheet-grid {
+  display: grid;
+  grid-template-columns: 1fr 2fr 1fr;
+  grid-gap: 20px;
+}
+
+/* Sections */
+.character-sheet .section {
+  border: 2px solid #444;
+  padding: 10px;
+  margin: 4px;
+  background: #f8f0da;
+  border-radius: 6px;
+  margin-bottom: 1px;
+}
+
+.character-sheet .section h3 {
+  font-size: 1.2rem;
+  border-bottom: 2px solid #444;
+  padding-bottom: 4px;
+  margin-bottom: 1px;
+}
+
+/* Abilities */
+.character-sheet .abilities {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.character-sheet .ability {
+  text-align: center;
+  border: 1px solid #aaa;
+  padding: 8px;
+  border-radius: 6px;
+  background: #fafafa;
+}
+
+.character-sheet .ability h4 {
+  font-size: 1rem;
+  margin-bottom: 4px;
+}
+
+.character-sheet .ability .score {
+  font-size: 1.4rem;
+  font-weight: bold;
+}
+
+.character-sheet .ability .modifier {
+  font-size: 1rem;
+  color: #555;
+}
+
+/* Skills */
+.character-sheet .skills ul {
+  list-style: none;
+  padding: 0;
+}
+
+.character-sheet .skills li {
+  border-bottom: 1px dashed #ccc;
+  padding: 3px 0;
+}
+
+/* Weapons Table */
+.character-sheet table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.character-sheet table th,
+.character-sheet table td {
+  border: 1px solid #333;
+  padding: 6px;
+  text-align: left;
+}
+
+.character-sheet table th {
+  background: #f0c75e;
+}
+
+/* Spells & Traits */
+.character-sheet .spells ul,
+.character-sheet .traits p {
+  margin: 0.5rem 0;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .sheet-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.character-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 1.5rem;
+}
+
+.card {
+    background: #222;
+    color: #fff;
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+}
+
+.form-group {
+    margin-bottom: 1rem;
+}
+
+.alert {
+    padding: 1rem;
+    border-radius: 6px;
+}
+
+.alert-warning {
+    background: #fff3cd;
+    color: #856404;
+}
+
+/* Character Creation Form */
+
+form {
+  background-color: #1e1e1e;
+  border: 2px solid gold;
+  border-radius: 10px;
+  padding: 2rem;
+  margin-top: 1rem;
+  box-shadow: 0 0 20px rgba(218, 165, 32, 0.3);
+}
+
+label.form-label {
+  color: gold;
+  font-weight: bold;
+  letter-spacing: 1px;
+}
+
+input.form-control,
+textarea.form-control {
+  background-color: #2a2a2a;
+  color: gold;
+  border: 1px solid goldenrod;
+  border-radius: 6px;
+  transition: all 0.3s ease;
+}
+
+input.form-control:focus,
+textarea.form-control:focus {
+  background-color: #333;
+  border-color: gold;
+  color: #fff;
+  box-shadow: 0 0 8px gold;
+}
+
+.input-group-text {
+  background-color: #2a2a2a;
+  color: gold;
+  border: 1px solid goldenrod;
+}
+
+.nav-pills .nav-link {
+  background-color: #2a2a2a;
+  color: goldenrod;
+  border: 1px solid goldenrod;
+  border-radius: 6px;
+  margin-bottom: 8px;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+.nav-pills .nav-link.active,
+.nav-pills .nav-link:hover {
+  background-color: goldenrod;
+  color: #1a1a1a;
+  border-color: gold;
+  box-shadow: 0 0 10px gold;
+}
+
+.bottom-center {
+  text-align: center;
+}
+
+button.btn-primary {
+  background-color: goldenrod;
+  border: none;
+  color: #1a1a1a;
+  font-weight: bold;
+  letter-spacing: 1px;
+  padding: 0.6rem 1.5rem;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+button.btn-primary:hover {
+  background-color: gold;
+  color: #000;
+  box-shadow: 0 0 10px gold;
+}
+
+#character-tabs {
+  margin-top: 1rem;
+  padding: 1rem;
+  border-right: 2px solid goldenrod;
+}
+
+.tab-content {
+  background-color: #2a2a2a;
+  padding: 1.5rem;
+  border-radius: 10px;
+  border: 1px solid goldenrod;
+}
+
+h4.mb-3,
+h4.mt-4 {
+  border-bottom: 1px solid goldenrod;
+  padding-bottom: 0.5rem;
+  margin-bottom: 1rem;
+  color: gold;
+  text-shadow: 0 0 4px goldenrod;
+}
+
