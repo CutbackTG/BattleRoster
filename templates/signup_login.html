@@ -107,7 +107,7 @@
 
       <!-- LOG IN -->
       <div class="tab-pane fade {% if request.session.active_tab == 'login' %}show active{% endif %}" id="login" role="tabpanel">
-        <form method="POST" class="p-4 bg-secondary rounded shadow">
+        <form method="POST" class="p-4 rounded shadow">
           {% csrf_token %}
           <input type="hidden" name="action" value="login">
           <input type="hidden" name="active_tab" value="login">
@@ -147,7 +147,7 @@
 
       if (!validatePasswordStrength(pass1)) {
         feedback.textContent = "❌ Password must be at least 12 characters with uppercase, lowercase, number & symbol.";
-        feedback.className = "form-text text-danger";
+        feedback.className = "form-text text-white text-danger";
         signupBtn.disabled = true;
       } else if (pass1 !== pass2) {
         feedback.textContent = "⚠️ Passwords do not match.";
