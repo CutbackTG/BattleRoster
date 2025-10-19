@@ -99,3 +99,21 @@ def character_delete(request, pk):
 
     messages.success(request, "Character deleted successfully!")
     return redirect("characters")
+
+# New: party_view to show all characters in a party
+def party_view(request):
+    if request.user.is_authenticated:
+        party_characters = Character.objects.filter(player=request.user).order_by('name')
+    else:
+        party_characters = request.session.get("characters", [])
+
+    attributes = ["strength", "dexterity", "constitution", "intelligence", "wisdom", "charisma"]
+
+    return render(
+        request,
+        "party.html",
+        {
+            "party_characters": party_characters,
+            "attributes": attributes,
+        }
+    )
