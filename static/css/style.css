@@ -20,11 +20,19 @@ body {
 }
 
 /* Typography */
-h1, h2, h3, h4, h5 {
+h1, h2, h3, h5 {
   font-family: "Oswald", sans-serif;
   text-transform: uppercase;
   letter-spacing: 2px;
   color: gold;
+  margin: 0.25rem 0;
+}
+
+h4 {
+  font-family: "Oswald", sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: saddlebrown;
   margin: 0.25rem 0;
 }
 
@@ -33,7 +41,7 @@ strong {
 }
 
 .form-text {
-  color: white;
+  color: rgb(0, 0, 0);
 }
 
 /* Navbar */
