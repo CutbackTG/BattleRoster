@@ -106,12 +106,12 @@ color: goldenrod !important;
 }
 
 /* Top bar */
-.custom-toggler .navbar-toggler-icon::before {
+.custom-toggler center .navbar-toggler-icon::before {
   top: -8px;
 }
 
 /* Bottom bar */
-.custom-toggler .navbar-toggler-icon::after {
+.custom-toggler center .navbar-toggler-icon::after {
   top: 8px;
 }
 
@@ -129,7 +129,6 @@ color: goldenrod !important;
   top: 0;
   transform: rotate(-45deg);
 }
-
 
 /* Mobile Navbar */
 @media (max-width: 991px) {
