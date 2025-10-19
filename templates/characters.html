@@ -218,7 +218,7 @@
           <p class="card-text">Level {{ c.level }} — {{ c.class_type }}</p>
           <p class="card-text text-muted">HP: {{ c.health }} | Mana: {{ c.mana }}</p>
           <div class="d-flex justify-content-between mt-3">
-            <a href="{% url 'character_update' c.id %}" class="btn btn-sm btn-warning">Edit</a>
+            <a href="{% url 'character_update' character.id %}" class="btn btn-sm btn-warning">Edit</a>
             <a href="{% url 'character_delete' c.id %}" class="btn btn-sm btn-danger"
               onclick="return confirm('Are you sure you want to delete this character?');">Delete</a>
           </div>
