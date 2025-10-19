@@ -2,22 +2,22 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
-from .models import Character
+from game_characters.models import Character
 
-# -----------------------------
+
 # Index view
-# -----------------------------
 def index_view(request):
     return render(request, "index.html")
 
-# -----------------------------
+
+
 # Helper to safely convert numeric values
-# -----------------------------
 def to_int(value, default=0):
     try:
         return int(value)
     except (TypeError, ValueError):
         return default
+
 
 # -----------------------------
 # Character management
@@ -80,6 +80,7 @@ def characters_view(request, pk=None):
         "pk": pk
     })
 
+
 def character_delete(request, pk):
     if request.user.is_authenticated:
         character = get_object_or_404(Character, pk=pk, player=request.user)
@@ -92,36 +93,43 @@ def character_delete(request, pk):
     messages.success(request, "Character deleted successfully!")
     return redirect("characters")
 
-# -----------------------------
-# Signup / Login
-# -----------------------------
+
 def signup_login_view(request):
+    # Default forms
+    signup_form = UserCreationForm()
+    login_form = AuthenticationForm()
+    active_tab = 'signup'  # default tab
+
     if request.method == 'POST':
-        if 'signup' in request.POST:
-            form = UserCreationForm(request.POST)
-            if form.is_valid():
-                user = form.save()
+        action = request.POST.get('action')
+        active_tab = request.POST.get('active_tab', 'signup')
+
+        if action == 'signup':
+            signup_form = UserCreationForm(request.POST)
+            if signup_form.is_valid():
+                user = signup_form.save()
                 login(request, user)
                 messages.success(request, "Signup successful!")
-                return redirect(request.GET.get('next', '/'))
+                return redirect(request.GET.get('next', '/characters/'))
             else:
                 messages.error(request, "Signup failed. Please check the form.")
-        elif 'login' in request.POST:
-            form = AuthenticationForm(data=request.POST)
-            if form.is_valid():
-                login(request, form.get_user())
+
+        elif action == 'login':
+            login_form = AuthenticationForm(data=request.POST)
+            if login_form.is_valid():
+                login(request, login_form.get_user())
                 messages.success(request, "Login successful!")
-                return redirect(request.GET.get('next', '/'))
+                return redirect(request.GET.get('next', '/characters/'))
             else:
                 messages.error(request, "Login failed. Please check your credentials.")
-    else:
-        form = UserCreationForm()
 
-    return render(request, 'signup_login.html', {'form': form})
+    return render(request, 'signup_login.html', {
+        'signup_form': signup_form,
+        'login_form': login_form,
+        'active_tab': active_tab
+    })
 
-# -----------------------------
-# Logout
-# -----------------------------
+
 def logout_view(request):
     logout(request)
     messages.success(request, "Logged out successfully!")
