@@ -26,6 +26,29 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
+  // Calculate D&D ability modifier
+  function calculateModifier(score) {
+    return Math.floor((score - 10) / 2);
+  }
+
+  document.addEventListener('DOMContentLoaded', function () {
+    const inputs = document.querySelectorAll('.attribute-input');
+
+    inputs.forEach(input => {
+      const modifierDisplay = input.parentElement.querySelector('.modifier-display');
+
+      const updateModifier = () => {
+        const value = parseInt(input.value) || 10;
+        const mod = calculateModifier(value);
+        modifierDisplay.textContent = (mod >= 0 ? '+' : '') + mod;
+      };
+
+      input.addEventListener('input', updateModifier);
+      updateModifier(); // initialize on load
+    });
+  });
+
+
   // Footer social links hover effect logging
   const socialLinks = document.querySelectorAll("#social-networks a");
   socialLinks.forEach(link => {
