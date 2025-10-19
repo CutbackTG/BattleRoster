@@ -1,92 +1,25 @@
-from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth.decorators import login_required
-from django.contrib import messages
-from .models import Character
-
-# Home page
-def index_view(request):
-    return render(request, "index.html")
-
-# Party page
-def party_view(request):
-    return render(request, "party.html")
-
-# List/create characters
-@login_required
-def characters_view(request):
-    characters = Character.objects.filter(player=request.user).order_by('name')
-
-    if request.method == "POST":
-        name = request.POST.get("name")
-        level = request.POST.get("level") or 1
-        race = request.POST.get("race")
-        class_type = request.POST.get("class_type")
-        health = request.POST.get("health") or 100
-        mana = request.POST.get("mana") or 50
-        strength = request.POST.get("strength") or 10
-        dexterity = request.POST.get("dexterity") or 10
-        constitution = request.POST.get("constitution") or 10
-        intelligence = request.POST.get("intelligence") or 10
-        wisdom = request.POST.get("wisdom") or 10
-        charisma = request.POST.get("charisma") or 10
-        equipment = request.POST.get("equipment", "")
-        weapons = request.POST.get("weapons", "")
-        spells = request.POST.get("spells", "")
-
-        Character.objects.create(
-            player=request.user,
-            name=name,
-            level=level,
-            race=race,
-            class_type=class_type,
-            health=health,
-            mana=mana,
-            strength=strength,
-            dexterity=dexterity,
-            constitution=constitution,
-            intelligence=intelligence,
-            wisdom=wisdom,
-            charisma=charisma,
-            equipment=equipment,
-            weapons=weapons,
-            spells=spells,
-        )
-        messages.success(request, f"Character '{name}' created successfully!")
-        return redirect("characters")
-
-    return render(request, "characters.html", {"characters": characters})
-
-# Update a character
 @login_required
 def character_update(request, pk):
     character = get_object_or_404(Character, pk=pk, player=request.user)
 
     if request.method == "POST":
-        character.name = request.POST.get("name")
-        character.level = request.POST.get("level") or 1
-        character.race = request.POST.get("race")
-        character.class_type = request.POST.get("class_type")
-        character.health = request.POST.get("health") or 100
-        character.mana = request.POST.get("mana") or 50
-        character.strength = request.POST.get("strength") or 10
-        character.dexterity = request.POST.get("dexterity") or 10
-        character.constitution = request.POST.get("constitution") or 10
-        character.intelligence = request.POST.get("intelligence") or 10
-        character.wisdom = request.POST.get("wisdom") or 10
-        character.charisma = request.POST.get("charisma") or 10
-        character.equipment = request.POST.get("equipment", "")
-        character.weapons = request.POST.get("weapons", "")
-        character.spells = request.POST.get("spells", "")
+        # Fields to update
+        numeric_fields = ["level", "health", "mana", "strength", "dexterity",
+                          "constitution", "intelligence", "wisdom", "charisma", "armor_class", "initiative",
+                          "fortitude_save", "reflex_save", "will_save"]
+        text_fields = ["name", "race", "class_type", "equipment", "weapons", "spells"]
+
+        # Update numeric fields safely
+        for field in numeric_fields:
+            value = request.POST.get(field)
+            setattr(character, field, int(value) if value else 0)
+
+        # Update text fields
+        for field in text_fields:
+            setattr(character, field, request.POST.get(field, "").strip())
+
         character.save()
         messages.success(request, f"Character '{character.name}' updated successfully!")
         return redirect("characters")
 
-    return render(request, "character_edit.html", {"character": character})
-
-# Delete a character
-@login_required
-def character_delete(request, pk):
-    character = get_object_or_404(Character, pk=pk, player=request.user)
-    character.delete()
-    messages.success(request, f"Character '{character.name}' deleted successfully!")
-    return redirect("characters")
+    return render(request, "character_update.html", {"character": character})
