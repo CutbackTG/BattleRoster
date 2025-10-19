@@ -147,7 +147,7 @@
 
       if (!validatePasswordStrength(pass1)) {
         feedback.textContent = "❌ Password must be at least 12 characters with uppercase, lowercase, number & symbol.";
-        feedback.className = "form-text text-white text-danger";
+        feedback.className = "form-text text-danger";
         signupBtn.disabled = true;
       } else if (pass1 !== pass2) {
         feedback.textContent = "⚠️ Passwords do not match.";
