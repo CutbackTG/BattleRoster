@@ -61,11 +61,11 @@
         <!-- Attributes -->
         <h4 class="mt-4 mb-3">Attributes</h4>
         <div class="row">
-            {% for attr in "strength dexterity constitution intelligence wisdom charisma".split %}
+            {% for attr in attribute_list %}
             <div class="col-md-4 mb-3">
                 <label for="{{ attr }}" class="form-label">{{ attr|capfirst }}</label>
                 <input type="number" name="{{ attr }}" id="{{ attr }}"
-                       value="{{ character[attr]|default:character[attr] }}"
+                       value="{{ character[attr]|default:character.attr }}"
                        class="form-control" min="1" max="20">
             </div>
             {% endfor %}
