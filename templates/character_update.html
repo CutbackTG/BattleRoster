@@ -41,37 +41,79 @@
       <!-- Basic Info -->
       <div class="mb-3">
         <label class="form-label">Name</label>
-        <input type="text" name="name" class="form-control" value="{{ character.name if user.is_authenticated else character.name }}" required>
+        <input type="text" name="name" class="form-control" value="{{ character.name }}" required>
       </div>
       <div class="row">
         <div class="col-md-4 mb-3">
           <label class="form-label">Level</label>
-          <input type="number" name="level" class="form-control" value="{{ character.level if user.is_authenticated else character.level }}" min="1" required>
+          <input type="number" name="level" class="form-control" value="{{ character.level }}" min="1" required>
         </div>
         <div class="col-md-4 mb-3">
           <label class="form-label">Race</label>
-          <input type="text" name="race" class="form-control" value="{{ character.race if user.is_authenticated else character.race }}">
+          <input type="text" name="race" class="form-control" value="{{ character.race }}">
         </div>
         <div class="col-md-4 mb-3">
           <label class="form-label">Class</label>
-          <input type="text" name="class_type" class="form-control" value="{{ character.class_type if user.is_authenticated else character.class_type }}">
+          <input type="text" name="class_type" class="form-control" value="{{ character.class_type }}">
         </div>
       </div>
 
       <!-- Attributes -->
       <h4 class="mt-4">Attributes</h4>
       <div class="row">
-        {% for attr in "strength dexterity constitution intelligence wisdom charisma".split %}
         <div class="col-md-4 mb-3">
-          <label>{{ attr|capfirst }}</label>
+          <label>Strength</label>
           <div class="input-group">
-            <input type="number" name="{{ attr }}" class="form-control attribute-input"
-                   value="{{ character[attr] if not user.is_authenticated else character[attr] if character[attr] else character[attr] }}"
-                   min="1" max="20">
+            <input type="number" name="strength" class="form-control attribute-input"
+                   value="{{ character.strength }}" min="1" max="20">
             <span class="input-group-text modifier-display">+0</span>
           </div>
         </div>
-        {% endfor %}
+
+        <div class="col-md-4 mb-3">
+          <label>Dexterity</label>
+          <div class="input-group">
+            <input type="number" name="dexterity" class="form-control attribute-input"
+                   value="{{ character.dexterity }}" min="1" max="20">
+            <span class="input-group-text modifier-display">+0</span>
+          </div>
+        </div>
+
+        <div class="col-md-4 mb-3">
+          <label>Constitution</label>
+          <div class="input-group">
+            <input type="number" name="constitution" class="form-control attribute-input"
+                   value="{{ character.constitution }}" min="1" max="20">
+            <span class="input-group-text modifier-display">+0</span>
+          </div>
+        </div>
+
+        <div class="col-md-4 mb-3">
+          <label>Intelligence</label>
+          <div class="input-group">
+            <input type="number" name="intelligence" class="form-control attribute-input"
+                   value="{{ character.intelligence }}" min="1" max="20">
+            <span class="input-group-text modifier-display">+0</span>
+          </div>
+        </div>
+
+        <div class="col-md-4 mb-3">
+          <label>Wisdom</label>
+          <div class="input-group">
+            <input type="number" name="wisdom" class="form-control attribute-input"
+                   value="{{ character.wisdom }}" min="1" max="20">
+            <span class="input-group-text modifier-display">+0</span>
+          </div>
+        </div>
+
+        <div class="col-md-4 mb-3">
+          <label>Charisma</label>
+          <div class="input-group">
+            <input type="number" name="charisma" class="form-control attribute-input"
+                   value="{{ character.charisma }}" min="1" max="20">
+            <span class="input-group-text modifier-display">+0</span>
+          </div>
+        </div>
       </div>
 
       <!-- Combat Stats -->
@@ -79,33 +121,30 @@
       <div class="row">
         <div class="col-md-4 mb-3">
           <label>HP</label>
-          <input type="number" name="health" class="form-control"
-                 value="{{ character.health if user.is_authenticated else character.health }}">
+          <input type="number" name="health" class="form-control" value="{{ character.health }}">
         </div>
         <div class="col-md-4 mb-3">
           <label>Mana</label>
-          <input type="number" name="mana" class="form-control"
-                 value="{{ character.mana if user.is_authenticated else character.mana }}">
+          <input type="number" name="mana" class="form-control" value="{{ character.mana }}">
         </div>
         <div class="col-md-4 mb-3">
           <label>Armor Class</label>
-          <input type="number" name="armor_class" class="form-control"
-                 value="{{ character.armor_class if user.is_authenticated else character.armor_class }}">
+          <input type="number" name="armor_class" class="form-control" value="{{ character.armor_class }}">
         </div>
       </div>
 
       <!-- Equipment / Weapons / Spells -->
       <div class="mb-3 mt-4">
         <label>Equipment</label>
-        <textarea name="equipment" class="form-control" rows="3">{{ character.equipment if user.is_authenticated else character.equipment }}</textarea>
+        <textarea name="equipment" class="form-control" rows="3">{{ character.equipment }}</textarea>
       </div>
       <div class="mb-3">
         <label>Weapons</label>
-        <textarea name="weapons" class="form-control" rows="3">{{ character.weapons if user.is_authenticated else character.weapons }}</textarea>
+        <textarea name="weapons" class="form-control" rows="3">{{ character.weapons }}</textarea>
       </div>
       <div class="mb-3">
         <label>Spells</label>
-        <textarea name="spells" class="form-control" rows="3">{{ character.spells if user.is_authenticated else character.spells }}</textarea>
+        <textarea name="spells" class="form-control" rows="3">{{ character.spells }}</textarea>
       </div>
 
       <button type="submit" class="btn btn-success">Save Changes</button>

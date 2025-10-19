@@ -10,33 +10,38 @@ def index_view(request):
 def party_view(request):
     return render(request, "party.html")
 
+# Helper: safely convert numeric values
+def to_int(value, default=0):
+    try:
+        return int(value)
+    except (TypeError, ValueError):
+        return default
+
 # List/create characters
 def characters_view(request):
-    # Determine current characters
     if request.user.is_authenticated:
         characters = Character.objects.filter(player=request.user).order_by('name')
     else:
         characters = request.session.get("characters", [])
 
     if request.method == "POST":
-        name = request.POST.get("name")
-        level = request.POST.get("level") or 1
-        race = request.POST.get("race")
-        class_type = request.POST.get("class_type")
-        health = request.POST.get("health") or 100
-        mana = request.POST.get("mana") or 50
-        strength = request.POST.get("strength") or 10
-        dexterity = request.POST.get("dexterity") or 10
-        constitution = request.POST.get("constitution") or 10
-        intelligence = request.POST.get("intelligence") or 10
-        wisdom = request.POST.get("wisdom") or 10
-        charisma = request.POST.get("charisma") or 10
-        equipment = request.POST.get("equipment", "")
-        weapons = request.POST.get("weapons", "")
-        spells = request.POST.get("spells", "")
+        name = request.POST.get("name", "").strip()
+        level = to_int(request.POST.get("level"), 1)
+        race = request.POST.get("race", "").strip()
+        class_type = request.POST.get("class_type", "").strip()
+        health = to_int(request.POST.get("health"), 100)
+        mana = to_int(request.POST.get("mana"), 50)
+        strength = to_int(request.POST.get("strength"), 10)
+        dexterity = to_int(request.POST.get("dexterity"), 10)
+        constitution = to_int(request.POST.get("constitution"), 10)
+        intelligence = to_int(request.POST.get("intelligence"), 10)
+        wisdom = to_int(request.POST.get("wisdom"), 10)
+        charisma = to_int(request.POST.get("charisma"), 10)
+        equipment = request.POST.get("equipment", "").strip()
+        weapons = request.POST.get("weapons", "").strip()
+        spells = request.POST.get("spells", "").strip()
 
         if request.user.is_authenticated:
-            # Authenticated users can create freely
             Character.objects.create(
                 player=request.user,
                 name=name,
@@ -56,7 +61,7 @@ def characters_view(request):
                 spells=spells,
             )
         else:
-            # Anonymous users: only allow one character
+            # Guest: limit to 1 character
             if len(characters) >= 1:
                 messages.info(request, "Please sign up or log in to create additional characters.")
                 return redirect("/accounts/signup_login/?next=/characters/")
@@ -98,12 +103,15 @@ def character_update(request, pk):
         character = characters[int(pk)]
 
     if request.method == "POST":
-        fields = ["name", "level", "race", "class_type", "health", "mana",
-                  "strength", "dexterity", "constitution", "intelligence",
-                  "wisdom", "charisma", "equipment", "weapons", "spells"]
-        for field in fields:
-            value = request.POST.get(field)
-            if value:
+        numeric_fields = ["level", "health", "mana", "strength", "dexterity",
+                          "constitution", "intelligence", "wisdom", "charisma"]
+        string_fields = ["name", "race", "class_type", "equipment", "weapons", "spells"]
+
+        for field in numeric_fields + string_fields:
+            value = request.POST.get(field, "").strip()
+            if field in numeric_fields:
+                value = to_int(value, getattr(character, field, 0) if request.user.is_authenticated else character.get(field, 0))
+            if value != "":
                 if request.user.is_authenticated:
                     setattr(character, field, value)
                 else:
@@ -115,7 +123,8 @@ def character_update(request, pk):
             characters[int(pk)] = character
             request.session["characters"] = characters
 
-        messages.success(request, f"Character '{character['name'] if not request.user.is_authenticated else character.name}' updated successfully!")
+        name = character.name if request.user.is_authenticated else character["name"]
+        messages.success(request, f"Character '{name}' updated successfully!")
         return redirect("characters")
 
     return render(request, "character_update.html", {"character": character, "pk": pk})
