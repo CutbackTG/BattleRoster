@@ -1,49 +1,87 @@
-from django.shortcuts import render, redirect
-from django.contrib.auth import login, logout
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
-from .forms import CustomUserCreationForm, CustomAuthenticationForm
+from .models import Character
 
-def signup_login_view(request):
-    active_tab = "signup"
+# Helper to safely convert numeric values
+def to_int(value, default=0):
+    try:
+        return int(value)
+    except (TypeError, ValueError):
+        return default
+
+def characters_view(request, pk=None):
+    """
+    List characters, create new ones, or edit existing ones.
+    If pk is provided, we're editing that character.
+    """
+    editing = None
+
+    if request.user.is_authenticated:
+        characters = Character.objects.filter(player=request.user).order_by('name')
+    else:
+        characters = request.session.get("characters", [])
+
+    # If pk is provided, fetch the character for editing
+    if pk is not None:
+        if request.user.is_authenticated:
+            editing = get_object_or_404(Character, pk=pk, player=request.user)
+        else:
+            if int(pk) >= len(characters):
+                messages.error(request, "Character not found.")
+                return redirect("characters")
+            editing = characters[int(pk)]
 
     if request.method == "POST":
-        action = request.POST.get("action")
+        # Collect form data
+        numeric_fields = ["level", "health", "mana", "strength", "dexterity",
+                          "constitution", "intelligence", "wisdom", "charisma"]
+        string_fields = ["name", "race", "class_type", "equipment", "weapons", "spells"]
 
-        if action == "signup":
-            form = CustomUserCreationForm(request.POST)
-            login_form = CustomAuthenticationForm()
-            if form.is_valid():
-                user = form.save()
-                messages.success(request, "Account created successfully! Please log in.")
-                return redirect("signup_login")
+        data = {}
+        for field in numeric_fields:
+            data[field] = to_int(request.POST.get(field, ""), getattr(editing, field, 0) if editing and request.user.is_authenticated else 0)
+        for field in string_fields:
+            data[field] = request.POST.get(field, "").strip()
+
+        if editing:  # Update existing character
+            if request.user.is_authenticated:
+                for key, value in data.items():
+                    setattr(editing, key, value)
+                editing.save()
             else:
-                messages.error(request, "Sign-up failed. Please correct the errors below.")
-
-        elif action == "login":
-            login_form = CustomAuthenticationForm(request, data=request.POST)
-            form = CustomUserCreationForm()
-            if login_form.is_valid():
-                user = login_form.get_user()
-                login(request, user)
-                return redirect("/")
+                characters[int(pk)].update(data)
+                request.session["characters"] = characters
+            messages.success(request, f"Character '{data['name']}' updated successfully!")
+        else:  # Create new character
+            if request.user.is_authenticated:
+                Character.objects.create(player=request.user, **data)
             else:
-                messages.error(request, "Login failed. Check your username/password.")
+                # Limit guest users to 1 character
+                if len(characters) >= 1:
+                    messages.info(request, "Please sign up or log in to create additional characters.")
+                    return redirect("/accounts/signup_login/?next=/characters/")
+                characters.append(data)
+                request.session["characters"] = characters
+            messages.success(request, f"Character '{data['name']}' created successfully!")
 
-        else:
-            form = CustomUserCreationForm()
-            login_form = CustomAuthenticationForm()
-    else:
-        form = CustomUserCreationForm()
-        login_form = CustomAuthenticationForm()
+        return redirect("characters")
 
-    request.session["active_tab"] = active_tab
-
-    return render(request, "signup_login.html", {
-        "form": form,
-        "login_form": login_form,
+    attributes = ["strength", "dexterity", "constitution", "intelligence", "wisdom", "charisma"]
+    return render(request, "characters.html", {
+        "characters": characters,
+        "attributes": attributes,
+        "editing": editing,
+        "pk": pk
     })
 
-def logout_view(request):
-    logout(request)
-    messages.info(request, "You have been logged out.")
-    return redirect("signup_login")
+def character_delete(request, pk):
+    if request.user.is_authenticated:
+        character = get_object_or_404(Character, pk=pk, player=request.user)
+        character.delete()
+    else:
+        characters = request.session.get("characters", [])
+        if int(pk) < len(characters):
+            characters.pop(int(pk))
+            request.session["characters"] = characters
+    messages.success(request, "Character deleted successfully!")
+    return redirect("characters")
