@@ -2,6 +2,9 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from .models import Character
 
+def index_view(request):
+    return render(request, "index.html")
+
 # Helper to safely convert numeric fields
 def to_int(value, default=0):
     try:
