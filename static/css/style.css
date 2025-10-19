@@ -69,17 +69,27 @@ transition: color 0.3s ease;
 color: goldenrod !important;
 }
 
+/* Toggler Button */
 .custom-toggler.navbar-toggler {
-border-color: gold;
+  border: 2px solid gold;      /* thicker gold border */
+  border-radius: 8px;          /* rounded corners */
+  padding: 6px;                /* space inside button */
+  width: 48px;                 /* fixed width to fit bars neatly */
+  height: 48px;                /* fixed height to fit bars neatly */
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
+/* Hamburger Bars */
 .custom-toggler .navbar-toggler-icon {
   background-image: none;
   position: relative;
   width: 24px;
   height: 2px;
   background-color: gold;
-  box-shadow: 0 7px 0 0 gold, 0 14px 0 0 gold;
+  border-radius: 1px;          /* slightly rounded bars */
+  box-shadow: 0 6px 0 0 gold, 0 12px 0 0 gold; /* spacing between bars */
 }
 
 /* Mobile Navbar */
