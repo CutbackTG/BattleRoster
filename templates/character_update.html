@@ -61,14 +61,36 @@
         <!-- Attributes -->
         <h4 class="mt-4 mb-3">Attributes</h4>
         <div class="row">
-            {% for attr in attribute_list %}
             <div class="col-md-4 mb-3">
-                <label for="{{ attr }}" class="form-label">{{ attr|capfirst }}</label>
-                <input type="number" name="{{ attr }}" id="{{ attr }}"
-                       value="{{ character[attr]|default:character.attr }}"
-                       class="form-control" min="1" max="20">
+                <label class="form-label">Strength</label>
+                <input type="number" name="strength" class="form-control" min="1" max="20"
+                       value="{{ character.strength|default:character.strength }}">
             </div>
-            {% endfor %}
+            <div class="col-md-4 mb-3">
+                <label class="form-label">Dexterity</label>
+                <input type="number" name="dexterity" class="form-control" min="1" max="20"
+                       value="{{ character.dexterity|default:character.dexterity }}">
+            </div>
+            <div class="col-md-4 mb-3">
+                <label class="form-label">Constitution</label>
+                <input type="number" name="constitution" class="form-control" min="1" max="20"
+                       value="{{ character.constitution|default:character.constitution }}">
+            </div>
+            <div class="col-md-4 mb-3">
+                <label class="form-label">Intelligence</label>
+                <input type="number" name="intelligence" class="form-control" min="1" max="20"
+                       value="{{ character.intelligence|default:character.intelligence }}">
+            </div>
+            <div class="col-md-4 mb-3">
+                <label class="form-label">Wisdom</label>
+                <input type="number" name="wisdom" class="form-control" min="1" max="20"
+                       value="{{ character.wisdom|default:character.wisdom }}">
+            </div>
+            <div class="col-md-4 mb-3">
+                <label class="form-label">Charisma</label>
+                <input type="number" name="charisma" class="form-control" min="1" max="20"
+                       value="{{ character.charisma|default:character.charisma }}">
+            </div>
         </div>
 
         <!-- Equipment -->
