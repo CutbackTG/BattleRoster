@@ -95,17 +95,48 @@
           <div class="tab-pane fade" id="attributes" role="tabpanel">
             <h4 class="mb-3">Core Attributes</h4>
             <div class="row">
-              {% comment %} Core D&D Stats {% endcomment %}
-              {% for stat in "Strength,Dexterity,Constitution,Intelligence,Wisdom,Charisma".split(',') %}
               <div class="col-md-4 mb-3">
-                <label class="form-label">{{ stat }}</label>
+                <label class="form-label">Strength</label>
                 <div class="input-group">
-                  <input type="number" name="{{ stat|lower }}" class="form-control attribute-input" min="1" max="20"
-                    value="10">
+                  <input type="number" name="strength" class="form-control attribute-input" min="1" max="20" value="10">
                   <span class="input-group-text modifier-display">+0</span>
                 </div>
               </div>
-              {% endfor %}
+              <div class="col-md-4 mb-3">
+                <label class="form-label">Dexterity</label>
+                <div class="input-group">
+                  <input type="number" name="dexterity" class="form-control attribute-input" min="1" max="20" value="10">
+                  <span class="input-group-text modifier-display">+0</span>
+                </div>
+              </div>
+              <div class="col-md-4 mb-3">
+                <label class="form-label">Constitution</label>
+                <div class="input-group">
+                  <input type="number" name="constitution" class="form-control attribute-input" min="1" max="20" value="10">
+                  <span class="input-group-text modifier-display">+0</span>
+                </div>
+              </div>
+              <div class="col-md-4 mb-3">
+                <label class="form-label">Intelligence</label>
+                <div class="input-group">
+                  <input type="number" name="intelligence" class="form-control attribute-input" min="1" max="20" value="10">
+                  <span class="input-group-text modifier-display">+0</span>
+                </div>
+              </div>
+              <div class="col-md-4 mb-3">
+                <label class="form-label">Wisdom</label>
+                <div class="input-group">
+                  <input type="number" name="wisdom" class="form-control attribute-input" min="1" max="20" value="10">
+                  <span class="input-group-text modifier-display">+0</span>
+                </div>
+              </div>
+              <div class="col-md-4 mb-3">
+                <label class="form-label">Charisma</label>
+                <div class="input-group">
+                  <input type="number" name="charisma" class="form-control attribute-input" min="1" max="20" value="10">
+                  <span class="input-group-text modifier-display">+0</span>
+                </div>
+              </div>
             </div>
 
             <h4 class="mb-3 mt-4">Combat Stats</h4>
