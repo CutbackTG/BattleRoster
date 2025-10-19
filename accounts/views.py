@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import login, logout
 from django.contrib import messages
 from .forms import CustomUserCreationForm, CustomAuthenticationForm
 
@@ -10,7 +10,6 @@ def signup_login_view(request):
         action = request.POST.get("action")
 
         if action == "signup":
-            active_tab = "signup"
             form = CustomUserCreationForm(request.POST)
             login_form = CustomAuthenticationForm()
             if form.is_valid():
@@ -21,7 +20,6 @@ def signup_login_view(request):
                 messages.error(request, "Sign-up failed. Please correct the errors below.")
 
         elif action == "login":
-            active_tab = "login"
             login_form = CustomAuthenticationForm(request, data=request.POST)
             form = CustomUserCreationForm()
             if login_form.is_valid():
