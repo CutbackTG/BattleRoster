@@ -1,7 +1,6 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="en-US">
-
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -56,21 +55,20 @@
     <!-- Tabs -->
     <ul class="nav nav-tabs mb-3" id="authTab" role="tablist">
       <li class="nav-item" role="presentation">
-        <button class="nav-link {% if not request.session.active_tab or request.session.active_tab == 'signup' %}active{% endif %}" id="signup-tab" data-bs-toggle="tab" data-bs-target="#signup" type="button">Sign Up</button>
+        <button class="nav-link {% if not request.POST.action or request.POST.action == 'signup' %}active{% endif %}" id="signup-tab" data-bs-toggle="tab" data-bs-target="#signup" type="button">Sign Up</button>
       </li>
       <li class="nav-item" role="presentation">
-        <button class="nav-link {% if request.session.active_tab == 'login' %}active{% endif %}" id="login-tab" data-bs-toggle="tab" data-bs-target="#login" type="button">Log In</button>
+        <button class="nav-link {% if request.POST.action == 'login' %}active{% endif %}" id="login-tab" data-bs-toggle="tab" data-bs-target="#login" type="button">Log In</button>
       </li>
     </ul>
 
     <div class="tab-content" id="authTabContent">
 
       <!-- SIGN UP -->
-      <div class="tab-pane fade {% if not request.session.active_tab or request.session.active_tab == 'signup' %}show active{% endif %}" id="signup">
+      <div class="tab-pane fade {% if not request.POST.action or request.POST.action == 'signup' %}show active{% endif %}" id="signup">
         <form method="POST" class="p-4 bg-secondary rounded shadow">
           {% csrf_token %}
           <input type="hidden" name="action" value="signup">
-          <input type="hidden" name="active_tab" value="signup">
 
           {% if signup_form.errors %}
             <div class="alert alert-danger">
@@ -87,45 +85,17 @@
             </div>
           {% endif %}
 
-          <div class="mb-3">
-            <label for="id_username" class="form-label">Username</label>
-            <input type="text" name="username" class="form-control" id="id_username" value="{{ signup_form.username.value|default_if_none:'' }}" required>
-          </div>
+          {{ signup_form.as_p }}
 
-          <div class="mb-3">
-            <label for="id_email" class="form-label">Email</label>
-            <input type="email" name="email" class="form-control" id="id_email" value="{{ signup_form.email.value|default_if_none:'' }}" required>
-          </div>
-
-          <div class="mb-3">
-            <label for="id_password1" class="form-label">Password</label>
-            <input type="password" name="password1" class="form-control" id="id_password1" minlength="12" required>
-            <div id="passwordHelp" class="form-text">
-              Password must be at least 12 characters long, include uppercase, lowercase, numbers, and symbols.
-            </div>
-          </div>
-
-          <div class="mb-3">
-            <label for="id_password2" class="form-label">Confirm Password</label>
-            <input type="password" name="password2" class="form-control" id="id_password2" minlength="12" required>
-            <div id="matchFeedback" class="form-text"></div>
-          </div>
-
-          <div class="form-check mb-3">
-            <input class="form-check-input" type="checkbox" name="is_dm" id="id_is_dm" {% if signup_form.is_dm.value|default_if_none:False %}checked{% endif %}>
-            <label class="form-check-label" for="id_is_dm">I am a Dungeon Master</label>
-          </div>
-
-          <button type="submit" id="signupBtn" class="btn btn-primary w-100" disabled>Sign Up</button>
+          <button type="submit" class="btn btn-primary w-100">Sign Up</button>
         </form>
       </div>
 
       <!-- LOG IN -->
-      <div class="tab-pane fade {% if request.session.active_tab == 'login' %}show active{% endif %}" id="login">
+      <div class="tab-pane fade {% if request.POST.action == 'login' %}show active{% endif %}" id="login">
         <form method="POST" class="p-4 rounded shadow">
           {% csrf_token %}
           <input type="hidden" name="action" value="login">
-          <input type="hidden" name="active_tab" value="login">
 
           {% if login_form.errors %}
             <div class="alert alert-danger">
@@ -142,15 +112,7 @@
             </div>
           {% endif %}
 
-          <div class="mb-3">
-            <label for="id_login_username" class="form-label">Username</label>
-            <input type="text" name="username" class="form-control" id="id_login_username" value="{{ login_form.username.value|default_if_none:'' }}" required>
-          </div>
-
-          <div class="mb-3">
-            <label for="id_login_password" class="form-label">Password</label>
-            <input type="password" name="password" class="form-control" id="id_login_password" required>
-          </div>
+          {{ login_form.as_p }}
 
           <button type="submit" class="btn btn-success w-100">Log In</button>
         </form>
@@ -159,53 +121,10 @@
     </div>
   </div>
 
-  <!-- Footer -->
-  <footer id="footerSocials" class="py-4">
-    <ul class="socials list-unstyled d-flex gap-5 justify-content-center mb-0">
-      <li><a href="https://www.facebook.com/" target="_blank" rel="noopener"><i class="fa-brands fa-facebook"></i></a></li>
-      <li><a href="https://www.X.com/" target="_blank" rel="noopener"><i class="fa-brands fa-square-x-twitter"></i></a></li>
-      <li><a href="https://www.youtube.com/" target="_blank" rel="noopener"><i class="fa-brands fa-youtube-square"></i></a></li>
-      <li><a href="https://www.instagram.com/" target="_blank" rel="noopener"><i class="fa-brands fa-instagram"></i></a></li>
-    </ul>
+  <footer class="py-4 text-center">
+    <p>&copy; 2025 BattleRoster</p>
   </footer>
 
-  <!-- Scripts -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="{% static 'js/main.js' %}"></script>
-  <script>
-    const password1 = document.getElementById('id_password1');
-    const password2 = document.getElementById('id_password2');
-    const feedback = document.getElementById('matchFeedback');
-    const signupBtn = document.getElementById('signupBtn');
-
-    function validatePasswordStrength(pw) {
-      const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{12,}$/;
-      return regex.test(pw);
-    }
-
-    function checkPasswords() {
-      const pass1 = password1.value;
-      const pass2 = password2.value;
-
-      if (!validatePasswordStrength(pass1)) {
-        feedback.textContent = "❌ Password must be at least 12 characters with uppercase, lowercase, number & symbol.";
-        feedback.className = "form-text text-danger";
-        signupBtn.disabled = true;
-      } else if (pass1 !== pass2) {
-        feedback.textContent = "⚠️ Passwords do not match.";
-        feedback.className = "form-text text-warning";
-        signupBtn.disabled = true;
-      } else {
-        feedback.textContent = "✅ Passwords match and meet strength requirements.";
-        feedback.className = "form-text text-success";
-        signupBtn.disabled = false;
-      }
-    }
-
-    password1.addEventListener('input', checkPasswords);
-    password2.addEventListener('input', checkPasswords);
-  </script>
-
 </body>
-
 </html>

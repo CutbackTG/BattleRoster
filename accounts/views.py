@@ -1,136 +1,51 @@
-from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib import messages
+from django.shortcuts import render, redirect
 from django.contrib.auth import login, logout, authenticate
-from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
-from game_characters.models import Character
-
-
-# Index view
-def index_view(request):
-    return render(request, "index.html")
-
-
-
-# Helper to safely convert numeric values
-def to_int(value, default=0):
-    try:
-        return int(value)
-    except (TypeError, ValueError):
-        return default
-
-
-# -----------------------------
-# Character management
-# -----------------------------
-def characters_view(request, pk=None):
-    editing = None
-
-    if request.user.is_authenticated:
-        characters = Character.objects.filter(player=request.user).order_by('name')
-    else:
-        characters = request.session.get("characters", [])
-
-    if pk is not None:
-        if request.user.is_authenticated:
-            editing = get_object_or_404(Character, pk=pk, player=request.user)
-        else:
-            if int(pk) >= len(characters):
-                messages.error(request, "Character not found.")
-                return redirect("characters")
-            editing = characters[int(pk)]
-
-    if request.method == "POST":
-        numeric_fields = ["level", "health", "mana", "strength", "dexterity",
-                          "constitution", "intelligence", "wisdom", "charisma"]
-        string_fields = ["name", "race", "class_type", "equipment", "weapons", "spells"]
-
-        data = {}
-        for field in numeric_fields:
-            data[field] = to_int(request.POST.get(field, ""), getattr(editing, field, 0) if editing and request.user.is_authenticated else 0)
-        for field in string_fields:
-            data[field] = request.POST.get(field, "").strip()
-
-        if editing:  # Update existing
-            if request.user.is_authenticated:
-                for key, value in data.items():
-                    setattr(editing, key, value)
-                editing.save()
-            else:
-                characters[int(pk)].update(data)
-                request.session["characters"] = characters
-            messages.success(request, f"Character '{data['name']}' updated successfully!")
-        else:  # Create new
-            if request.user.is_authenticated:
-                Character.objects.create(player=request.user, **data)
-            else:
-                if len(characters) >= 1:
-                    messages.info(request, "Please sign up or log in to create additional characters.")
-                    return redirect("/accounts/signup_login/?next=/characters/")
-                characters.append(data)
-                request.session["characters"] = characters
-            messages.success(request, f"Character '{data['name']}' created successfully!")
-
-        return redirect("characters")
-
-    attributes = ["strength", "dexterity", "constitution", "intelligence", "wisdom", "charisma"]
-    return render(request, "characters.html", {
-        "characters": characters,
-        "attributes": attributes,
-        "editing": editing,
-        "pk": pk
-    })
-
-
-def character_delete(request, pk):
-    if request.user.is_authenticated:
-        character = get_object_or_404(Character, pk=pk, player=request.user)
-        character.delete()
-    else:
-        characters = request.session.get("characters", [])
-        if int(pk) < len(characters):
-            characters.pop(int(pk))
-            request.session["characters"] = characters
-    messages.success(request, "Character deleted successfully!")
-    return redirect("characters")
-
+from django.contrib import messages
+from django.urls import reverse
+from .forms import CustomUserCreationForm, CustomAuthenticationForm
 
 def signup_login_view(request):
-    # Default forms
-    signup_form = UserCreationForm()
-    login_form = AuthenticationForm()
-    active_tab = 'signup'  # default tab
+    """
+    Combined view for user signup and login.
+    """
+    signup_form = CustomUserCreationForm()
+    login_form = CustomAuthenticationForm()
 
     if request.method == 'POST':
         action = request.POST.get('action')
-        active_tab = request.POST.get('active_tab', 'signup')
 
         if action == 'signup':
-            signup_form = UserCreationForm(request.POST)
+            signup_form = CustomUserCreationForm(request.POST)
             if signup_form.is_valid():
                 user = signup_form.save()
                 login(request, user)
                 messages.success(request, "Signup successful!")
-                return redirect(request.GET.get('next', '/characters/'))
+                next_url = request.GET.get('next', reverse('characters'))
+                return redirect(next_url)
             else:
-                messages.error(request, "Signup failed. Please check the form.")
+                messages.error(request, "Signup failed. Please correct the errors below.")
 
         elif action == 'login':
-            login_form = AuthenticationForm(data=request.POST)
+            login_form = CustomAuthenticationForm(data=request.POST)
             if login_form.is_valid():
                 login(request, login_form.get_user())
                 messages.success(request, "Login successful!")
-                return redirect(request.GET.get('next', '/characters/'))
+                next_url = request.GET.get('next', reverse('characters'))
+                return redirect(next_url)
             else:
                 messages.error(request, "Login failed. Please check your credentials.")
 
-    return render(request, 'signup_login.html', {
+    context = {
         'signup_form': signup_form,
         'login_form': login_form,
-        'active_tab': active_tab
-    })
+    }
+    return render(request, 'signup_login.html', context)
 
 
 def logout_view(request):
+    """
+    Log out the current user.
+    """
     logout(request)
     messages.success(request, "Logged out successfully!")
-    return redirect('/')
+    return redirect('home')
