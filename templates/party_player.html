@@ -1,58 +1,70 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="en-US">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>BattleRoster | Player Party</title>
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>BattleRoster | Player Party</title>
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 
 <body class="bg-dark text-light">
 
-<!-- Navbar -->
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-  <div class="container">
-    <a class="navbar-brand" href="{% url 'home' %}">
-      <img src="{% static 'images/battleroster-logo.png' %}" alt="BattleRoster Logo" height="50">
-    </a>
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container">
+      <!-- Logo -->
+      <a class="navbar-brand" href="{% url 'home' %}">
+        <img class="home" src="{% static 'images/battleroster-logo.png' %}" alt="BattleRoster Logo"
+          id="battleroster-logo">
+      </a>
 
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-      <span class="navbar-toggler-icon custom-toggler"></span>
-    </button>
+      <!-- Hamburger button -->
+      <button class="navbar-toggler ms-auto custom-toggler" type="button" data-bs-toggle="collapse"
+        data-bs-target="#navMenu" aria-controls="navMenu" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon custom-toggler"></span>
+      </button>
 
-    <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
-      <ul class="navbar-nav">
-        <li class="nav-item"><a class="nav-link" href="{% url 'characters' %}">Characters</a></li>
-        <li class="nav-item"><a class="nav-link active" href="{% url 'party' %}">Party</a></li>
-        <li class="nav-item"><a class="nav-link" href="{% url 'contact' %}">Contact</a></li>
-        {% if user.is_authenticated %}
-          <li class="nav-item"><a class="nav-link" href="{% url 'logout' %}">Log out</a></li>
-        {% else %}
-          <li class="nav-item"><a class="nav-link" href="{% url 'signup_login' %}">Sign-up / Log-in</a></li>
-        {% endif %}
-      </ul>
+      <!-- Navbar items -->
+      <div class="collapse navbar-collapse justify-content-end" id="navMenu">
+        <ul class="navbar-nav flex-column align-items-start">
+          <li class="nav-item"><a class="nav-link" href="{% url 'characters' %}"><i
+                class="fa-solid fa-user me-2 text-gold"></i>Characters</a></li>
+          <li class="nav-item"><a class="nav-link" href="{% url 'party' %}"><i
+                class="fa-solid fa-users me-2 text-gold"></i>Party</a></li>
+          {% if user.is_authenticated %}
+          <li class="nav-item"><a class="nav-link" href="{% url 'logout' %}"><i
+                class="fa-solid fa-right-from-bracket me-2 text-gold"></i>Log out</a></li>
+          {% else %}
+          <li class="nav-item"><a class="nav-link" href="{% url 'signup_login' %}"><i
+                class="fa-solid fa-save me-2 text-gold"></i>Sign-up / Log-in</a></li>
+          {% endif %}
+          <li class="nav-item"><a class="nav-link" href="{% url 'contact' %}"><i
+                class="fa-solid fa-scroll me-2 text-gold"></i>Contact</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <div class="container py-5">
+    <div class="p-5 bg-secondary bg-opacity-25 rounded">
+      <h1 class="text-center mb-4">Your Party</h1>
+      <p class="lead text-center">Welcome, adventurer! This is your <strong>Player Party</strong> page.</p>
+      <hr class="border-light">
+      <p class="text-center">You’re viewing the player’s version of the party page.</p>
+      <p class="text-center">When you create or join a party, your allies will be listed here!</p>
     </div>
   </div>
-</nav>
 
-<!-- Main Content -->
-<div class="container py-5">
-  <div class="p-5 bg-secondary bg-opacity-25 rounded">
-    <h1 class="text-center mb-4">Your Party</h1>
-    <p class="lead text-center">Welcome, adventurer! This is your <strong>Player Party</strong> page.</p>
-    <hr class="border-light">
-    <p class="text-center">You’re viewing the player’s version of the party page.</p>
-    <p class="text-center">When you create or join a party, your allies will be listed here!</p>
-  </div>
-</div>
+  <!-- Footer -->
+  <footer class="text-center mt-5 py-3 bg-dark border-top border-secondary">
+    <small>&copy; 2025 BattleRoster Tavern</small>
+  </footer>
 
-<!-- Footer -->
-<footer class="text-center mt-5 py-3 bg-dark border-top border-secondary">
-  <small>&copy; 2025 BattleRoster Tavern</small>
-</footer>
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
 </body>
+
 </html>
