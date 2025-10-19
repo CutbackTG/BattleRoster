@@ -4,78 +4,80 @@
   padding: 0;
   margin: 0;
   box-sizing: border-box;
-  }
+}
 
 html {
-scroll-behavior: smooth;
+  scroll-behavior: smooth;
 }
 
 body {
-background-color: #1e1e1e;
-color: gold;
-min-height: 100vh;
-display: flex;
-flex-direction: column;
-font-family: "Lato", sans-serif;
+  background-color: #1e1e1e;
+  color: gold;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  font-family: "Lato", sans-serif;
 }
 
 /* Typography */
 h1, h2, h3, h4, h5 {
-font-family: "Oswald", sans-serif;
-text-transform: uppercase;
-letter-spacing: 2px;
-color: gold;
-margin: 0.25rem 0;
+  font-family: "Oswald", sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: gold;
+  margin: 0.25rem 0;
 }
 
 strong {
-color: goldenrod;
+  color: goldenrod;
 }
 
 .form-text {
-color: white;
+  color: white;
 }
 
 /* Navbar */
 .navbar {
-background-color: #2a2a2a;
-border-bottom: 3px solid gold;
-box-shadow: 0 2px 8px rgba(255, 215, 0, 0.2);
+  background-color: #2a2a2a;
+  border-bottom: 3px solid gold;
+  box-shadow: 0 2px 8px rgba(255, 215, 0, 0.2);
 }
 
 .navbar-brand {
-display: flex;
-align-items: center;
+  display: flex;
+  align-items: center;
 }
 
 #battleroster-logo {
-width: 200px;
-height: auto;
-transition: transform 0.3s ease;
+  width: 200px;
+  height: auto;
+  transition: transform 0.3s ease;
 }
 
 #battleroster-logo:hover {
-transform: scale(1.05);
+  transform: scale(1.05);
 }
 
 .nav-link {
-color: gold !important;
-font-size: 1.2rem;
-margin: 0 0.5rem;
-transition: color 0.3s ease;
+  color: gold !important;
+  font-size: 1.2rem;
+  margin: 0 0.5rem;
+  transition: color 0.3s ease;
 }
 
 .nav-link:hover {
-color: goldenrod !important;
+  color: goldenrod !important;
 }
 
-/* Toggler Button */
+/* ---------------------- */
+/* Toggler Button (Hamburger) */
+/* ---------------------- */
 .custom-toggler.navbar-toggler {
-  border: 2px solid gold;     
-  border-radius: 8px;         
-  padding: 6px;               
-  width: 48px;                
-  height: 48px;               
+  border: 2px solid gold;
+  border-radius: 8px;
+  padding: 6px;
+  width: 48px;
+  height: 48px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -84,7 +86,6 @@ color: goldenrod !important;
   transition: all 0.3s ease;
 }
 
-/* Hamburger Bars */
 .custom-toggler .navbar-toggler-icon {
   position: relative;
   width: 24px;
@@ -94,6 +95,7 @@ color: goldenrod !important;
   transition: all 0.3s ease;
 }
 
+/* Top and Bottom Bars */
 .custom-toggler .navbar-toggler-icon::before,
 .custom-toggler .navbar-toggler-icon::after {
   content: "";
@@ -102,16 +104,16 @@ color: goldenrod !important;
   height: 2px;
   background-color: gold;
   border-radius: 1px;
+  left: 50%;
+  transform: translateX(-50%);
   transition: all 0.3s ease;
 }
 
-/* Top bar */
-.custom-toggler center .navbar-toggler-icon::before {
+.custom-toggler .navbar-toggler-icon::before {
   top: -8px;
 }
 
-/* Bottom bar */
-.custom-toggler center .navbar-toggler-icon::after {
+.custom-toggler .navbar-toggler-icon::after {
   top: 8px;
 }
 
@@ -122,233 +124,234 @@ color: goldenrod !important;
 
 .custom-toggler.active .navbar-toggler-icon::before {
   top: 0;
-  transform: rotate(45deg);
+  transform: translateX(-50%) rotate(45deg);
 }
 
 .custom-toggler.active .navbar-toggler-icon::after {
   top: 0;
-  transform: rotate(-45deg);
+  transform: translateX(-50%) rotate(-45deg);
 }
 
+/* ---------------------- */
 /* Mobile Navbar */
 @media (max-width: 991px) {
-.navbar-collapse {
-background-color: #2a2a2a;
-border: 1px solid gold;
-border-radius: 8px;
-margin-top: 0.5rem;
-padding: 1rem;
+  .navbar-collapse {
+    background-color: #2a2a2a;
+    border: 1px solid gold;
+    border-radius: 8px;
+    margin-top: 0.5rem;
+    padding: 1rem;
+  }
+
+  .navbar-nav {
+    text-align: right;
+  }
 }
 
-.navbar-nav {
-text-align: right;
-}
-}
-
+/* ---------------------- */
 /* Footer */
 #social-networks {
-background-color: #1a1a1a;
-display: flex;
-justify-content: space-evenly;
-align-items: center;
-padding: 1rem 0;
-list-style: none;
-margin-top: auto;
-border-top: 2px solid gold;
+  background-color: #1a1a1a;
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  padding: 1rem 0;
+  list-style: none;
+  margin-top: auto;
+  border-top: 2px solid gold;
 }
 
 #social-networks a {
-text-decoration: none;
-color: goldenrod;
-font-size: 2rem;
-transition: color 0.3s ease, transform 0.3s ease;
+  text-decoration: none;
+  color: goldenrod;
+  font-size: 2rem;
+  transition: color 0.3s ease, transform 0.3s ease;
 }
 
 #social-networks a:hover {
-color: gold;
-transform: scale(1.1);
+  color: gold;
+  transform: scale(1.1);
 }
 
 /* ---------------------- */
 /* Character Forms & Tabs */
 /* ---------------------- */
-
 form {
-background: url("/static/images/parchment-texture.jpg") no-repeat center/cover;
-border: 3px solid goldenrod;
-border-radius: 12px;
-padding: 2rem;
-color: #2b1a07;
-box-shadow: 0 0 25px rgba(255, 215, 0, 0.2);
-margin: 2rem auto;
-max-width: 900px;
+  background: url("/static/images/parchment-texture.jpg") no-repeat center/cover;
+  border: 3px solid goldenrod;
+  border-radius: 12px;
+  padding: 2rem;
+  color: #2b1a07;
+  box-shadow: 0 0 25px rgba(255, 215, 0, 0.2);
+  margin: 2rem auto;
+  max-width: 900px;
 }
 
 form label {
-font-weight: 600;
-color: #2b1a07;
-font-family: "Oswald", sans-serif;
+  font-weight: 600;
+  color: #2b1a07;
+  font-family: "Oswald", sans-serif;
 }
 
 .form-control {
-background-color: rgba(255, 255, 255, 0.9);
-border: 1px solid goldenrod;
-border-radius: 6px;
-color: #111;
+  background-color: rgba(255, 255, 255, 0.9);
+  border: 1px solid goldenrod;
+  border-radius: 6px;
+  color: #111;
 }
 
 .form-control:focus {
-border-color: gold;
-box-shadow: 0 0 8px rgba(255, 215, 0, 0.5);
+  border-color: gold;
+  box-shadow: 0 0 8px rgba(255, 215, 0, 0.5);
 }
 
 textarea.form-control {
-resize: vertical;
+  resize: vertical;
 }
 
 /* Sidebar Tabs */
 .sidebar .nav-link {
-background-color: #2a2a2a;
-border: 1px solid goldenrod;
-margin-bottom: 5px;
-color: gold;
-text-align: left;
-border-radius: 6px;
-transition: background-color 0.3s ease;
+  background-color: #2a2a2a;
+  border: 1px solid goldenrod;
+  margin-bottom: 5px;
+  color: gold;
+  text-align: left;
+  border-radius: 6px;
+  transition: background-color 0.3s ease;
 }
 
 .sidebar .nav-link.active,
 .sidebar .nav-link:hover {
-background-color: goldenrod;
-color: #1e1e1e;
+  background-color: goldenrod;
+  color: #1e1e1e;
 }
 
+/* ---------------------- */
 /* Buttons */
 .btn-primary {
-background-color: gold;
-color: #1e1e1e;
-border: none;
-transition: transform 0.2s ease;
+  background-color: gold;
+  color: #1e1e1e;
+  border: none;
+  transition: transform 0.2s ease;
 }
 
 .btn-primary:hover {
-background-color: goldenrod;
-transform: scale(1.05);
+  background-color: goldenrod;
+  transform: scale(1.05);
 }
 
 .btn-warning {
-background-color: goldenrod;
-color: #1e1e1e;
-border: none;
+  background-color: goldenrod;
+  color: #1e1e1e;
+  border: none;
 }
 
 .btn-warning:hover {
-background-color: gold;
+  background-color: gold;
 }
 
 .btn-danger {
-background-color: #a83232;
-border: none;
+  background-color: #a83232;
+  border: none;
 }
 
 .btn-danger:hover {
-background-color: #c94444;
+  background-color: #c94444;
 }
 
+/* ---------------------- */
 /* Character Cards */
-
 .character-grid {
-display: grid;
-/* grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); */
-gap: 1.5rem;
-margin-top: 2rem;
+  display: grid;
+  gap: 1.5rem;
+  margin-top: 2rem;
 }
 
 .card {
-background: url("/static/images/parchment-texture.jpg") no-repeat center/cover;
-color: #2b1a07;
-border: 2px solid goldenrod;
-border-radius: 12px;
-box-shadow: 0 4px 15px rgba(255, 215, 0, 0.2);
-transition: transform 0.2s ease-in-out, box-shadow 0.3s ease;
+  background: url("/static/images/parchment-texture.jpg") no-repeat center/cover;
+  color: #2b1a07;
+  border: 2px solid goldenrod;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(255, 215, 0, 0.2);
+  transition: transform 0.2s ease-in-out, box-shadow 0.3s ease;
 }
 
 .card:hover {
-transform: translateY(-6px);
-box-shadow: 0 6px 20px rgba(255, 215, 0, 0.4);
+  transform: translateY(-6px);
+  box-shadow: 0 6px 20px rgba(255, 215, 0, 0.4);
 }
 
 .card-title {
-font-family: "Oswald", sans-serif;
-border-bottom: 1px solid goldenrod;
-margin-bottom: 0.5rem;
-color: #4b3600;
+  font-family: "Oswald", sans-serif;
+  border-bottom: 1px solid goldenrod;
+  margin-bottom: 0.5rem;
+  color: #4b3600;
 }
 
 .card-text {
-font-family: "Lato", sans-serif;
-color: #3a2a00;
+  font-family: "Lato", sans-serif;
+  color: #3a2a00;
 }
 
+/* ---------------------- */
 /* Character Sheet Styles */
-
 .character-sheet {
-background: radial-gradient(ellipse farthest-corner at right bottom, #fedb37 0%, #fdb931 8%, #9f7928 30%, #8a6e2f 40%, transparent 80%),
-radial-gradient(ellipse farthest-corner at left top, #ffffff 0%, #ffffac 8%, #d1b464 25%, #5d4a1f 62.5%, #5d4a1f 100%);
-padding: 20px;
-border: 3px solid #333;
-border-radius: 10px;
-max-width: 1200px;
-margin: 2rem auto;
-color: #111;
+  background: radial-gradient(ellipse farthest-corner at right bottom, #fedb37 0%, #fdb931 8%, #9f7928 30%, #8a6e2f 40%, transparent 80%),
+              radial-gradient(ellipse farthest-corner at left top, #ffffff 0%, #ffffac 8%, #d1b464 25%, #5d4a1f 62.5%, #5d4a1f 100%);
+  padding: 20px;
+  border: 3px solid #333;
+  border-radius: 10px;
+  max-width: 1200px;
+  margin: 2rem auto;
+  color: #111;
 }
 
 .character-sheet h2, .character-sheet h3 {
-color: #2b1a07;
-margin-bottom: 0.5rem;
+  color: #2b1a07;
+  margin-bottom: 0.5rem;
 }
 
 .character-sheet .section {
-border: 2px solid #1e1e1e;
-padding: 10px;
-margin: 4px;
-background: #f8f0da;
-border-radius: 6px;
-margin-bottom: 1rem;
+  border: 2px solid #1e1e1e;
+  padding: 10px;
+  margin: 4px;
+  background: #f8f0da;
+  border-radius: 6px;
+  margin-bottom: 1rem;
 }
 
 .character-sheet .ability {
-text-align: center;
-border: 1px solid #aaa;
-background: #fafafa;
-border-radius: 6px;
-padding: 0.5rem;
+  text-align: center;
+  border: 1px solid #aaa;
+  background: #fafafa;
+  border-radius: 6px;
+  padding: 0.5rem;
 }
 
+/* ---------------------- */
 /* Alerts */
-
 .alert {
-padding: 1rem;
-border-radius: 6px;
+  padding: 1rem;
+  border-radius: 6px;
 }
 
 .alert-warning {
-background: #fff3cd;
-color: #856404;
+  background: #fff3cd;
+  color: #856404;
 }
 
+/* ---------------------- */
 /* Responsive Tweaks */
-
 @media (max-width: 768px) {
-.sheet-grid {
-grid-template-columns: 1fr;
-}
+  .sheet-grid {
+    grid-template-columns: 1fr;
+  }
 
-form {
-padding: 1.5rem;
-}
+  form {
+    padding: 1.5rem;
+  }
 
-.sidebar {
-margin-bottom: 2rem;
-}
+  .sidebar {
+    margin-bottom: 2rem;
+  }
 }
