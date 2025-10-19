@@ -12,30 +12,31 @@ def party_view(request):
 
 # List/create characters
 def characters_view(request):
+    # Determine current characters
     if request.user.is_authenticated:
         characters = Character.objects.filter(player=request.user).order_by('name')
     else:
         characters = request.session.get("characters", [])
 
     if request.method == "POST":
-        # Gather form data
         name = request.POST.get("name")
-        level = int(request.POST.get("level") or 1)
+        level = request.POST.get("level") or 1
         race = request.POST.get("race")
         class_type = request.POST.get("class_type")
-        health = int(request.POST.get("health") or 100)
-        mana = int(request.POST.get("mana") or 50)
-        strength = int(request.POST.get("strength") or 10)
-        dexterity = int(request.POST.get("dexterity") or 10)
-        constitution = int(request.POST.get("constitution") or 10)
-        intelligence = int(request.POST.get("intelligence") or 10)
-        wisdom = int(request.POST.get("wisdom") or 10)
-        charisma = int(request.POST.get("charisma") or 10)
+        health = request.POST.get("health") or 100
+        mana = request.POST.get("mana") or 50
+        strength = request.POST.get("strength") or 10
+        dexterity = request.POST.get("dexterity") or 10
+        constitution = request.POST.get("constitution") or 10
+        intelligence = request.POST.get("intelligence") or 10
+        wisdom = request.POST.get("wisdom") or 10
+        charisma = request.POST.get("charisma") or 10
         equipment = request.POST.get("equipment", "")
         weapons = request.POST.get("weapons", "")
         spells = request.POST.get("spells", "")
 
         if request.user.is_authenticated:
+            # Authenticated users can create freely
             Character.objects.create(
                 player=request.user,
                 name=name,
@@ -55,9 +56,10 @@ def characters_view(request):
                 spells=spells,
             )
         else:
+            # Anonymous users: only allow one character
             if len(characters) >= 1:
                 messages.info(request, "Please sign up or log in to create additional characters.")
-                return redirect("/accounts/signup_login/?next=/characters/characters/")
+                return redirect("/accounts/signup_login/?next=/characters/")
 
             temp_char = {
                 "name": name,
@@ -75,12 +77,6 @@ def characters_view(request):
                 "equipment": equipment,
                 "weapons": weapons,
                 "spells": spells,
-                # Optional defaults
-                "armor_class": int(request.POST.get("armor_class") or 10),
-                "initiative": int(request.POST.get("initiative") or 0),
-                "fortitude_save": int(request.POST.get("fortitude_save") or 0),
-                "reflex_save": int(request.POST.get("reflex_save") or 0),
-                "will_save": int(request.POST.get("will_save") or 0),
             }
             characters.append(temp_char)
             request.session["characters"] = characters
@@ -99,25 +95,24 @@ def character_update(request, pk):
         if int(pk) >= len(characters):
             messages.error(request, "Character not found.")
             return redirect("characters")
-        character = characters[pk]
+        character = characters[int(pk)]
 
     if request.method == "POST":
         fields = ["name", "level", "race", "class_type", "health", "mana",
                   "strength", "dexterity", "constitution", "intelligence",
-                  "wisdom", "charisma", "equipment", "weapons", "spells",
-                  "armor_class", "initiative", "fortitude_save", "reflex_save", "will_save"]
+                  "wisdom", "charisma", "equipment", "weapons", "spells"]
         for field in fields:
             value = request.POST.get(field)
             if value:
                 if request.user.is_authenticated:
-                    setattr(character, field, int(value) if field not in ["name", "race", "class_type", "equipment", "weapons", "spells"] else value)
+                    setattr(character, field, value)
                 else:
-                    character[field] = int(value) if field not in ["name", "race", "class_type", "equipment", "weapons", "spells"] else value
+                    character[field] = value
 
         if request.user.is_authenticated:
             character.save()
         else:
-            characters[pk] = character
+            characters[int(pk)] = character
             request.session["characters"] = characters
 
         messages.success(request, f"Character '{character['name'] if not request.user.is_authenticated else character.name}' updated successfully!")
