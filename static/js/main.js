@@ -26,6 +26,13 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
+  const toggler = document.querySelector('.custom-toggler');
+
+  toggler.addEventListener('click', () => {
+    toggler.classList.toggle('active');
+  });
+
+
   // Calculate D&D ability modifier
   function calculateModifier(score) {
     return Math.floor((score - 10) / 2);

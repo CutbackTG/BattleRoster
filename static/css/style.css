@@ -71,26 +71,65 @@ color: goldenrod !important;
 
 /* Toggler Button */
 .custom-toggler.navbar-toggler {
-  border: 2px solid gold;      /* thicker gold border */
-  border-radius: 8px;          /* rounded corners */
-  padding: 6px;                /* space inside button */
-  width: 48px;                 /* fixed width to fit bars neatly */
-  height: 48px;                /* fixed height to fit bars neatly */
+  border: 2px solid gold;     
+  border-radius: 8px;         
+  padding: 6px;               
+  width: 48px;                
+  height: 48px;               
   display: flex;
   align-items: center;
   justify-content: center;
+  background: transparent;
+  cursor: pointer;
+  transition: all 0.3s ease;
 }
 
 /* Hamburger Bars */
 .custom-toggler .navbar-toggler-icon {
-  background-image: none;
   position: relative;
   width: 24px;
   height: 2px;
   background-color: gold;
-  border-radius: 1px;          /* slightly rounded bars */
-  box-shadow: 0 6px 0 0 gold, 0 12px 0 0 gold; /* spacing between bars */
+  border-radius: 1px;
+  transition: all 0.3s ease;
 }
+
+.custom-toggler .navbar-toggler-icon::before,
+.custom-toggler .navbar-toggler-icon::after {
+  content: "";
+  position: absolute;
+  width: 24px;
+  height: 2px;
+  background-color: gold;
+  border-radius: 1px;
+  transition: all 0.3s ease;
+}
+
+/* Top bar */
+.custom-toggler .navbar-toggler-icon::before {
+  top: -8px;
+}
+
+/* Bottom bar */
+.custom-toggler .navbar-toggler-icon::after {
+  top: 8px;
+}
+
+/* Active state - transforms into a cross */
+.custom-toggler.active .navbar-toggler-icon {
+  background-color: transparent; /* hide middle bar */
+}
+
+.custom-toggler.active .navbar-toggler-icon::before {
+  top: 0;
+  transform: rotate(45deg);
+}
+
+.custom-toggler.active .navbar-toggler-icon::after {
+  top: 0;
+  transform: rotate(-45deg);
+}
+
 
 /* Mobile Navbar */
 @media (max-width: 991px) {
