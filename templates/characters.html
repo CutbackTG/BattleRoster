@@ -92,46 +92,29 @@
           <div class="tab-pane fade" id="attributes" role="tabpanel">
             <h4 class="mb-3">Core Attributes</h4>
             <div class="row">
-              {% for attr in "strength dexterity constitution intelligence wisdom charisma".split %}
               <div class="col-md-4 mb-3">
-                <label class="form-label">{{ attr|capfirst }}</label>
-                <div class="input-group">
-                  <input type="number" name="{{ attr }}" class="form-control attribute-input" min="1" max="20" value="10">
-                  <span class="input-group-text modifier-display">+0</span>
-                </div>
-              </div>
-              {% endfor %}
-            </div>
-
-            <h4 class="mb-3 mt-4">Combat Stats</h4>
-            <div class="row">
-              <div class="col-md-4 mb-3">
-                <label class="form-label">Armor Class (AC)</label>
-                <input type="number" name="armor_class" class="form-control" min="1" value="10">
+                <label class="form-label">Strength</label>
+                <input type="number" name="strength" class="form-control" min="1" max="20" value="10">
               </div>
               <div class="col-md-4 mb-3">
-                <label class="form-label">Hit Points (HP)</label>
-                <input type="number" name="health" class="form-control" min="1" value="10">
+                <label class="form-label">Dexterity</label>
+                <input type="number" name="dexterity" class="form-control" min="1" max="20" value="10">
               </div>
               <div class="col-md-4 mb-3">
-                <label class="form-label">Initiative</label>
-                <input type="number" name="initiative" class="form-control" value="0">
-              </div>
-            </div>
-
-            <h4 class="mb-3 mt-4">Saving Throws</h4>
-            <div class="row">
-              <div class="col-md-4 mb-3">
-                <label class="form-label">Fortitude</label>
-                <input type="number" name="fortitude_save" class="form-control" value="0">
+                <label class="form-label">Constitution</label>
+                <input type="number" name="constitution" class="form-control" min="1" max="20" value="10">
               </div>
               <div class="col-md-4 mb-3">
-                <label class="form-label">Reflex</label>
-                <input type="number" name="reflex_save" class="form-control" value="0">
+                <label class="form-label">Intelligence</label>
+                <input type="number" name="intelligence" class="form-control" min="1" max="20" value="10">
               </div>
               <div class="col-md-4 mb-3">
-                <label class="form-label">Will</label>
-                <input type="number" name="will_save" class="form-control" value="0">
+                <label class="form-label">Wisdom</label>
+                <input type="number" name="wisdom" class="form-control" min="1" max="20" value="10">
+              </div>
+              <div class="col-md-4 mb-3">
+                <label class="form-label">Charisma</label>
+                <input type="number" name="charisma" class="form-control" min="1" max="20" value="10">
               </div>
             </div>
           </div>
@@ -172,7 +155,7 @@
   <hr class="mt-5 mb-4">
   <h2>Your Characters</h2>
   {% if characters %}
-  <div class="row character-sheet">
+  <div class="row" .character-sheet>
     {% for c in characters %}
     <div class="col-md-4 mb-3">
       <div class="card text-light">
@@ -181,15 +164,9 @@
           <p class="card-text">Level {{ c.level }} — {{ c.class_type }}</p>
           <p class="card-text text-muted">HP: {{ c.health }} | Mana: {{ c.mana }}</p>
           <div class="d-flex justify-content-between mt-3">
-            {% if user.is_authenticated %}
-              <a href="{% url 'character_update' c.id %}" class="btn btn-sm btn-warning">Edit</a>
-              <a href="{% url 'character_delete' c.id %}" class="btn btn-sm btn-danger"
-                onclick="return confirm('Are you sure you want to delete this character?');">Delete</a>
-            {% else %}
-              <a href="{% url 'character_update' forloop.counter0 %}" class="btn btn-sm btn-warning">Edit</a>
-              <a href="{% url 'character_delete' forloop.counter0 %}" class="btn btn-sm btn-danger"
-                onclick="return confirm('Are you sure you want to delete this character?');">Delete</a>
-            {% endif %}
+            <a href="{% url 'character_update' c.id %}" class="btn btn-sm btn-warning">Edit</a>
+            <a href="{% url 'character_delete' c.id %}" class="btn btn-sm btn-danger"
+              onclick="return confirm('Are you sure you want to delete this character?');">Delete</a>
           </div>
         </div>
       </div>
