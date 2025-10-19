@@ -14,19 +14,16 @@
   <!-- Navbar -->
   <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container">
-      <!-- Logo -->
       <a class="navbar-brand" href="{% url 'home' %}">
         <img class="home" src="{% static 'images/battleroster-logo.png' %}" alt="BattleRoster Logo"
           id="battleroster-logo">
       </a>
 
-      <!-- Hamburger button -->
       <button class="navbar-toggler ms-auto custom-toggler" type="button" data-bs-toggle="collapse"
         data-bs-target="#navMenu" aria-controls="navMenu" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
 
-      <!-- Navbar items -->
       <div class="collapse navbar-collapse justify-content-end" id="navMenu">
         <ul class="navbar-nav flex-column align-items-start">
           <li class="nav-item"><a class="nav-link" href="{% url 'characters' %}"><i
@@ -95,48 +92,15 @@
           <div class="tab-pane fade" id="attributes" role="tabpanel">
             <h4 class="mb-3">Core Attributes</h4>
             <div class="row">
+              {% for attr in "strength dexterity constitution intelligence wisdom charisma".split %}
               <div class="col-md-4 mb-3">
-                <label class="form-label">Strength</label>
+                <label class="form-label">{{ attr|capfirst }}</label>
                 <div class="input-group">
-                  <input type="number" name="strength" class="form-control attribute-input" min="1" max="20" value="10">
+                  <input type="number" name="{{ attr }}" class="form-control attribute-input" min="1" max="20" value="10">
                   <span class="input-group-text modifier-display">+0</span>
                 </div>
               </div>
-              <div class="col-md-4 mb-3">
-                <label class="form-label">Dexterity</label>
-                <div class="input-group">
-                  <input type="number" name="dexterity" class="form-control attribute-input" min="1" max="20" value="10">
-                  <span class="input-group-text modifier-display">+0</span>
-                </div>
-              </div>
-              <div class="col-md-4 mb-3">
-                <label class="form-label">Constitution</label>
-                <div class="input-group">
-                  <input type="number" name="constitution" class="form-control attribute-input" min="1" max="20" value="10">
-                  <span class="input-group-text modifier-display">+0</span>
-                </div>
-              </div>
-              <div class="col-md-4 mb-3">
-                <label class="form-label">Intelligence</label>
-                <div class="input-group">
-                  <input type="number" name="intelligence" class="form-control attribute-input" min="1" max="20" value="10">
-                  <span class="input-group-text modifier-display">+0</span>
-                </div>
-              </div>
-              <div class="col-md-4 mb-3">
-                <label class="form-label">Wisdom</label>
-                <div class="input-group">
-                  <input type="number" name="wisdom" class="form-control attribute-input" min="1" max="20" value="10">
-                  <span class="input-group-text modifier-display">+0</span>
-                </div>
-              </div>
-              <div class="col-md-4 mb-3">
-                <label class="form-label">Charisma</label>
-                <div class="input-group">
-                  <input type="number" name="charisma" class="form-control attribute-input" min="1" max="20" value="10">
-                  <span class="input-group-text modifier-display">+0</span>
-                </div>
-              </div>
+              {% endfor %}
             </div>
 
             <h4 class="mb-3 mt-4">Combat Stats</h4>
@@ -208,7 +172,7 @@
   <hr class="mt-5 mb-4">
   <h2>Your Characters</h2>
   {% if characters %}
-  <div class="row" .character-sheet>
+  <div class="row character-sheet">
     {% for c in characters %}
     <div class="col-md-4 mb-3">
       <div class="card text-light">
@@ -217,9 +181,15 @@
           <p class="card-text">Level {{ c.level }} — {{ c.class_type }}</p>
           <p class="card-text text-muted">HP: {{ c.health }} | Mana: {{ c.mana }}</p>
           <div class="d-flex justify-content-between mt-3">
-            <a href="{% url 'character_update' c.id %}" class="btn btn-sm btn-warning">Edit</a>
-            <a href="{% url 'character_delete' c.id %}" class="btn btn-sm btn-danger"
-              onclick="return confirm('Are you sure you want to delete this character?');">Delete</a>
+            {% if user.is_authenticated %}
+              <a href="{% url 'character_update' c.id %}" class="btn btn-sm btn-warning">Edit</a>
+              <a href="{% url 'character_delete' c.id %}" class="btn btn-sm btn-danger"
+                onclick="return confirm('Are you sure you want to delete this character?');">Delete</a>
+            {% else %}
+              <a href="{% url 'character_update' forloop.counter0 %}" class="btn btn-sm btn-warning">Edit</a>
+              <a href="{% url 'character_delete' forloop.counter0 %}" class="btn btn-sm btn-danger"
+                onclick="return confirm('Are you sure you want to delete this character?');">Delete</a>
+            {% endif %}
           </div>
         </div>
       </div>

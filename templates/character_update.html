@@ -3,26 +3,36 @@
 {% block content %}
 <div class="container mt-5">
     <h2>Edit Character</h2>
-    <form method="post" action="{% url 'character_update' character.id %}" class="mt-3">
+    <form method="post"
+          action="{% if user.is_authenticated %}{% url 'character_update' character.id %}{% else %}{% url 'character_update' pk %}{% endif %}"
+          class="mt-3">
         {% csrf_token %}
 
         <!-- Basic Info -->
         <div class="mb-3">
             <label for="name" class="form-label">Character Name</label>
-            <input type="text" name="name" id="name" value="{{ character.name }}" class="form-control" required>
+            <input type="text" name="name" id="name"
+                   value="{{ character.name|default:character.name }}"
+                   class="form-control" required>
         </div>
         <div class="row">
             <div class="col-md-4 mb-3">
                 <label for="level" class="form-label">Level</label>
-                <input type="number" name="level" id="level" value="{{ character.level }}" class="form-control" min="1" required>
+                <input type="number" name="level" id="level"
+                       value="{{ character.level|default:character.level }}"
+                       class="form-control" min="1" required>
             </div>
             <div class="col-md-4 mb-3">
                 <label for="race" class="form-label">Race</label>
-                <input type="text" name="race" id="race" value="{{ character.race }}" class="form-control">
+                <input type="text" name="race" id="race"
+                       value="{{ character.race|default:character.race }}"
+                       class="form-control">
             </div>
             <div class="col-md-4 mb-3">
                 <label for="class_type" class="form-label">Class</label>
-                <input type="text" name="class_type" id="class_type" value="{{ character.class_type }}" class="form-control">
+                <input type="text" name="class_type" id="class_type"
+                       value="{{ character.class_type|default:character.class_type }}"
+                       class="form-control">
             </div>
         </div>
 
@@ -30,63 +40,53 @@
         <div class="row mt-3">
             <div class="col-md-4 mb-3">
                 <label for="health" class="form-label">Hit Points (HP)</label>
-                <input type="number" name="health" id="health" value="{{ character.health }}" class="form-control" min="0" required>
+                <input type="number" name="health" id="health"
+                       value="{{ character.health|default:character.health }}"
+                       class="form-control" min="0" required>
             </div>
             <div class="col-md-4 mb-3">
                 <label for="mana" class="form-label">Mana</label>
-                <input type="number" name="mana" id="mana" value="{{ character.mana }}" class="form-control" min="0">
+                <input type="number" name="mana" id="mana"
+                       value="{{ character.mana|default:character.mana }}"
+                       class="form-control" min="0">
             </div>
             <div class="col-md-4 mb-3">
                 <label for="armor_class" class="form-label">Armor Class (AC)</label>
-                <input type="number" name="armor_class" id="armor_class" value="{{ character.armor_class }}" class="form-control" min="0">
+                <input type="number" name="armor_class" id="armor_class"
+                       value="{{ character.armor_class|default:character.armor_class }}"
+                       class="form-control" min="0">
             </div>
         </div>
 
         <!-- Attributes -->
         <h4 class="mt-4 mb-3">Attributes</h4>
         <div class="row">
+            {% for attr in "strength dexterity constitution intelligence wisdom charisma".split %}
             <div class="col-md-4 mb-3">
-                <label for="strength" class="form-label">Strength</label>
-                <input type="number" name="strength" id="strength" value="{{ character.strength }}" class="form-control" min="1" max="20">
+                <label for="{{ attr }}" class="form-label">{{ attr|capfirst }}</label>
+                <input type="number" name="{{ attr }}" id="{{ attr }}"
+                       value="{{ character[attr]|default:character[attr] }}"
+                       class="form-control" min="1" max="20">
             </div>
-            <div class="col-md-4 mb-3">
-                <label for="dexterity" class="form-label">Dexterity</label>
-                <input type="number" name="dexterity" id="dexterity" value="{{ character.dexterity }}" class="form-control" min="1" max="20">
-            </div>
-            <div class="col-md-4 mb-3">
-                <label for="constitution" class="form-label">Constitution</label>
-                <input type="number" name="constitution" id="constitution" value="{{ character.constitution }}" class="form-control" min="1" max="20">
-            </div>
-            <div class="col-md-4 mb-3">
-                <label for="intelligence" class="form-label">Intelligence</label>
-                <input type="number" name="intelligence" id="intelligence" value="{{ character.intelligence }}" class="form-control" min="1" max="20">
-            </div>
-            <div class="col-md-4 mb-3">
-                <label for="wisdom" class="form-label">Wisdom</label>
-                <input type="number" name="wisdom" id="wisdom" value="{{ character.wisdom }}" class="form-control" min="1" max="20">
-            </div>
-            <div class="col-md-4 mb-3">
-                <label for="charisma" class="form-label">Charisma</label>
-                <input type="number" name="charisma" id="charisma" value="{{ character.charisma }}" class="form-control" min="1" max="20">
-            </div>
+            {% endfor %}
         </div>
 
         <!-- Equipment -->
         <div class="mb-3 mt-4">
             <label for="equipment" class="form-label">Equipment</label>
-            <textarea name="equipment" id="equipment" class="form-control" rows="3">{{ character.equipment }}</textarea>
+            <textarea name="equipment" id="equipment" class="form-control" rows="3">{{ character.equipment|default:character.equipment }}</textarea>
         </div>
 
         <!-- Weapons -->
         <div class="mb-3">
             <label for="weapons" class="form-label">Weapons</label>
-            <textarea name="weapons" id="weapons" class="form-control" rows="3">{{ character.weapons }}</textarea>
+            <textarea name="weapons" id="weapons" class="form-control" rows="3">{{ character.weapons|default:character.weapons }}</textarea>
         </div>
 
         <!-- Spells -->
         <div class="mb-3">
             <label for="spells" class="form-label">Spells</label>
-            <textarea name="spells" id="spells" class="form-control" rows="3">{{ character.spells }}</textarea>
+            <textarea name="spells" id="spells" class="form-control" rows="3">{{ character.spells|default:character.spells }}</textarea>
         </div>
 
         <button type="submit" class="btn btn-success">Save Changes</button>

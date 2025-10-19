@@ -1,5 +1,4 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from .models import Character
 
@@ -12,81 +11,130 @@ def party_view(request):
     return render(request, "party.html")
 
 # List/create characters
-@login_required
 def characters_view(request):
-    characters = Character.objects.filter(player=request.user).order_by('name')
+    if request.user.is_authenticated:
+        characters = Character.objects.filter(player=request.user).order_by('name')
+    else:
+        characters = request.session.get("characters", [])
 
     if request.method == "POST":
+        # Gather form data
         name = request.POST.get("name")
-        level = request.POST.get("level") or 1
+        level = int(request.POST.get("level") or 1)
         race = request.POST.get("race")
         class_type = request.POST.get("class_type")
-        health = request.POST.get("health") or 100
-        mana = request.POST.get("mana") or 50
-        strength = request.POST.get("strength") or 10
-        dexterity = request.POST.get("dexterity") or 10
-        constitution = request.POST.get("constitution") or 10
-        intelligence = request.POST.get("intelligence") or 10
-        wisdom = request.POST.get("wisdom") or 10
-        charisma = request.POST.get("charisma") or 10
+        health = int(request.POST.get("health") or 100)
+        mana = int(request.POST.get("mana") or 50)
+        strength = int(request.POST.get("strength") or 10)
+        dexterity = int(request.POST.get("dexterity") or 10)
+        constitution = int(request.POST.get("constitution") or 10)
+        intelligence = int(request.POST.get("intelligence") or 10)
+        wisdom = int(request.POST.get("wisdom") or 10)
+        charisma = int(request.POST.get("charisma") or 10)
         equipment = request.POST.get("equipment", "")
         weapons = request.POST.get("weapons", "")
         spells = request.POST.get("spells", "")
 
-        Character.objects.create(
-            player=request.user,
-            name=name,
-            level=level,
-            race=race,
-            class_type=class_type,
-            health=health,
-            mana=mana,
-            strength=strength,
-            dexterity=dexterity,
-            constitution=constitution,
-            intelligence=intelligence,
-            wisdom=wisdom,
-            charisma=charisma,
-            equipment=equipment,
-            weapons=weapons,
-            spells=spells,
-        )
+        if request.user.is_authenticated:
+            Character.objects.create(
+                player=request.user,
+                name=name,
+                level=level,
+                race=race,
+                class_type=class_type,
+                health=health,
+                mana=mana,
+                strength=strength,
+                dexterity=dexterity,
+                constitution=constitution,
+                intelligence=intelligence,
+                wisdom=wisdom,
+                charisma=charisma,
+                equipment=equipment,
+                weapons=weapons,
+                spells=spells,
+            )
+        else:
+            if len(characters) >= 1:
+                messages.info(request, "Please sign up or log in to create additional characters.")
+                return redirect("/accounts/signup_login/?next=/characters/characters/")
+
+            temp_char = {
+                "name": name,
+                "level": level,
+                "race": race,
+                "class_type": class_type,
+                "health": health,
+                "mana": mana,
+                "strength": strength,
+                "dexterity": dexterity,
+                "constitution": constitution,
+                "intelligence": intelligence,
+                "wisdom": wisdom,
+                "charisma": charisma,
+                "equipment": equipment,
+                "weapons": weapons,
+                "spells": spells,
+                # Optional defaults
+                "armor_class": int(request.POST.get("armor_class") or 10),
+                "initiative": int(request.POST.get("initiative") or 0),
+                "fortitude_save": int(request.POST.get("fortitude_save") or 0),
+                "reflex_save": int(request.POST.get("reflex_save") or 0),
+                "will_save": int(request.POST.get("will_save") or 0),
+            }
+            characters.append(temp_char)
+            request.session["characters"] = characters
+
         messages.success(request, f"Character '{name}' created successfully!")
         return redirect("characters")
 
     return render(request, "characters.html", {"characters": characters})
 
 # Update a character
-@login_required
 def character_update(request, pk):
-    character = get_object_or_404(Character, pk=pk, player=request.user)
+    if request.user.is_authenticated:
+        character = get_object_or_404(Character, pk=pk, player=request.user)
+    else:
+        characters = request.session.get("characters", [])
+        if int(pk) >= len(characters):
+            messages.error(request, "Character not found.")
+            return redirect("characters")
+        character = characters[pk]
 
     if request.method == "POST":
-        character.name = request.POST.get("name")
-        character.level = request.POST.get("level") or 1
-        character.race = request.POST.get("race")
-        character.class_type = request.POST.get("class_type")
-        character.health = request.POST.get("health") or 100
-        character.mana = request.POST.get("mana") or 50
-        character.strength = request.POST.get("strength") or 10
-        character.dexterity = request.POST.get("dexterity") or 10
-        character.constitution = request.POST.get("constitution") or 10
-        character.intelligence = request.POST.get("intelligence") or 10
-        character.wisdom = request.POST.get("wisdom") or 10
-        character.charisma = request.POST.get("charisma") or 10
-        character.equipment = request.POST.get("equipment", "")
-        character.weapons = request.POST.get("weapons", "")
-        character.spells = request.POST.get("spells", "")
-        character.save()
-        messages.success(request, f"Character '{character.name}' updated successfully!")
+        fields = ["name", "level", "race", "class_type", "health", "mana",
+                  "strength", "dexterity", "constitution", "intelligence",
+                  "wisdom", "charisma", "equipment", "weapons", "spells",
+                  "armor_class", "initiative", "fortitude_save", "reflex_save", "will_save"]
+        for field in fields:
+            value = request.POST.get(field)
+            if value:
+                if request.user.is_authenticated:
+                    setattr(character, field, int(value) if field not in ["name", "race", "class_type", "equipment", "weapons", "spells"] else value)
+                else:
+                    character[field] = int(value) if field not in ["name", "race", "class_type", "equipment", "weapons", "spells"] else value
+
+        if request.user.is_authenticated:
+            character.save()
+        else:
+            characters[pk] = character
+            request.session["characters"] = characters
+
+        messages.success(request, f"Character '{character['name'] if not request.user.is_authenticated else character.name}' updated successfully!")
         return redirect("characters")
 
-    return render(request, "character_update.html", {"character": character})
+    return render(request, "character_update.html", {"character": character, "pk": pk})
 
 # Delete a character
-@login_required
 def character_delete(request, pk):
-    character = get_object_or_404(Character, pk=pk, player=request.user)
-    character.delete()
-    messages.success(request, f"Character '{character.name}' deleted successfully!")
+    if request.user.is_authenticated:
+        character = get_object_or_404(Character, pk=pk, player=request.user)
+        character.delete()
+    else:
+        characters = request.session.get("characters", [])
+        if int(pk) < len(characters):
+            characters.pop(int(pk))
+            request.session["characters"] = characters
+
+    messages.success(request, "Character deleted successfully!")
     return redirect("characters")
