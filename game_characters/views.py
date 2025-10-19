@@ -89,7 +89,9 @@ def characters_view(request):
         messages.success(request, f"Character '{name}' created successfully!")
         return redirect("characters")
 
-    return render(request, "characters.html", {"characters": characters})
+    attributes = ["strength", "dexterity", "constitution", "intelligence", "wisdom", "charisma"]
+    return render(request, "characters.html", {"characters": characters, "attributes": attributes})
+
 
 # Update a character
 def character_update(request, pk):
@@ -127,7 +129,10 @@ def character_update(request, pk):
         messages.success(request, f"Character '{name}' updated successfully!")
         return redirect("characters")
 
-    return render(request, "character_update.html", {"character": character, "pk": pk})
+    attributes = ["strength", "dexterity", "constitution", "intelligence", "wisdom", "charisma"]
+    return render(request, "character_update.html", {"character": character, "pk": pk, "attributes": attributes})
+
+
 
 # Delete a character
 def character_delete(request, pk):
