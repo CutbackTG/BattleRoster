@@ -117,7 +117,7 @@ def signup_login_view(request):
     else:
         form = UserCreationForm()
 
-    return render(request, 'accounts/signup_login.html', {'form': form})
+    return render(request, 'signup_login.html', {'form': form})
 
 # -----------------------------
 # Logout
