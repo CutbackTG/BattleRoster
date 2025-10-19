@@ -1,9 +1,8 @@
 from django.urls import path
-from . import views
+from .views import characters_view, character_delete
 
 urlpatterns = [
-    path('', views.characters_view, name='characters'),
-    path('<int:pk>/', views.characters_view, name='edit_character'),
-    path('delete/<int:pk>/', views.character_delete, name='delete_character'),
-    path('party/', views.party_view, name='party'),
+    path('', characters_view, name='characters'),                 # list / create
+    path('<int:pk>/', characters_view, name='characters_edit'),   # edit
+    path('<int:pk>/delete/', character_delete, name='character_delete'),  # delete
 ]
