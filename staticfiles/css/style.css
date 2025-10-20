@@ -20,11 +20,19 @@ body {
 }
 
 /* Typography */
-h1, h2, h3, h4, h5 {
+h1, h2, h3, h5 {
   font-family: "Oswald", sans-serif;
   text-transform: uppercase;
   letter-spacing: 2px;
   color: gold;
+  margin: 0.25rem 0;
+}
+
+h4 {
+  font-family: "Oswald", sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: saddlebrown;
   margin: 0.25rem 0;
 }
 
@@ -33,7 +41,7 @@ strong {
 }
 
 .form-text {
-  color: white;
+  color: rgb(0, 0, 0);
 }
 
 /* Navbar */
@@ -95,7 +103,6 @@ strong {
   transition: all 0.3s ease;
 }
 
-/* Top and Bottom Bars */
 .custom-toggler .navbar-toggler-icon::before,
 .custom-toggler .navbar-toggler-icon::after {
   content: "";
@@ -117,9 +124,8 @@ strong {
   top: 8px;
 }
 
-/* Active state - transforms into a cross */
 .custom-toggler.active .navbar-toggler-icon {
-  background-color: transparent; /* hide middle bar */
+  background-color: transparent;
 }
 
 .custom-toggler.active .navbar-toggler-icon::before {
@@ -340,7 +346,141 @@ textarea.form-control {
   color: #856404;
 }
 
-/* ---------------------- */
+/* Dice Roller Styles */
+.dice-roller-container {
+  max-width: 700px;
+  margin: 2rem auto;
+  text-align: center;
+}
+
+.dice-toggle-btn {
+  background: linear-gradient(145deg, goldenrod, gold);
+  color: #1e1e1e;
+  font-weight: 700;
+  font-family: "Oswald", sans-serif;
+  text-transform: uppercase;
+  border: 2px solid #4b3600;
+  border-radius: 8px;
+  padding: 0.6rem 1.5rem;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 3px 8px rgba(255, 215, 0, 0.3);
+}
+
+.dice-toggle-btn:hover {
+  background: gold;
+  transform: scale(1.05);
+}
+
+.dice-roller-panel {
+  background: url("/static/images/parchment-texture.jpg") no-repeat center/cover;
+  border: 3px solid goldenrod;
+  border-radius: 12px;
+  margin-top: 1rem;
+  padding: 1.5rem 2rem;
+  color: #2b1a07;
+  box-shadow: 0 0 20px rgba(255, 215, 0, 0.25);
+  overflow: hidden;
+  max-height: 0;
+  opacity: 0;
+  transform: scaleY(0.9);
+  transform-origin: top;
+  transition: all 0.5s ease;
+}
+
+.dice-roller-panel.open {
+  max-height: 600px;
+  opacity: 1;
+  transform: scaleY(1);
+}
+
+.dice-roller-form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.dice-select-group {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.dice-select-group select {
+  background-color: rgba(255, 255, 255, 0.9);
+  border: 1px solid goldenrod;
+  border-radius: 6px;
+  padding: 0.4rem 0.6rem;
+  color: #111;
+  font-family: "Lato", sans-serif;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.dice-select-group select:hover,
+.dice-select-group select:focus {
+  border-color: gold;
+  box-shadow: 0 0 8px rgba(255, 215, 0, 0.5);
+}
+
+/* Dice Results Box */
+.dice-results {
+  background-color: rgba(255, 255, 255, 0.85);
+  border: 2px solid goldenrod;
+  border-radius: 8px;
+  margin-top: 1.5rem;
+  padding: 1rem;
+  color: #2b1a07;
+  box-shadow: inset 0 0 10px rgba(255, 215, 0, 0.2);
+  animation: none;
+}
+
+.dice-results.active {
+  animation: glowPulse 1.8s ease-out;
+}
+
+/* Glow Animation */
+@keyframes glowPulse {
+  0% {
+    box-shadow: 0 0 0px rgba(255, 215, 0, 0.2);
+  }
+  30% {
+    box-shadow: 0 0 20px rgba(255, 215, 0, 0.7), 0 0 40px rgba(255, 215, 0, 0.5);
+  }
+  60% {
+    box-shadow: 0 0 25px rgba(255, 215, 0, 0.9), 0 0 50px rgba(255, 215, 0, 0.6);
+  }
+  100% {
+    box-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
+  }
+}
+
+.dice-results h3 {
+  color: #4b3600;
+  text-transform: uppercase;
+}
+
+.dice-results ul {
+  list-style: none;
+  padding: 0;
+  margin: 0.5rem 0;
+}
+
+.dice-results li {
+  margin: 0.25rem 0;
+  font-weight: 600;
+}
+
+.dice-results h4 {
+  color: #4b3600;
+  font-weight: 700;
+  margin-top: 0.5rem;
+}
+
 /* Responsive Tweaks */
 @media (max-width: 768px) {
   .sheet-grid {
@@ -355,3 +495,27 @@ textarea.form-control {
     margin-bottom: 2rem;
   }
 }
+
+
+/* Critical Hit Sparkle */
+@keyframes criticalSparkle {
+  0% {
+    text-shadow: 0 0 5px gold, 0 0 10px goldenrod, 0 0 20px gold;
+    transform: scale(1);
+  }
+  50% {
+    text-shadow: 0 0 20px gold, 0 0 40px goldenrod, 0 0 60px gold;
+    transform: scale(1.2);
+  }
+  100% {
+    text-shadow: 0 0 5px gold, 0 0 10px goldenrod;
+    transform: scale(1);
+  }
+}
+
+.dice-results h4.critical {
+  animation: criticalSparkle 1.5s ease-in-out;
+  color: gold;
+  font-weight: 800;
+}
+
