@@ -1,6 +1,29 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from .models import Character
+import random
+from django import forms
+
+# ---------- Dice Roller Setup ----------
+
+DICE_CHOICES = [
+    (3, 'D3'),
+    (4, 'D4'),
+    (6, 'D6'),
+    (7, 'D7'),
+    (8, 'D8'),
+    (10, 'D10'),
+    (12, 'D12'),
+    (20, 'D20'),
+]
+
+class DiceRollForm(forms.Form):
+    die1 = forms.ChoiceField(choices=DICE_CHOICES, required=False)
+    die2 = forms.ChoiceField(choices=DICE_CHOICES, required=False)
+    die3 = forms.ChoiceField(choices=DICE_CHOICES, required=False)
+
+
+# ---------- Main Views ----------
 
 def index_view(request):
     return render(request, "index.html")
@@ -12,7 +35,8 @@ def to_int(value, default=0):
     except (TypeError, ValueError):
         return default
 
-# List/create/update characters
+
+# List/create/update characters + dice roller
 def characters_view(request, pk=None):
     # Get user characters or session characters
     if request.user.is_authenticated:
@@ -31,7 +55,20 @@ def characters_view(request, pk=None):
                 messages.error(request, "Character not found.")
                 return redirect("characters")
 
-    if request.method == "POST":
+    # ---------- Dice Roller Logic ----------
+    results = []
+    total = None
+    dice_form = DiceRollForm(request.POST or None)
+
+    if request.method == "POST" and "roll_dice" in request.POST:
+        if dice_form.is_valid():
+            dice = [dice_form.cleaned_data.get(f'die{i}') for i in range(1, 4)]
+            dice = [int(d) for d in dice if d]
+            results = [random.randint(1, d) for d in dice]
+            total = sum(results)
+
+    # ---------- Character Save/Update Logic ----------
+    elif request.method == "POST":
         fields = {
             "name": request.POST.get("name", "").strip(),
             "level": to_int(request.POST.get("level"), 1),
@@ -73,7 +110,7 @@ def characters_view(request, pk=None):
 
         return redirect("characters")
 
-    # List of attributes for template
+    # ---------- Context for Template ----------
     attributes = ["strength", "dexterity", "constitution", "intelligence", "wisdom", "charisma"]
     return render(
         request,
@@ -83,8 +120,12 @@ def characters_view(request, pk=None):
             "attributes": attributes,
             "editing": editing,
             "pk": pk,
+            "dice_form": dice_form,
+            "results": results,
+            "total": total,
         }
     )
+
 
 # Delete a character
 def character_delete(request, pk):
@@ -99,6 +140,7 @@ def character_delete(request, pk):
 
     messages.success(request, "Character deleted successfully!")
     return redirect("characters")
+
 
 # Party view (show all characters in user's party)
 def party_view(request):

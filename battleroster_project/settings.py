@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'sheets',
+    'dice_roller',
 
     # Your apps
     'accounts',
