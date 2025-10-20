@@ -21,7 +21,7 @@ body {
 }
 
 /* Typography */
-h1, h2, h3, h5 {
+h1, h2, h5 {
   font-family: "Oswald", sans-serif;
   text-transform: uppercase;
   letter-spacing: 2px;
@@ -29,7 +29,7 @@ h1, h2, h3, h5 {
   margin: 0.25rem 0;
 }
 
-h4 {
+h3, h4 {
   font-family: "Oswald", sans-serif;
   text-transform: uppercase;
   letter-spacing: 2px;
@@ -404,7 +404,6 @@ textarea.form-control {
   100% { opacity: 0; transform: translate(var(--x), var(--y)) scale(0.5); }
 }
 
-/* ======================= */
 /* Responsive */
 @media (max-width: 768px) {
   .left-column-dice { width: 100%; }
