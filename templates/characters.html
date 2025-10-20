@@ -10,9 +10,7 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="{% static 'css/style.css' %}">
   <style>
-    /* ---------------------- */
-    /* Dice Roller specific */
-    /* ---------------------- */
+    /* Dice Roller specific styles omitted for brevity */
     .left-column-dice {
       margin-top: 1rem;
     }
@@ -182,15 +180,15 @@
                     <option value="12">D12</option>
                     <option value="20">D20</option>
                   </select>
-                  <button class="btn-small" type="button" data-die="{{ i }}">Roll</button>
+                  <!-- Wrap i in quotes and parse in JS -->
+                  <button class="btn-small" type="button" data-die="{{ i }}"
+                    onclick="rollSingle('{{ i }}')">Roll</button>
                 </div>
                 {% endfor %}
               </div>
-
               <div class="mt-2">
                 <button class="btn-primary btn-roll-all" type="button" onclick="rollAll()">🎲 Roll All</button>
               </div>
-
               <div class="dice-results" id="dice-results">
                 <h3>Results</h3>
                 <ul id="dice-results-list"></ul>
@@ -199,105 +197,111 @@
             </div>
           </div>
         </section>
-
-        <script>
-          function rollDie(sides) {
-            return Math.floor(Math.random() * sides) + 1;
-          }
-
-          function rollSingle(i) {
-            const select = document.getElementById('die' + i);
-            if (!select) return; // Safety check
-
-            const sides = parseInt(select.value, 10);
-            if (isNaN(sides)) return; // Safety check
-
-            const result = rollDie(sides);
-
-            const resultList = document.getElementById('dice-results-list');
-            let li = document.getElementById('result-item-' + i);
-            if (!li) {
-              li = document.createElement('li');
-              li.id = 'result-item-' + i;
-              resultList.appendChild(li);
-            }
-            li.textContent = `Die ${i} (${sides}): ${result}`;
-
-            updateTotal();
-          }
-
-          function rollAll() {
-            // Loop over the three dice explicitly
-            for (let i = 1; i <= 3; i++) {
-              rollSingle(i);
-            }
-          }
-
-          function updateTotal() {
-            const resultList = document.getElementById('dice-results-list');
-            if (!resultList) return;
-
-            let total = 0;
-            resultList.querySelectorAll('li').forEach(li => {
-              const value = parseInt(li.textContent.split(': ')[1], 10);
-              if (!isNaN(value)) total += value;
-            });
-
-            const totalEl = document.getElementById('dice-total');
-            if (totalEl) totalEl.textContent = `Total: ${total}`;
-          }
-        </script>
-
-
-        <!-- Character Form -->
-        <div class="col-md-9">
-          <form method="POST">
-            {% csrf_token %}
-            <div class="tab-content" id="character-tabs-content">
-              {% include 'character_form_tabs.html' %}
-            </div>
-            <div class="mt-3 bottom-center">
-              <button type="submit" class="btn btn-primary">
-                {% if editing %}Update Character{% else %}Save Character{% endif %}
-              </button>
-            </div>
-          </form>
-        </div>
       </div>
 
-      <!-- Character List -->
-      <hr class="mt-5 mb-4">
-      <h2>Your Characters</h2>
-      {% if characters %}
-      <div class="row character-grid">
-        {% for c in characters %}
-        <div class="col-md-4 mb-3">
-          <div class="card bg-dark text-light parchment-card">
-            <div class="card-body">
-              <h5 class="card-title">{{ c.name }}</h5>
-              <p class="card-text">Level {{ c.level }} — {{ c.class_type }}</p>
-              <p class="card-text text-muted">HP: {{ c.health }} | Mana: {{ c.mana }}</p>
-              <div class="d-flex justify-content-between mt-3">
-                {% if user.is_authenticated %}
-                <a href="{% url 'characters_edit' c.id %}" class="btn btn-sm btn-warning">Edit</a>
-                <a href="{% url 'character_delete' c.id %}" class="btn btn-sm btn-danger"
-                  onclick="return confirm('Are you sure you want to delete this character?');">Delete</a>
-                {% endif %}
+      <!-- Character Form -->
+      <div class="col-md-9">
+        <form method="POST">
+          {% csrf_token %}
+          <div class="tab-content" id="character-tabs-content">
+            <!-- Basic Info Tab -->
+            <div class="tab-pane fade show active" id="basic" role="tabpanel">
+              <div class="mb-3">
+                <label for="id_name" class="form-label">Name</label>
+                <input type="text" name="name" id="id_name" class="form-control"
+                  value="{{ character.name|default_if_none:'' }}">
+              </div>
+              <div class="mb-3">
+                <label for="id_class_type" class="form-label">Class</label>
+                <input type="text" name="class_type" id="id_class_type" class="form-control"
+                  value="{{ character.class_type|default_if_none:'' }}">
+              </div>
+            </div>
+
+            <!-- Attributes Tab -->
+            <div class="tab-pane fade" id="attributes" role="tabpanel">
+              <div class="mb-3">
+                <label for="id_health" class="form-label">Health</label>
+                <input type="number" name="health" id="id_health" class="form-control"
+                  value="{{ character.health|default_if_none:'' }}">
+              </div>
+              <div class="mb-3">
+                <label for="id_mana" class="form-label">Mana</label>
+                <input type="number" name="mana" id="id_mana" class="form-control"
+                  value="{{ character.mana|default_if_none:'' }}">
+              </div>
+            </div>
+
+            <!-- Equipment Tab -->
+            <div class="tab-pane fade" id="equipment" role="tabpanel">
+              <div class="mb-3">
+                <label for="id_equipment" class="form-label">Equipment</label>
+                <textarea name="equipment" id="id_equipment"
+                  class="form-control">{{ character.equipment|default_if_none:'' }}</textarea>
+              </div>
+            </div>
+
+            <!-- Weapons Tab -->
+            <div class="tab-pane fade" id="weapons" role="tabpanel">
+              <div class="mb-3">
+                <label for="id_weapons" class="form-label">Weapons</label>
+                <textarea name="weapons" id="id_weapons"
+                  class="form-control">{{ character.weapons|default_if_none:'' }}</textarea>
+              </div>
+            </div>
+
+            <!-- Spells Tab -->
+            <div class="tab-pane fade" id="spells" role="tabpanel">
+              <div class="mb-3">
+                <label for="id_spells" class="form-label">Spells</label>
+                <textarea name="spells" id="id_spells"
+                  class="form-control">{{ character.spells|default_if_none:'' }}</textarea>
               </div>
             </div>
           </div>
-        </div>
-        {% endfor %}
+
+          <div class="mt-3 bottom-center">
+            <button type="submit" class="btn btn-primary">
+              {% if editing %}Update Character{% else %}Save Character{% endif %}
+            </button>
+          </div>
+        </form>
       </div>
-      {% else %}
-      <p>No characters yet — create one above!</p>
-      {% endif %}
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="{% static 'js/main.js' %}"></script>
-    <script src="{% static 'js/dice_roller.js' %}"></script>
-    <script src="https://kit.fontawesome.com/f84e35c3bf.js" crossorigin="anonymous"></script>
+    <!-- Character List -->
+    <hr class="mt-5 mb-4">
+    <h2>Your Characters</h2>
+    {% if characters %}
+    <div class="row character-grid">
+      {% for c in characters %}
+      <div class="col-md-4 mb-3">
+        <div class="card bg-dark text-light parchment-card">
+          <div class="card-body">
+            <h5 class="card-title">{{ c.name }}</h5>
+            <p class="card-text">Level {{ c.level }} — {{ c.class_type }}</p>
+            <p class="card-text text-muted">HP: {{ c.health }} | Mana: {{ c.mana }}</p>
+            <div class="d-flex justify-content-between mt-3">
+              {% if user.is_authenticated %}
+              <a href="{% url 'characters_edit' c.id %}" class="btn btn-sm btn-warning">Edit</a>
+              <a href="{% url 'character_delete' c.id %}" class="btn btn-sm btn-danger"
+                onclick="return confirm('Are you sure you want to delete this character?');">Delete</a>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    {% else %}
+    <p>No characters yet — create one above!</p>
+    {% endif %}
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="{% static 'js/main.js' %}"></script>
+  <script src="{% static 'js/dice_roller.js' %}"></script>
+  <script src="https://kit.fontawesome.com/f84e35c3bf.js" crossorigin="anonymous"></script>
 </body>
 
 </html>

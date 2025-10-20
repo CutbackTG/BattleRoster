@@ -6,14 +6,28 @@ function toggleDiceRoller() {
   panel.classList.toggle("open");
 }
 
-// ----------------------
 // Roll a single die
-// ----------------------
-function rollSingle(dieNum) {
-  const select = document.getElementById(`die${dieNum}`);
-  const sides = parseInt(select.value);
-  const roll = Math.floor(Math.random() * sides) + 1;
-  updateResults(dieNum, roll, sides);
+function rollSingle(i) {
+  i = parseInt(i, 10); // convert string to number
+
+  const select = document.getElementById('die' + i);
+  if (!select) return; // Safety check
+
+  const sides = parseInt(select.value, 10);
+  if (isNaN(sides)) return;
+
+  const result = rollDie(sides);
+
+  const resultList = document.getElementById('dice-results-list');
+  let li = document.getElementById('result-item-' + i);
+  if (!li) {
+    li = document.createElement('li');
+    li.id = 'result-item-' + i;
+    resultList.appendChild(li);
+  }
+  li.textContent = `Die ${i} (${sides}): ${result}`;
+
+  updateTotal();
 }
 
 // ----------------------
