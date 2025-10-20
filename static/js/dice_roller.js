@@ -1,6 +1,4 @@
-// ----------------------
 // Toggle dice roller panel
-// ----------------------
 function toggleDiceRoller() {
   const panel = document.getElementById("dice-roller-panel");
   panel.classList.toggle("open");
@@ -8,16 +6,17 @@ function toggleDiceRoller() {
 
 // Roll a single die
 function rollSingle(i) {
-  i = parseInt(i, 10); // convert string to number
+  i = parseInt(i, 10); // ensure number
 
   const select = document.getElementById('die' + i);
-  if (!select) return; // Safety check
+  if (!select) return;
 
   const sides = parseInt(select.value, 10);
   if (isNaN(sides)) return;
 
   const result = rollDie(sides);
 
+  // Update individual result
   const resultList = document.getElementById('dice-results-list');
   let li = document.getElementById('result-item-' + i);
   if (!li) {
@@ -25,9 +24,24 @@ function rollSingle(i) {
     li.id = 'result-item-' + i;
     resultList.appendChild(li);
   }
-  li.textContent = `Die ${i} (${sides}): ${result}`;
+  li.textContent = `Roll ${i}: ${result}`;
 
+  // Update total
   updateTotal();
+}
+
+function updateTotal() {
+  const resultList = document.getElementById('dice-results-list');
+  if (!resultList) return;
+
+  let total = 0;
+  resultList.querySelectorAll('li').forEach(li => {
+    const value = parseInt(li.textContent.split(': ')[1], 10);
+    if (!isNaN(value)) total += value;
+  });
+
+  const totalEl = document.getElementById('dice-total');
+  if (totalEl) totalEl.textContent = `TOTAL: ${total}`;
 }
 
 // ----------------------
