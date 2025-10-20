@@ -378,6 +378,7 @@ textarea.form-control {
 #dice-total.critical {
   animation: criticalGlow 1.5s ease-in-out;
   color: gold;
+  text-shadow: black;
   font-weight: 800;
 }
 
