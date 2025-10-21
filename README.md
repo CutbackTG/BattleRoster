@@ -120,6 +120,16 @@ so that I can pick up where I left off without recreating my data.
 
 <img src= static/images/readme_images/battleroster_erd.png  alt ="ERD for the battleroster project" width= 800>
 
+The Entity Relationship Diagram (ERD) outlines the central database structure for the BattleRoster project and the relationships that exist between users, characters, and parties.
+
+There are two main types of users — Players and Dungeon Masters (DMs) — both of which are based on Django's built-in user model.
+
+User (Player) records represent ordinary players that can create and maintain multiple Characters. Each Character will include characteristics such as name, level, race, class type, health, mana, and equipment, and can be associated back to its owner (the player) through a Foreign Key (player_id).
+
+User (Dungeon Master) records represent users responsible for creating game sessions and for the Parties. Each Party will have its own unique ID, a Foreign Key (dungeon_master_id) that associates it with the DM that created it, and set up with a Many-To-Many relationship to multiple Characters (their members). This arrangement will allow one DM to run several parties, and each party to have several player characters. 
+
+Extra local versions of users and characters are also created — User (local) and Character (local). These represent offline or stand-alone character sheets that can exist without an account as an online registered user. The local entities will use the same structure as those that are created online, but link only to the owner instead of an authenticated user, using the owner_id Foreign Key.
+
 ## BattleRoster Test Documentation
 
 | Issue / Feature | Test | Result / Fix |
