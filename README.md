@@ -120,7 +120,6 @@ Built with extensibility in mind, the system supports modular character sheet te
 | Database Integrity | Run migrations and ensure models create properly. | No migration or schema errors on `python manage.py makemigrations` and `migrate`. |
 | API (if applicable) | Call REST endpoints for Characters or Parties (GET/POST/PUT/DELETE). | Endpoints respond with correct HTTP status codes and expected data. |
 
-
 ## Installation & Deployment
 
 ### Prerequisites
@@ -194,66 +193,7 @@ Login with your superuser credentials.
 
 ### Project Structure
 
-BattleRoster/
-|
-├── BattleRoster_project/       # Main Django project settings
-│   ├── __init__.py
-│   ├── settings.py
-│   ├── urls.py
-│   ├── wsgi.py
-│   └── asgi.py
-|
-├── dice_roller/               # Dice rolling app
-│   ├── __init__.py
-│   ├── admin.py
-│   ├── apps.py
-│   ├── forms.py
-│   ├── models.py
-│   ├── tests.py
-│   └── views.py
-│
-├── accounts/                  # User accounts (Players and Dungeon Masters)
-│   ├── models.py
-│   ├── views.py
-│   ├── urls.py
-│   └── templates/
-│
-├── game_characters/           # Character and Party management
-│   ├── models.py
-│   ├── views.py
-│   ├── forms.py
-│   └── templates/
-│
-├── sheets/                    # Local character sheets (CharacterLocal)
-│   ├── models.py
-│   ├── views.py
-│   └── templates/
-│
-├── static/                    # CSS, JS, images
-│   ├── css/
-│   ├── js/
-│   └── images/
-│
-├── templates/                 # Base templates
-│   └── base.html
-│   ├── characters.html
-│   ├── contact.html
-│   ├── index.html
-│   ├── logout.html
-│   ├── party_base.html
-│   ├── party_dm.html
-│   ├── party_player.html
-│   ├── party.html
-│   └──signup_login.html
-|
-├── manage.py
-├── .python-version
-├── .build.sh
-├── Procfile
-├── requirements.txt
-├── run.py
-├── .gitignore
-└── README.md
+![a diagram outlaying the project folder structure](C:\Users\TJWor\OneDrive\Documents\vscode-projects\BattleRoster\static\images\readme_images\project_structure_image.png)
 
 ### Testing
 Run the full test suite:
