@@ -45,8 +45,7 @@ Built with extensibility in mind, the system supports modular character sheet te
 ### **Backend**
 - **Python 3.12+** – Core programming language  
 - **Django 5.2.7** – Web framework for routing, models, templates, and ORM  
-- **SQLite** – Default development database  
-  - *(Optional upgrade: PostgreSQL for production)*
+- **SQLite** – Default development database
 
 ### **Frontend**
 - **HTML5** and **CSS3** – Base template structure and styling  
@@ -118,7 +117,6 @@ Built with extensibility in mind, the system supports modular character sheet te
 | Templates | Render core templates (character list, party view, dashboard). | All templates render without errors using `TemplateResponse`. |
 | Dice Roller Utility | Call dice roll function (e.g., `roll_dice('1d20')`). | Returns random integer within correct range; never outside dice bounds. |
 | Database Integrity | Run migrations and ensure models create properly. | No migration or schema errors on `python manage.py makemigrations` and `migrate`. |
-| API (if applicable) | Call REST endpoints for Characters or Parties (GET/POST/PUT/DELETE). | Endpoints respond with correct HTTP status codes and expected data. |
 
 ## Installation & Deployment
 
