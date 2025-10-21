@@ -193,7 +193,7 @@ Login with your superuser credentials.
 
 ### Project Structure
 
-![a diagram outlaying the project folder structure](C:\Users\TJWor\OneDrive\Documents\vscode-projects\BattleRoster\static\images\readme_images\project_structure_image.png)
+<img src= static/images/readme_images/project_structure.png  alt ="a diagram outlaying the project folder structure" width= 800>
 
 ### Testing
 Run the full test suite:
