@@ -77,8 +77,42 @@ Built with extensibility in mind, the system supports modular character sheet te
 - **Heroku / Render / Railway / PythonAnywhere** – Supported hosting options  
 - **Whitenoise** – Static file management for production
 
-
 ## User Stories
+
+### 1. New User — Quick Character Creator
+As a **new visitor**,  
+I want to **create a single character sheet without signing up**,  
+so that I can quickly test the tool or make a one-off character for a session.
+
+### 2. New User — Player Building Multiple Characters
+As a **new registered player**,  
+I want to **sign up and create multiple characters**,  
+so that I can prepare for different campaigns and track their progress in one place.
+
+### 3. Dungeon Master — Managing Parties and Campaigns
+As a **Dungeon Master**,  
+I want to **create and manage parties of players**,  
+so that I can keep an eye on each player’s character sheets and view their stats during gameplay.
+
+### 4. Experienced D&D Player — Multi-Party Management
+As an **experienced player**,  
+I want to **build several characters and assign them to different parties**,  
+so that I can easily switch between campaigns and coordinate with different groups of friends.
+
+### 5. Returning User — Accessing Saved Characters
+As a **returning user**,  
+I want to **log back into my account and access all my previously saved characters and parties**,  
+so that I can pick up where I left off without recreating my data.
+
+### Table of expectations
+
+| **Persona** | **Description** | **Primary Goals** | **Key Actions in BattleRoster** |
+|--------------|-----------------|-------------------|----------------------------------|
+| **Guest User** | A first-time visitor who doesn’t want to sign up yet but wants to try out the tool. | Quickly create a one-off character sheet for a session or test the system. | - Use the quick character creator<br>- Export or save locally if available |
+| **New Player** | A beginner who registers to manage multiple characters. | Build and store multiple character sheets for different games. | - Sign up<br>- Create and edit characters<br>- View saved characters |
+| **Dungeon Master (DM)** | A game organizer who runs campaigns and manages parties. | Oversee multiple parties and monitor players’ character stats during gameplay. | - Create and manage parties<br>- Add or view player characters<br>- Track stats during sessions |
+| **Experienced Player** | A long-time D&D player involved in several parties or campaigns. | Manage a roster of characters for multiple groups and easily switch between them. | - Create multiple characters<br>- Assign characters to different parties<br>- Manage party compositions |
+| **Returning User** | A previous user returning to continue gameplay. | Retrieve and update saved data without starting over. | - Log in<br>- View and edit saved characters<br>- Rejoin or create new parties |
 
 ## Battleroster Entity Relationship Diagram
 
@@ -165,7 +199,7 @@ SECRET_KEY=your-secret-key-here
 DEBUG=True
 ALLOWED_HOSTS=localhost,127.0.0.1
 
-# Database configuration (for production)
+### Database configuration (for production)
 DATABASE_URL=your-database-url
 
 ### Database Setup
