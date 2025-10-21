@@ -45,8 +45,7 @@ Built with extensibility in mind, the system supports modular character sheet te
 ### **Backend**
 - **Python 3.12+** – Core programming language  
 - **Django 5.2.7** – Web framework for routing, models, templates, and ORM  
-- **SQLite** – Default development database  
-  - *(Optional upgrade: PostgreSQL for production)*
+- **SQLite** – Default development database
 
 ### **Frontend**
 - **HTML5** and **CSS3** – Base template structure and styling  
