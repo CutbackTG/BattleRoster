@@ -10,7 +10,7 @@ BattleRoster is a Django-based web application designed to streamline tabletop g
 
 Built with extensibility in mind, the system supports modular character sheet templates, making it adaptable for multiple game systems such as Dungeons & Dragons or BattleTech. The site emphasizes usability with responsive design, lightweight interactivity, and secure role-based permissions to protect player data.
 
-## 🎯 Features
+## Features
 
 ### User Roles & Authentication
 - **Player Account:** Create, edit, and delete own character sheets; invite others to groups
@@ -23,9 +23,9 @@ Built with extensibility in mind, the system supports modular character sheet te
 - Save individual field values dynamically
 - Support for multiple character sheets per player account
 
-### Group System
-- Groups contain one Dungeon Master and multiple Players
-- Group invites via email or username
+### Party System
+- Parties contain one Dungeon Master and multiple Players
+- Party invites via email or username
 - **Permissions:** Players manage their own sheets; DMs manage all sheets in their group
 
 ### Game System Extensibility
@@ -40,256 +40,282 @@ Built with extensibility in mind, the system supports modular character sheet te
 - Character sheet export options (PDF, JSON)
 - Mobile app companion
 
-## 🛠️ Tech Stack
+## Tech Stack
 
-- **Backend:** Django 5.2.7, Python 3.12+
-- **Frontend:** HTML5, CSS3, JavaScript, Bootstrap 5
-- **Database:** SQLite (development), PostgreSQL (production recommended)
-- **APIs:** Google Sheets API integration
-- **Authentication:** Django's built-in auth with custom user roles
-- **Version Control:** Git & GitHub
+### **Backend**
+- **Python 3.12+** – Core programming language  
+- **Django 5.2.7** – Web framework for routing, models, templates, and ORM  
+- **SQLite** – Default development database  
+  - *(Optional upgrade: PostgreSQL for production)*
 
-## 📋 Prerequisites
+### **Frontend**
+- **HTML5** and **CSS3** – Base template structure and styling  
+- **Bootstrap 5** – Responsive and consistent UI framework  
+- **JavaScript (Vanilla JS)** – Client-side interactivity  
+- **Django Template Language (DTL)** – Server-side rendering for dynamic content
+
+### **Authentication & Authorization**
+- **Django’s built-in auth system** – Handles user accounts, sessions, and permissions  
+- **Custom roles:**
+  - *Player* – Owns Characters  
+  - *Dungeon Master* – Manages Parties
+
+### **Core Features**
+- Character management (CRUD using Django models and forms)  
+- Party management (Many-to-Many relationships between Characters and Parties)  
+- Local character sheets stored in the database  
+- Role-based relationships between Players, Characters, and DMs  
+
+### **Development & Tooling**
+- **Virtual Environment (`venv`)** – Isolated development environment  
+- **pip** – Python package management  
+- **Git & GitHub** – Version control and collaboration  
+- **dotenv / python-decouple** – Secure environment variable management  
+- **pytest / Django TestCase** – Automated testing framework
+
+### **Deployment**
+- **Gunicorn / Daphne (optional)** – WSGI/ASGI servers for production  
+- **Heroku / Render / Railway / PythonAnywhere** – Supported hosting options  
+- **Whitenoise** – Static file management for production
+
+
+## User Stories
+
+## Battleroster Entity Relationship Diagram
+
+
+
+## BattleRoster Test Documentation
+
+| Issue / Feature | Test | Result / Fix |
+|------------------|-------|---------------|
+| User Registration & Login | Register new users (Player & DM) via `/register/`, log in and out, test session persistence. | Works as expected. If login fails, verify `AUTH_USER_MODEL` and session middleware in `settings.py`. |
+| Character Creation | Add a new Character from Player account — ensure all attributes (name, level, race, stats, etc.) save correctly. | Data saves correctly. If failure occurs, check model `Character` and form validation fields. |
+| Character Ownership | Verify each Character links to its Player (`ForeignKey` relationship). Ensure Player can only view their own characters. | Access not restricted — add view filtering: `Character.objects.filter(player=request.user)`. |
+| Party Creation | Create Party as Dungeon Master; confirm Party is linked to correct DM and visible in DM’s dashboard. | Works. If Party not linking, confirm `dungeon_master` field in `Party` form uses `request.user`. |
+| Party Membership | Add multiple Characters to a Party (ManyToMany). Ensure changes reflect for all members. | Characters not updating in reverse relation — ensure `related_name='members'` or call `.save_m2m()`. |
+| CharacterLocal Save | Create and update local characters. Test ownership restriction (only owner can modify/delete). | Works. If unauthorized edits occur, add object-level permission check. |
+| Data Persistence | Restart app and confirm characters, parties, and users persist (SQLite DB check). | Works. If lost data, verify DB path and migrations (`python manage.py migrate`). |
+| Dice Roller (if used) | Simulate dice rolls (e.g., `/roll/1d20/`) and confirm correct random generation. | Values not random — check randomization function or seed reset. |
+| UI Rendering | Load templates for dashboard, character sheets, and party list; verify all pages render without error. | Templates render. Fix missing static files with `python manage.py collectstatic`. |
+| Error Handling | Submit invalid form data (e.g., missing name, negative level) and confirm validation errors appear. | Validation messages display correctly. |
+| Security | Try accessing another user’s character or party via URL ID. Should return 403 or redirect. | Data leak risk — add user ownership checks in views. |
+| Deployment Check | Run on production environment (Heroku or similar). Verify DB connections and media/static paths. | Static files not loading — update `STATIC_ROOT` and add `whitenoise`. |
+
+## Automated Test Cases (Django / Pytest)
+
+| Area | Test | Expected Result |
+|-------|-------|----------------|
+| Models: Character | Create a `Character` object and verify default stats (e.g. level=1, health=100). | Character created successfully with expected default values. |
+| Models: Party | Add multiple Characters to a Party (ManyToMany). | All related Characters appear in `party.members.all()`. |
+| Models: CharacterLocal | Create and update local character, ensure ownership is correctly linked. | Object saves and retrieves correctly under `owner`. |
+| Views: Character List | Access character list endpoint while logged in as Player. | Only that Player’s Characters are returned in the response context. |
+| Views: Party Detail | Access Party detail as the Dungeon Master. | Page loads with correct members; unauthorized users receive 403. |
+| Forms: CharacterForm | Submit form with valid and invalid data. | Valid data saves successfully; invalid data raises `form.errors`. |
+| Auth: Registration | POST to `/register/` with new credentials. | User created; redirected to dashboard or login page. |
+| Auth: Login / Logout | Login with valid credentials; logout; access restricted pages. | Authenticated views accessible when logged in; denied after logout. |
+| Permissions | Try editing another Player’s Character via direct URL. | Forbidden (403) response or redirect to home. |
+| Templates | Render core templates (character list, party view, dashboard). | All templates render without errors using `TemplateResponse`. |
+| Dice Roller Utility | Call dice roll function (e.g., `roll_dice('1d20')`). | Returns random integer within correct range; never outside dice bounds. |
+| Database Integrity | Run migrations and ensure models create properly. | No migration or schema errors on `python manage.py makemigrations` and `migrate`. |
+| API (if applicable) | Call REST endpoints for Characters or Parties (GET/POST/PUT/DELETE). | Endpoints respond with correct HTTP status codes and expected data. |
+
+
+## Installation & Deployment
+
+### Prerequisites
 
 Before you begin, ensure you have the following installed:
-- Python 3.12 or higher
-- pip (Python package manager)
-- Git
+
+- Python 3.12 or higher  
+- pip (Python package manager)  
+- Git  
 - A code editor (VS Code, PyCharm, etc.)
 
-## 🚀 Installation & Setup
+## Installation & Setup
 
-### 1. Clone the Repository
+### 1.Clone the Repository
 
 ```bash
 git clone https://github.com/CutbackTG/BattleRoster.git
 cd BattleRoster
 ```
+### 2.Create a virtual environment
 
-### 2. Create a Virtual Environment
-
-**Windows:**
-```bash
+Windows:
+``` bash
 python -m venv .venv
 .venv\Scripts\activate
 ```
-
-**Mac/Linux:**
-```bash
+Mac/Linux:
+``` bash
 python3 -m venv .venv
 source .venv/bin/activate
 ```
-
-### 3. Install Dependencies
-
-```bash
+### 3.Install Dependencies
+``` bash
 pip install -r requirements.txt
 ```
-
-If `requirements.txt` doesn't exist yet, install the core dependencies:
-```bash
+If requirements.txt doesn't exist yet, install Django manually:
+``` bash
 pip install django==5.2.7
-pip install google-auth google-auth-oauthlib google-api-python-client
-```
-
-Then create the requirements file:
-```bash
 pip freeze > requirements.txt
 ```
+### Environment Variables
+Create a .env file in the project root:
 
-### 4. Environment Variables
-
-Create a `.env` file in the project root:
-
-```env
 SECRET_KEY=your-secret-key-here
 DEBUG=True
 ALLOWED_HOSTS=localhost,127.0.0.1
 
-# Database (for production)
+# Database configuration (for production)
 DATABASE_URL=your-database-url
 
-# Google API (if using Google Sheets integration)
-GOOGLE_CLIENT_ID=your-client-id
-GOOGLE_CLIENT_SECRET=your-client-secret
-```
-
-**Important:** Never commit your `.env` file to Git!
-
-### 5. Run Database Migrations
-
-```bash
+### Database Setup
+Run the following commands to prepare your database:
+``` bash
 python manage.py makemigrations
 python manage.py migrate
 ```
-
-### 6. Create a Superuser
-
-```bash
+### Create a Superuser
+``` bash
 python manage.py createsuperuser
 ```
-
-Follow the prompts to create an admin account.
-
-### 7. Run the Development Server
-
-```bash
+### Run the Development Server
+``` bash
 python manage.py runserver
 ```
+Visit: http://127.0.0.1:8000/
 
-Visit: **http://127.0.0.1:8000/**
+### Access the Admin Panel
 
-### 8. Access the Admin Panel
-
-Visit: **http://127.0.0.1:8000/admin/**
+Visit: http://127.0.0.1:8000/admin/
 Login with your superuser credentials.
 
-## 📁 Project Structure
+### Project Structure
 
-```
 BattleRoster/
-├── battleroster_project/       # Main Django project settings
+|
+├── BattleRoster_project/       # Main Django project settings
 │   ├── __init__.py
-│   ├── settings.py            # Project configuration
-│   ├── urls.py                # Main URL routing
-│   ├── wsgi.py                # WSGI server config
-│   └── asgi.py                # ASGI server config
+│   ├── settings.py
+│   ├── urls.py
+│   ├── wsgi.py
+│   └── asgi.py
+|
+├── dice_roller/               # Dice rolling app
+│   ├── __init__.py
+│   ├── admin.py
+│   ├── apps.py
+│   ├── forms.py
+│   ├── models.py
+│   ├── tests.py
+│   └── views.py
 │
-├── accounts/                   # User authentication & profiles
-│   ├── models.py              # User model extensions
-│   ├── views.py               # Login, registration views
+├── accounts/                  # User accounts (Players and Dungeon Masters)
+│   ├── models.py
+│   ├── views.py
 │   ├── urls.py
 │   └── templates/
 │
-├── game_characters/            # Character management
-│   ├── models.py              # Character model
-│   ├── views.py               # CRUD operations
+├── game_characters/           # Character and Party management
+│   ├── models.py
+│   ├── views.py
 │   ├── forms.py
 │   └── templates/
 │
-├── sheets/                     # Character sheets
-│   ├── models.py              # Sheet templates
-│   ├── views.py               # Sheet rendering
-│   ├── google_client.py       # Google Sheets integration
+├── sheets/                    # Local character sheets (CharacterLocal)
+│   ├── models.py
+│   ├── views.py
 │   └── templates/
 │
-├── static/                     # CSS, JS, images
+├── static/                    # CSS, JS, images
 │   ├── css/
 │   ├── js/
 │   └── images/
 │
-├── templates/                  # Base templates
+├── templates/                 # Base templates
 │   └── base.html
-│
-├── manage.py                   # Django management script
-├── requirements.txt            # Python dependencies
-├── .env                        # Environment variables (not in Git)
-├── .gitignore                 # Git ignore rules
-└── README.md                   # This file
-```
+│   ├── characters.html
+│   ├── contact.html
+│   ├── index.html
+│   ├── logout.html
+│   ├── party_base.html
+│   ├── party_dm.html
+│   ├── party_player.html
+│   ├── party.html
+│   └──signup_login.html
+|
+├── manage.py
+├── .python-version
+├── .build.sh
+├── Procfile
+├── requirements.txt
+├── run.py
+├── .gitignore
+└── README.md
 
-## 🧪 Testing
-
-Run the test suite:
-
-```bash
+### Testing
+Run the full test suite:
+``` bash
 python manage.py test
 ```
-
 Run tests for a specific app:
-```bash
+``` bash
 python manage.py test accounts
 python manage.py test game_characters
 ```
+### Deployment
 
-## 🌐 Deployment
+BattleRoster is a Django application and requires a Python-capable hosting platform.
+GitHub Pages will NOT work, as it only hosts static files.
 
-BattleRoster is a Django application and requires a Python-capable hosting platform. **GitHub Pages will NOT work** as it only hosts static files.
+Recommended Deployment Platforms:
+Heroku
+PythonAnywhere
+Render
+Railway
 
-### Recommended Deployment Platforms:
+### Pre-Deployment Checklist
 
-1. **Heroku** (Easy, free tier available)
-   - [Heroku Django Deployment Guide](https://devcenter.heroku.com/articles/django-app-configuration)
+ Set DEBUG=False in production
+ Configure ALLOWED_HOSTS
+ Set up a production database (PostgreSQL recommended)
+ Configure static file serving (collectstatic)
+ Set up environment variables securely
+ Enable HTTPS/SSL
+ Use a strong SECRET_KEY
 
-2. **PythonAnywhere** (Great for beginners)
-   - [PythonAnywhere Django Tutorial](https://help.pythonanywhere.com/pages/DeployExistingDjangoProject/)
+ ### Contributing
 
-3. **Railway** (Modern, simple)
-   - [Railway Django Guide](https://docs.railway.app/guides/django)
+ Contributions are welcome, please follow the following steps to help develop BattleRoster.
 
-4. **Render** (Free tier available)
-   - [Render Django Deployment](https://render.com/docs/deploy-django)
+### Fork the repository
 
-5. **DigitalOcean** (More control, requires server management)
-   - [DigitalOcean Django Guide](https://www.digitalocean.com/community/tutorials/how-to-deploy-django)
+Clone your fork:
+``` bash
+git clone https://github.com/YOUR-USERNAME/BattleRoster.git
+```
 
-### Pre-Deployment Checklist:
+### Create a feature branch:
+``` bash
+git checkout -b feature/your-feature-name
+```
+### Make your changes and commit:
+``` bash
+git add .
+git commit -m "Add: description of your feature"
+```
+### Push to your fork:
+``` bash
+git push origin feature/your-feature-name
+```
+Submit a Pull Request with a clear description of your changes
 
-- [ ] Set `DEBUG=False` in production
-- [ ] Configure `ALLOWED_HOSTS`
-- [ ] Set up a production database (PostgreSQL recommended)
-- [ ] Configure static file serving (`collectstatic`)
-- [ ] Set up environment variables securely
-- [ ] Enable HTTPS/SSL
-- [ ] Set up proper SECRET_KEY management
+### Contribution Guidelines
 
-## 🔒 Security Notes
-
-- Never commit `.env` files or sensitive credentials
-- Always use environment variables for secrets
-- Keep `DEBUG=False` in production
-- Use strong `SECRET_KEY` values
-- Implement CSRF protection (Django default)
-- Use HTTPS in production
-
-## 🤝 Contributing
-
-Contributions are welcome! Here's how you can help:
-
-1. **Fork the repository**
-2. **Clone your fork:**
-   ```bash
-   git clone https://github.com/YOUR-USERNAME/BattleRoster.git
-   ```
-3. **Create a feature branch:**
-   ```bash
-   git checkout -b feature/your-feature-name
-   ```
-4. **Make your changes and commit:**
-   ```bash
-   git add .
-   git commit -m "Add: description of your feature"
-   ```
-5. **Push to your fork:**
-   ```bash
-   git push origin feature/your-feature-name
-   ```
-6. **Submit a Pull Request** with a clear description of your changes
-
-### Contribution Guidelines:
-- Follow PEP 8 style guide for Python code
-- Write clear commit messages
-- Add tests for new features
-- Update documentation as needed
-- Keep pull requests focused on a single feature/fix
-
-## 🐛 Known Issues
-
-- Google Sheets integration requires OAuth setup
-- Mobile responsiveness needs improvement in some views
-- Character sheet templates need additional game system support
-
-## 📝 License
-
-This project is open source and available under the [MIT License](LICENSE).
-
-## 🙏 Acknowledgements
-
-- **Code Institute** - For guidance and support throughout development
-- **Django Documentation** - Comprehensive framework documentation
-- **Bootstrap** - Frontend component library
-- The tabletop gaming community for inspiration
-
----
-
-**Happy Gaming! 🎲**
+Follow PEP 8 style guide for Python code
+Write clear commit messages
+Add tests for new features
+Update documentation as needed
+Keep pull requests focused on a single feature/fix
