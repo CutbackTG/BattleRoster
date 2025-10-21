@@ -83,7 +83,7 @@ Built with extensibility in mind, the system supports modular character sheet te
 
 ## Battleroster Entity Relationship Diagram
 
-
+<img src= static/images/readme_images/battleroster_erd.png  alt ="ERD for the battleroster project" width= 800>
 
 ## BattleRoster Test Documentation
 
