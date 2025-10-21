@@ -2,6 +2,8 @@
 
 **Author:** Tyler Worth
 
+<img src= static/images/readme_images/amiresponsive.png  alt ="Am I responsive image portraying website view on multiple devices" width= 800>
+
 - GitHub: [@CutbackTG](https://github.com/CutbackTG)
 - Project Link: [https://github.com/CutbackTG/BattleRoster](https://github.com/CutbackTG/BattleRoster)
 - Deployment URL: https://battlerosterhost-e22dbecc83dc.herokuapp.com/
