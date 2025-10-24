@@ -209,3 +209,18 @@ def party_invite(request, pk):
             messages.success(request, f"{invited_user.username} has been added to the party!")
 
     return redirect("party")
+
+# Delete a character
+@login_required
+def character_delete(request, pk):
+    if request.user.is_authenticated:
+        character = get_object_or_404(Character, pk=pk, player=request.user)
+        character.delete()
+    else:
+        characters = request.session.get("characters", [])
+        if int(pk) < len(characters):
+            characters.pop(int(pk))
+            request.session["characters"] = characters
+
+    messages.success(request, "Character deleted successfully!")
+    return redirect("characters")
