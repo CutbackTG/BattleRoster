@@ -147,24 +147,15 @@ strong { color: goldenrod; }
 
 
 /* Forms and Tabs */
-
 form {
-  background: none;
-  border: none;
-  box-shadow: none;
-  padding: 0;
-  margin: 0;
-  color: #2b1a07;
-}
-
-.tab-pane {
   background: url("/static/images/parchment-texture.jpg") no-repeat center/cover;
   border: 3px solid goldenrod;
   border-radius: 12px;
-  padding: 1.5rem;
-  box-shadow: 0 0 20px rgba(255, 215, 0, 0.25),
-              inset 0 0 8px rgba(0, 0, 0, 0.15);
+  padding: 2rem;
   color: #2b1a07;
+  box-shadow: 0 0 25px rgba(255, 215, 0, 0.2);
+  margin: 2rem auto;
+  max-width: 900px;
 }
 
 form label {
