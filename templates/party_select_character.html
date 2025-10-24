@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Select Your Character for {{ party.name }}</h2>
+
+<form method="POST">
+    {% csrf_token %}
+    <label for="character_id">Choose your character:</label>
+    <select name="character_id" id="character_id" required>
+        {% for char in characters %}
+        <option value="{{ char.id }}">{{ char.name }} (Level {{ char.level }} {{ char.class_type }})</option>
+        {% endfor %}
+    </select>
+    <button type="submit">Confirm Selection</button>
+</form>
+
+<p><a href="{% url 'party_detail' party.id %}">Back to Party</a></p>
+{% endblock %}

@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
-from .models import Character, Party
+from .models import Character, Party, PartyCharacter
 import random
 from django import forms
 from django.contrib.auth.decorators import login_required
@@ -233,4 +233,61 @@ def party_detail(request, pk):
     return render(request, "party_detail.html", {
         "party": party,
         "members": members,
+    })
+
+@login_required
+def dm_party_list(request):
+    """Dungeon Master dashboard — create, view, and delete your parties."""
+    user = request.user
+
+    # Make sure only dungeon masters can use this page
+    if not getattr(user, "is_dungeon_master", False):
+        messages.error(request, "Only Dungeon Masters can manage parties.")
+        return redirect("party")
+
+    # Handle create party
+    if request.method == "POST" and "create_party" in request.POST:
+        name = request.POST.get("party_name")
+        if name:
+            Party.objects.create(name=name, dungeon_master=user)
+            messages.success(request, f"Party '{name}' created successfully!")
+            return redirect("dm_party_list")
+
+    # Handle delete party
+    if request.method == "POST" and "delete_party" in request.POST:
+        party_id = request.POST.get("party_id")
+        party = get_object_or_404(Party, id=party_id, dungeon_master=user)
+        messages.warning(request, f"Party '{party.name}' deleted.")
+        party.delete()
+        return redirect("dm_party_list")
+
+    # Show all parties for this DM
+    parties = Party.objects.filter(dungeon_master=user).order_by("name")
+    return render(request, "dm_party_dashboard.html", {"parties": parties})
+
+@login_required
+def party_select_character(request, pk):
+    """Allow a player to pick which of their characters they’ll use in this party."""
+    party = get_object_or_404(Party, pk=pk)
+
+    # Only members of the party can select a character
+    if request.user not in party.members.all() and request.user != party.dungeon_master:
+        return redirect("party_detail", pk=pk)
+
+    characters = Character.objects.filter(player=request.user)
+
+    if request.method == "POST":
+        char_id = request.POST.get("character_id")
+        if char_id:
+            character = get_object_or_404(Character, id=char_id, player=request.user)
+            PartyCharacter.objects.update_or_create(
+                party=party,
+                player=request.user,
+                defaults={"character": character}
+            )
+        return redirect("party_detail", pk=pk)
+
+    return render(request, "party_select_character.html", {
+        "party": party,
+        "characters": characters,
     })

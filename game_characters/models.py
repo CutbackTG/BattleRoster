@@ -18,12 +18,12 @@ class Character(models.Model):
     wisdom = models.PositiveIntegerField(default=10)
     charisma = models.PositiveIntegerField(default=10)
 
-    # Text fields for freeform input
+    # Text fields
     equipment = models.TextField(blank=True, null=True)
     weapons = models.TextField(blank=True, null=True)
     spells = models.TextField(blank=True, null=True)
 
-    # Link to a player (optional for anonymous users)
+    # Link to a player
     player = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
@@ -68,32 +68,41 @@ class Campaign(models.Model):
 
     def __str__(self):
         return self.title
-    
+
+
 class PartyInvitation(models.Model):
+    """Invitations to join a party."""
     party = models.ForeignKey(Party, on_delete=models.CASCADE, related_name="invitations")
     inviter = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="sent_party_invites")
-    to_username = models.CharField(max_length=150)  # who was invited, by username
-    to_user = models.ForeignKey(  # resolved on accept (if account exists beforehand, we’ll link asap)
-        settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True, related_name="received_party_invites"
+    to_username = models.CharField(max_length=150)
+    to_user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="received_party_invites"
     )
     status = models.CharField(
         max_length=20,
         choices=[("pending", "Pending"), ("accepted", "Accepted"), ("declined", "Declined"), ("revoked", "Revoked")],
         default="pending",
     )
-    token = models.CharField(max_length=64, unique=True)  # for accept/decline links
+    token = models.CharField(max_length=64, unique=True)
     created_at = models.DateTimeField(auto_now_add=True)
     responded_at = models.DateTimeField(null=True, blank=True)
 
     class Meta:
-        unique_together = [("party", "to_username", "status")]  # prevents duplicate pending invites for same user
+        unique_together = [("party", "to_username", "status")]
 
-class PartyMemberCharacter(models.Model):
-    party = models.ForeignKey(Party, on_delete=models.CASCADE, related_name="member_characters")
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="party_characters")
-    character = models.ForeignKey("game_characters.Character", on_delete=models.CASCADE, related_name="party_memberships")
-    is_active = models.BooleanField(default=True)   # current pick for that user in this party
-    selected_at = models.DateTimeField(auto_now_add=True)
+
+class PartyCharacter(models.Model):
+    """Links a player to the character they’re using in a given party."""
+    party = models.ForeignKey('Party', on_delete=models.CASCADE)
+    player = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    character = models.ForeignKey('Character', on_delete=models.CASCADE)
 
     class Meta:
-        unique_together = [("party", "user", "is_active")]
+        unique_together = ('party', 'player')
+
+    def __str__(self):
+        return f"{self.player.username} → {self.character.name} in {self.party.name}"

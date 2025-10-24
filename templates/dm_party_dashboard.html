@@ -1,37 +1,74 @@
 {% extends "base.html" %}
+{% load static %}
+
 {% block content %}
 <div class="container py-5 text-center text-gold">
-  <h1 class="mb-4">Dungeon Master Dashboard</h1>
+
+  <h1 class="text-gold mb-4 text-uppercase fw-bold">Dungeon Master Dashboard</h1>
 
   {% if messages %}
     {% for message in messages %}
-      <div class="alert alert-{{ message.tags }} bg-dark border-gold text-gold">{{ message }}</div>
+      <div class="alert alert-{{ message.tags }} bg-dark text-gold border-gold mb-3">
+        {{ message }}
+      </div>
     {% endfor %}
   {% endif %}
 
-  <h3 class="text-uppercase mt-4">Your Parties</h3>
-  {% if parties %}
-    <ul class="list-unstyled">
-      {% for party in parties %}
-        <li class="border-bottom border-gold py-2">
-          {{ party.name }}
-          <form method="post" class="d-inline-block ms-3">
-            {% csrf_token %}
-            <input type="hidden" name="party_id" value="{{ party.id }}">
-            <button type="submit" name="delete_party" class="btn btn-outline-warning btn-sm">Delete</button>
-          </form>
-        </li>
-      {% endfor %}
-    </ul>
-  {% else %}
-    <p class="mt-3">No parties yet.</p>
-  {% endif %}
+  <!-- Create New Party -->
+  <div class="card bg-dark border-gold text-gold mb-5">
+    <div class="card-header text-uppercase fw-bold border-bottom border-gold">
+      Create a New Party
+    </div>
+    <div class="card-body">
+      <form method="POST" class="d-flex justify-content-center align-items-center gap-2">
+        {% csrf_token %}
+        <input type="text" name="party_name" class="form-control w-50 text-center" placeholder="Enter party name" required />
+        <button type="submit" name="create_party" class="btn btn-warning fw-bold text-dark px-4">
+          Create
+        </button>
+      </form>
+    </div>
+  </div>
 
-  <form method="post" class="mt-4">
-    {% csrf_token %}
-    <input type="text" name="party_name" class="form-control w-50 mx-auto text-center mb-3"
-           placeholder="New Party Name" required>
-    <button type="submit" name="create_party" class="btn btn-warning text-dark fw-bold">Create Party</button>
-  </form>
+  <!-- Your Parties -->
+  <div class="card bg-dark border-gold text-gold">
+    <div class="card-header text-uppercase fw-bold border-bottom border-gold">
+      Your Parties
+    </div>
+    <div class="card-body">
+      {% if parties %}
+        <div class="row justify-content-center">
+          {% for party in parties %}
+            <div class="col-md-5 col-lg-4 mb-4">
+              <div class="card party-card bg-dark border-gold h-100">
+                <div class="card-body">
+                  <h4 class="card-title text-gold">{{ party.name }}</h4>
+                  <p class="mb-2"><strong>Members:</strong> {{ party.members.count }}</p>
+                  <p class="mb-3"><strong>DM:</strong> {{ party.dungeon_master.username }}</p>
+
+                  <div class="d-flex justify-content-center gap-2 mt-3">
+                    <a href="{% url 'party_detail' party.pk %}" class="btn btn-gold fw-bold px-3">
+                      View Party
+                    </a>
+
+                    <form method="POST" onsubmit="return confirm('Are you sure you want to delete {{ party.name }}?');">
+                      {% csrf_token %}
+                      <input type="hidden" name="party_id" value="{{ party.id }}">
+                      <button type="submit" name="delete_party" class="btn btn-danger fw-bold px-3">
+                        Delete
+                      </button>
+                    </form>
+                  </div>
+                </div>
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+      {% else %}
+        <p class="mb-0">You haven’t created any parties yet.</p>
+      {% endif %}
+    </div>
+  </div>
+
 </div>
 {% endblock %}
