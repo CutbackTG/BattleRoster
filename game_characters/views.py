@@ -32,14 +32,12 @@ class DiceRollForm(forms.Form):
 def index_view(request):
     return render(request, "index.html")
 
-# Helper to safely convert numeric fields
 def to_int(value, default=0):
     try:
         return int(value)
     except (TypeError, ValueError):
         return default
 
-# List/create/update characters + dice roller
 def characters_view(request, pk=None):
     if request.user.is_authenticated:
         characters = Character.objects.filter(player=request.user).order_by('name')
@@ -57,7 +55,6 @@ def characters_view(request, pk=None):
                 messages.error(request, "Character not found.")
                 return redirect("characters")
 
-    # ---------- Dice Roller ----------
     results = []
     total = None
     dice_form = DiceRollForm(request.POST or None)
@@ -69,7 +66,6 @@ def characters_view(request, pk=None):
             results = [random.randint(1, d) for d in dice]
             total = sum(results)
 
-    # ---------- Character Create/Update ----------
     elif request.method == "POST":
         fields = {
             "name": request.POST.get("name", "").strip(),
@@ -127,27 +123,36 @@ def characters_view(request, pk=None):
         },
     )
 
-# Delete a character
-def character_delete(request, pk):
-    if request.user.is_authenticated:
-        character = get_object_or_404(Character, pk=pk, player=request.user)
-        character.delete()
-    else:
-        characters = request.session.get("characters", [])
-        if int(pk) < len(characters):
-            characters.pop(int(pk))
-            request.session["characters"] = characters
-
-    messages.success(request, "Character deleted successfully!")
-    return redirect("characters")
-
 # ---------- Party Views ----------
 
 @login_required
 def party_view(request):
-    """Show the player's party page — even if they don't have one yet."""
-    party = Party.objects.filter(members=request.user).first()
-    characters = Character.objects.filter(player=request.user)
+    """Show player's party or DM dashboard."""
+    user = request.user
+
+    # 🔸 If Dungeon Master, show DM dashboard
+    if hasattr(user, "is_dungeon_master") and user.is_dungeon_master:
+        parties = Party.objects.filter(dungeon_master=user).order_by("name")
+
+        if request.method == "POST" and "create_party" in request.POST:
+            name = request.POST.get("party_name")
+            if name:
+                Party.objects.create(name=name, dungeon_master=user)
+                messages.success(request, f"Party '{name}' created successfully!")
+                return redirect("party")
+
+        if request.method == "POST" and "delete_party" in request.POST:
+            party_id = request.POST.get("party_id")
+            party = get_object_or_404(Party, id=party_id, dungeon_master=user)
+            messages.warning(request, f"Party '{party.name}' deleted.")
+            party.delete()
+            return redirect("party")
+
+        return render(request, "dm_party_dashboard.html", {"parties": parties})
+
+    # 🔸 Otherwise, regular player
+    party = Party.objects.filter(members=user).first()
+    characters = Character.objects.filter(player=user)
 
     return render(request, "party.html", {
         "party": party,
@@ -155,27 +160,16 @@ def party_view(request):
     })
 
 @login_required
-def party_detail(request, pk):
-    """Detailed view of a party and its members."""
-    party = get_object_or_404(Party, pk=pk)
-    return render(request, "party_detail.html", {"party": party})
-
-@login_required
 def party_remove_member(request, pk):
-    """Allow any party member to remove another member."""
+    """Allow any party member (including DM) to remove another."""
     party = get_object_or_404(Party, pk=pk)
 
-    # Only members of the party can remove someone
     if request.user not in party.members.all() and request.user != party.dungeon_master:
         messages.error(request, "You must be a member of this party to make changes.")
         return redirect("party")
 
     if request.method == "POST":
         member_id = request.POST.get("member_id")
-        if not member_id:
-            messages.error(request, "Invalid request — no member selected.")
-            return redirect("party")
-
         member_to_remove = party.members.filter(id=member_id).first()
         if not member_to_remove:
             messages.warning(request, "That member was not found in this party.")
@@ -189,10 +183,9 @@ def party_remove_member(request, pk):
 
 @login_required
 def party_invite(request, pk):
-    """Allow any party member to invite another user by username."""
+    """Allow any party member or DM to invite others."""
     party = get_object_or_404(Party, pk=pk)
 
-    # Only members of this party can invite
     if request.user not in party.members.all() and request.user != party.dungeon_master:
         messages.error(request, "You must be a member of this party to invite others.")
         return redirect("party")
@@ -203,15 +196,12 @@ def party_invite(request, pk):
             messages.warning(request, "Please enter a username.")
             return redirect("party")
 
-        from django.contrib.auth import get_user_model
-        User = get_user_model()
         try:
             invited_user = User.objects.get(username=username)
         except User.DoesNotExist:
             messages.error(request, f"User '{username}' does not exist.")
             return redirect("party")
 
-        # Prevent duplicates
         if invited_user in party.members.all():
             messages.info(request, f"{invited_user.username} is already in the party.")
         else:
@@ -219,32 +209,3 @@ def party_invite(request, pk):
             messages.success(request, f"{invited_user.username} has been added to the party!")
 
     return redirect("party")
-
-@login_required
-def party_select_character(request, pk):
-    messages.info(request, "Character selection not yet implemented.")
-    return redirect("party_detail", pk=pk)
-
-@login_required
-def dm_party_list(request):
-    """Dungeon Master dashboard: list, create, and delete parties."""
-    if not hasattr(request.user, "is_dungeon_master") or not request.user.is_dungeon_master:
-        messages.error(request, "Only Dungeon Masters can manage parties.")
-        return redirect("party")
-
-    if request.method == "POST" and "create_party" in request.POST:
-        name = request.POST.get("party_name")
-        if name:
-            Party.objects.create(name=name, dungeon_master=request.user)
-            messages.success(request, f"Party '{name}' created successfully!")
-            return redirect("dm_party_list")
-
-    if request.method == "POST" and "delete_party" in request.POST:
-        party_id = request.POST.get("party_id")
-        party = get_object_or_404(Party, id=party_id, dungeon_master=request.user)
-        messages.warning(request, f"Party '{party.name}' deleted.")
-        party.delete()
-        return redirect("dm_party_list")
-
-    parties = Party.objects.filter(dungeon_master=request.user).order_by("name")
-    return render(request, "party_list.html", {"parties": parties})

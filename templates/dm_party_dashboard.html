@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container py-5 text-center text-gold">
+  <h1 class="mb-4">Dungeon Master Dashboard</h1>
+
+  {% if messages %}
+    {% for message in messages %}
+      <div class="alert alert-{{ message.tags }} bg-dark border-gold text-gold">{{ message }}</div>
+    {% endfor %}
+  {% endif %}
+
+  <h3 class="text-uppercase mt-4">Your Parties</h3>
+  {% if parties %}
+    <ul class="list-unstyled">
+      {% for party in parties %}
+        <li class="border-bottom border-gold py-2">
+          {{ party.name }}
+          <form method="post" class="d-inline-block ms-3">
+            {% csrf_token %}
+            <input type="hidden" name="party_id" value="{{ party.id }}">
+            <button type="submit" name="delete_party" class="btn btn-outline-warning btn-sm">Delete</button>
+          </form>
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p class="mt-3">No parties yet.</p>
+  {% endif %}
+
+  <form method="post" class="mt-4">
+    {% csrf_token %}
+    <input type="text" name="party_name" class="form-control w-50 mx-auto text-center mb-3"
+           placeholder="New Party Name" required>
+    <button type="submit" name="create_party" class="btn btn-warning text-dark fw-bold">Create Party</button>
+  </form>
+</div>
+{% endblock %}

@@ -46,7 +46,7 @@
       <div class="card mb-4 border-gold bg-dark text-gold">
         <div class="card-header text-uppercase fw-bold">Invite Player</div>
         <div class="card-body">
-          <form method="post" action="/characters/party/{{ party.pk }}/invite/" class="d-flex justify-content-center">
+          <form method="post" action="{% url 'party_invite' party.pk %}" class="d-flex justify-content-center">
             {% csrf_token %}
             <input type="text" name="username" class="form-control w-50 me-2 text-center" placeholder="Enter username" required />
             <button type="submit" class="btn btn-warning text-dark fw-bold px-4">Invite</button>
@@ -58,7 +58,7 @@
       <div class="card mb-4 border-gold bg-dark text-gold">
         <div class="card-header text-uppercase fw-bold">Remove Member</div>
         <div class="card-body">
-          <form method="post" action="/characters/party/{{ party.pk }}/remove-member/" class="d-flex justify-content-center">
+          <form method="post" action="{% url 'party_remove_member' party.pk %}" class="d-flex justify-content-center">
             {% csrf_token %}
             <select name="member_id" class="form-select w-50 me-2 text-center" required>
               <option value="">Select member</option>
