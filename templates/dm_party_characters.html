@@ -85,7 +85,7 @@
                 <h4>Attributes</h4>
                 {% for attr in attr_list %}
                 <label class="mt-2 text-capitalize">{{ attr }}</label>
-                <input type="number" class="form-control" name="{{ attr }}" value="{{ c|getattr:attr }}">
+                <input type="number" class="form-control" name="{{ attr }}" value="{{ c|get_attr:attr }}">
                 {% endfor %}
               </div>
 
