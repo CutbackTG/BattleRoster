@@ -1,8 +1,10 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
-from .models import Character
+from .models import Character, Party
 import random
 from django import forms
+from django.contrib.auth.decorators import login_required
+
 
 # ---------- Dice Roller Setup ----------
 
@@ -150,3 +152,74 @@ def party_view(request):
         characters = request.session.get("characters", [])
 
     return render(request, "party.html", {"characters": characters})
+
+def party_detail(request, pk):
+    party = get_object_or_404(Party, pk=pk)
+    return render(request, "game_characters/party_detail.html", {"party": party})
+
+@login_required
+def party_remove_member(request, pk):
+    """Allow the Dungeon Master to remove a member from their party."""
+    party = get_object_or_404(Party, pk=pk)
+
+    # Security check: only the dungeon master can remove members
+    if request.user != party.dungeon_master:
+        messages.error(request, "You do not have permission to modify this party.")
+        return redirect("party_detail", pk=pk)
+
+    if request.method == "POST":
+        member_id = request.POST.get("member_id")
+        if member_id:
+            member_to_remove = party.members.filter(id=member_id).first()
+            if member_to_remove:
+                party.members.remove(member_to_remove)
+                messages.success(request, f"{member_to_remove.username} was removed from the party.")
+            else:
+                messages.warning(request, "That member was not found in this party.")
+        else:
+            messages.error(request, "Invalid request — no member selected.")
+
+    return redirect("party_detail", pk=pk)
+
+from django.contrib.auth import get_user_model
+User = get_user_model()
+
+from django.core.exceptions import ObjectDoesNotExist
+
+@login_required
+def party_invite(request, pk):
+    """Allow a Dungeon Master to invite another user to join their party by username."""
+    party = get_object_or_404(Party, pk=pk)
+
+    # Only the dungeon master can invite
+    if request.user != party.dungeon_master:
+        messages.error(request, "Only the Dungeon Master can invite members.")
+        return redirect("party_detail", pk=pk)
+
+    if request.method == "POST":
+        username = request.POST.get("username")
+        if not username:
+            messages.warning(request, "Please enter a username.")
+            return redirect("party_detail", pk=pk)
+
+        try:
+            invited_user = User.objects.get(username=username)
+        except ObjectDoesNotExist:
+            messages.error(request, f"User '{username}' does not exist.")
+            return redirect("party_detail", pk=pk)
+
+        # Check if already in party
+        if invited_user in party.members.all():
+            messages.info(request, f"{invited_user.username} is already in the party.")
+        else:
+            # Add the user directly (simple system; you could extend this to use tokens)
+            party.members.add(invited_user)
+            messages.success(request, f"{invited_user.username} has been added to the party!")
+
+    return redirect("party_detail", pk=pk)
+
+@login_required
+def party_select_character(request, pk):
+    messages.info(request, "Character selection not yet implemented.")
+    return redirect("party_detail", pk=pk)
+
