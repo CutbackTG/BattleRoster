@@ -1,6 +1,4 @@
-/* ======================= */
 /* Global Styles */
-/* ======================= */
 * {
   padding: 0;
   margin: 0;
@@ -145,8 +143,9 @@ strong { color: goldenrod; }
 
 #social-networks a:hover { color: gold; transform: scale(1.1); }
 
-
+/* ======================= */
 /* Forms and Tabs */
+/* ======================= */
 form {
   background: url("/static/images/parchment-texture.jpg") no-repeat center/cover;
   border: 3px solid goldenrod;
@@ -304,9 +303,93 @@ textarea.form-control { resize: vertical; }
 }
 .dice-roller-panel.open { display: block; opacity: 1; transform: scaleY(1); }
 
-/* ======================= */
-/* Party System */
-/* ======================= */
+.dice-select-group { display: flex; flex-direction: column; gap: 0.5rem; }
+
+.dice-group {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.5rem;
+}
+.dice-group label { font-weight: 700; font-size: 0.85rem; color: #2b1a07; }
+
+.dice-group select {
+  width: 80px;
+  padding: 0.3rem 0.4rem;
+  border-radius: 6px;
+  border: 1px solid goldenrod;
+  background-color: rgba(255, 255, 255, 0.9);
+  font-weight: 600;
+  color: #111;
+}
+
+.btn-small {
+  padding: 0.25rem 0.5rem;
+  font-size: 0.85rem;
+  background-color: goldenrod;
+  color: #1e1e1e;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.btn-small:hover { background-color: gold; transform: scale(1.05); }
+
+.btn-roll-all {
+  width: 100%;
+  font-weight: bold;
+  font-size: 1rem;
+  padding: 0.35rem;
+  margin-top: 0.5rem;
+  background-color: goldenrod;
+  color: #1e1e1e;
+  border: none;
+  border-radius: 6px;
+  transition: transform 0.2s ease;
+}
+.btn-roll-all:hover { transform: scale(1.05); }
+
+.dice-results {
+  margin-top: 0.75rem;
+  padding: 0.6rem;
+  background: url("/static/images/parchment-texture.jpg") no-repeat center/cover;
+  border: 1.5px solid goldenrod;
+  border-radius: 6px;
+  box-shadow: inset 0 0 8px rgba(255, 215, 0, 0.2);
+  font-size: 0.95rem;
+  color: #4b3600;
+}
+.dice-results h3, .dice-results h4 { color: #4b3600; }
+
+.dice-results li.critical, #dice-total.critical {
+  animation: criticalGlow 1.5s ease-in-out;
+  color: gold;
+  font-weight: 800;
+}
+@keyframes criticalGlow {
+  0% { text-shadow: 0 0 4px gold, 0 0 8px goldenrod; transform: scale(1); }
+  50% { text-shadow: 0 0 20px gold, 0 0 40px goldenrod; transform: scale(1.2); }
+  100% { text-shadow: 0 0 4px gold, 0 0 8px goldenrod; transform: scale(1); }
+}
+
+.sparkle {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: gold;
+  pointer-events: none;
+  animation: sparkleAnim 0.7s forwards;
+  z-index: 3;
+}
+@keyframes sparkleAnim {
+  0% { opacity: 1; transform: translate(0, 0) scale(1); }
+  100% { opacity: 0; transform: translate(var(--x), var(--y)) scale(0.5); }
+}
+
+@media (max-width: 768px) { .left-column-dice { width: 100%; } }
+
+/* === Party system additions === */
 .party-card {
   border: 1px solid rgba(255, 215, 0, 0.3);
   border-radius: 0.75rem;
@@ -317,6 +400,11 @@ textarea.form-control { resize: vertical; }
   transform: translateY(-2px);
   box-shadow: 0 0 12px rgba(255, 215, 0, 0.25);
 }
+
+#invite-list li.added, #member-grid .card.added {
+  background-color: rgba(255, 215, 0, 0.15);
+}
+#invite-list li.removed, #member-grid .card.removed { opacity: 0.6; }
 
 .alert {
   background-color: #d4af37;
@@ -330,9 +418,33 @@ textarea.form-control { resize: vertical; }
   box-shadow: 0 0 8px rgba(0,0,0,0.2);
 }
 
-/* ======================= */
-/* Parchment Styling (Scroll look) */
-/* ======================= */
+/* === Bootstrap override cleanup === */
+a, a:hover, a:focus {
+  color: goldenrod;
+  text-decoration: none;
+}
+
+a.btn:focus, button:focus, input:focus, select:focus, textarea:focus {
+  outline: none !important;
+  box-shadow: 0 0 6px rgba(255, 215, 0, 0.6) !important;
+  border-color: gold !important;
+}
+
+.alert-success,
+.alert-info,
+.alert-primary {
+  background-color: #d4af37 !important;
+  color: #000 !important;
+  border-color: #b8860b !important;
+}
+
+.alert-warning, .alert-danger {
+  background-color: #b8860b !important;
+  color: #000 !important;
+  border-color: #8b6508 !important;
+}
+
+/* Keep parchment close to content */
 .parchment-card,
 .tab-pane,
 .main-content {
@@ -341,43 +453,22 @@ textarea.form-control { resize: vertical; }
   padding: 20px 25px;
   margin: 0 auto;
   border-radius: 10px;
-  box-shadow: 
-    inset 0 0 10px rgba(0, 0, 0, 0.2),
-    0 0 20px rgba(0, 0, 0, 0.3);
-  border: 2px solid #c2a06b;
+  min-height: auto; /* Prevent tall empty parchment */
 }
 
-/* Remove nested parchment duplication */
-.tab-pane .parchment-card {
-  background: none;
-  box-shadow: none;
-  padding: 0;
-}
-
-/* Keep parchment tighter to content */
-.main-content {
-  padding-top: 1rem !important;
-}
-
-/* Textarea aesthetics */
+/* Ensure textarea fits nicely inside */
 textarea.form-control {
-  background-color: rgba(255, 248, 230, 0.9);
+  background-color: rgba(255, 248, 230, 0.9); /* light parchment tone */
   border: 1px solid #c2a06b;
   color: #3e2f1c;
   min-height: 120px;
   resize: vertical;
 }
 
-/* Scroll-like edge shadows */
-.parchment-card::before,
-.parchment-card::after {
-  content: "";
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  width: 50px;
-  background: radial-gradient(ellipse at center, rgba(0,0,0,0.3), transparent 70%);
-  pointer-events: none;
+.main-content {
+  padding-top: 1rem !important;
 }
-.parchment-card::before { left: -30px; }
-.parchment-card::after { right: -30px; transform: scaleX(-1); }
+.parchment-card {
+  box-shadow: 0 0 20px rgba(0,0,0,0.3), inset 0 0 10px rgba(0,0,0,0.15);
+}
+
