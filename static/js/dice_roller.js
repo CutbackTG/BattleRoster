@@ -1,62 +1,36 @@
+// ----------------------
 // Toggle dice roller panel
+// ----------------------
 function toggleDiceRoller() {
   const panel = document.getElementById("dice-roller-panel");
   panel.classList.toggle("open");
 }
 
+// ----------------------
 // Roll a single die
+// ----------------------
 function rollSingle(i) {
-  i = parseInt(i, 10); // ensure number
-
+  i = parseInt(i, 10);
   const select = document.getElementById('die' + i);
   if (!select) return;
 
   const sides = parseInt(select.value, 10);
   if (isNaN(sides)) return;
 
-  const result = rollDie(sides);
-
-  // Update individual result
-  const resultList = document.getElementById('dice-results-list');
-  let li = document.getElementById('result-item-' + i);
-  if (!li) {
-    li = document.createElement('li');
-    li.id = 'result-item-' + i;
-    resultList.appendChild(li);
-  }
-  li.textContent = `Roll ${i}: ${result}`;
-
-  // Update total
-  updateTotal();
-}
-
-function updateTotal() {
-  const resultList = document.getElementById('dice-results-list');
-  if (!resultList) return;
-
-  let total = 0;
-  resultList.querySelectorAll('li').forEach(li => {
-    const value = parseInt(li.textContent.split(': ')[1], 10);
-    if (!isNaN(value)) total += value;
-  });
-
-  const totalEl = document.getElementById('dice-total');
-  if (totalEl) totalEl.textContent = `TOTAL: ${total}`;
+  const roll = Math.floor(Math.random() * sides) + 1;
+  updateResults(i, roll, sides);
 }
 
 // ----------------------
 // Roll all dice
 // ----------------------
 function rollAll() {
-  const results = [];
   for (let i = 1; i <= 3; i++) {
     const select = document.getElementById(`die${i}`);
-    const sides = parseInt(select.value);
+    const sides = parseInt(select.value, 10);
     const roll = Math.floor(Math.random() * sides) + 1;
-    results.push({ value: roll, sides });
     updateResults(i, roll, sides);
   }
-  updateTotal(results.map(r => r.value));
   scrollToResults();
 }
 
@@ -66,35 +40,24 @@ function rollAll() {
 function updateResults(dieNum, value, sides) {
   const list = document.getElementById("dice-results-list");
   let li = list.querySelector(`#roll-${dieNum}`);
-  
+
   if (!li) {
     li = document.createElement("li");
     li.id = `roll-${dieNum}`;
     list.appendChild(li);
   }
-  
-  li.textContent = `Roll ${dieNum}: ${value}`;
+
+  li.textContent = `Die ${dieNum} (${sides}): ${value}`;
   li.classList.remove("critical");
 
-  // Critical glow + sparkles for D20 natural 20
+  // Critical D20 natural 20
   if (sides === 20 && value === 20) {
     li.classList.add("critical");
     document.getElementById("dice-total").classList.add("critical");
-    spawnSparkles(li, 12); // 12 sparkles
+    spawnSparkles(li, 12);
   }
 
   updateTotalFromList();
-  scrollToResults();
-}
-
-// ----------------------
-// Update total from results
-// ----------------------
-function updateTotal(results) {
-  const total = results.reduce((a, b) => a + b, 0);
-  const totalEl = document.getElementById("dice-total");
-  totalEl.textContent = `Total: ${total}`;
-  totalEl.classList.remove("critical"); // remove old critical if any
 }
 
 // ----------------------
@@ -103,17 +66,21 @@ function updateTotal(results) {
 function updateTotalFromList() {
   const list = document.getElementById("dice-results-list");
   const rolls = Array.from(list.children)
-                     .map(li => parseInt(li.textContent.split(": ")[1]));
+    .map(li => parseInt(li.textContent.split(": ").pop(), 10))
+    .filter(n => !isNaN(n));
+  
   const total = rolls.reduce((a, b) => a + b, 0);
   const totalEl = document.getElementById("dice-total");
   totalEl.textContent = `Total: ${total}`;
+  totalEl.classList.remove("critical");
 }
 
 // ----------------------
-// Scroll to dice results smoothly
+// Scroll to dice results
 // ----------------------
 function scrollToResults() {
   const resultsDiv = document.getElementById("dice-results");
+  if (!resultsDiv) return;
   const offset = 80;
   const top = resultsDiv.getBoundingClientRect().top + window.pageYOffset - offset;
   window.scrollTo({ top, behavior: "smooth" });
@@ -127,31 +94,29 @@ function spawnSparkles(targetEl, count = 8) {
     const sparkle = document.createElement("div");
     sparkle.classList.add("sparkle");
 
-    // Random movement and size
-    const x = (Math.random() - 0.5) * 80; // px
-    const y = (Math.random() - 0.5) * 60; // px
-    const size = 4 + Math.random() * 4; // 4-8px
+    const x = (Math.random() - 0.5) * 80;
+    const y = (Math.random() - 0.5) * 60;
+    const size = 4 + Math.random() * 4;
     sparkle.style.width = `${size}px`;
     sparkle.style.height = `${size}px`;
     sparkle.style.setProperty('--x', `${x}px`);
     sparkle.style.setProperty('--y', `${y}px`);
 
-    // Random color: gold / goldenrod / white
     const colors = ['gold', 'goldenrod', 'white'];
     sparkle.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
 
-    // Position relative to target
     const rect = targetEl.getBoundingClientRect();
-    sparkle.style.top = `${rect.top + window.pageYOffset + rect.height/2}px`;
-    sparkle.style.left = `${rect.left + window.pageXOffset + rect.width/2}px`;
+    sparkle.style.top = `${rect.top + window.pageYOffset + rect.height / 2}px`;
+    sparkle.style.left = `${rect.left + window.pageXOffset + rect.width / 2}px`;
 
     document.body.appendChild(sparkle);
-
-    // Remove after animation
     sparkle.addEventListener("animationend", () => sparkle.remove());
   }
 }
 
+// ----------------------
+// Event bindings
+// ----------------------
 document.querySelectorAll('.btn-small').forEach(btn => {
   btn.addEventListener('click', function() {
     const i = parseInt(this.dataset.die, 10);
