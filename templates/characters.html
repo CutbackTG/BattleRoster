@@ -44,6 +44,24 @@
   </nav>
 
   <div class="container mt-5">
+
+    <!-- 🔸 Filter by Player (visible only to DMs) -->
+    {% if is_dm and players %}
+    <div class="text-center mb-4">
+      <form method="get" class="d-inline-flex align-items-center gap-2">
+        <label for="player" class="fw-bold text-gold">Filter by Player:</label>
+        <select name="player" id="player" class="form-select w-auto text-center" onchange="this.form.submit()">
+          <option value="all" {% if not selected_player_id or selected_player_id == 'all' %}selected{% endif %}>All Players</option>
+          {% for player in players %}
+          <option value="{{ player.id }}" {% if selected_player_id == player.id|stringformat:"s" %}selected{% endif %}>
+            {{ player.username }}
+          </option>
+          {% endfor %}
+        </select>
+      </form>
+    </div>
+    {% endif %}
+
     <div class="row">
       <!-- Sidebar Tabs + Dice Roller -->
       <div class="col-md-3 sidebar">
@@ -79,9 +97,7 @@
                     <option value="12">D12</option>
                     <option value="20">D20</option>
                   </select>
-                  <!-- Wrap i in quotes and parse in JS -->
-                  <button class="btn-small" type="button" data-die="{{ i }}"
-                    onclick="rollSingle('{{ i }}')">Roll</button>
+                  <button class="btn-small" type="button" data-die="{{ i }}" onclick="rollSingle('{{ i }}')">Roll</button>
                 </div>
                 {% endfor %}
               </div>
@@ -112,9 +128,8 @@
               </div>
               <div class="mb-3">
                 <label for="id_level" class="form-label">Level</label>
-                <input type="number" name="class_type" id="id_level" class="form-control"
-                  value="{{ character.class_type|default_if_none:'1' }}" step="1" min="1"
-                  oninput="this.value = this.value.replace(/[^0-9]/g, '');">
+                <input type="number" name="level" id="id_level" class="form-control"
+                  value="{{ character.level|default_if_none:'1' }}" step="1" min="1">
               </div>
               <div class="mb-3">
                 <label for="id_class_type" class="form-label">Class</label>
@@ -122,79 +137,29 @@
                   value="{{ character.class_type|default_if_none:'' }}">
               </div>
               <div class="mb-3">
-                <label for="id_class_type" class="form-label">Race</label>
-                <input type="text" name="class_type" id="id_race" class="form-control"
-                  value="{{ character.class_type|default_if_none:'' }}">
+                <label for="id_race" class="form-label">Race</label>
+                <input type="text" name="race" id="id_race" class="form-control"
+                  value="{{ character.race|default_if_none:'' }}">
               </div>
             </div>
 
             <!-- Attributes Tab -->
             <div class="tab-pane fade" id="attributes" role="tabpanel">
               <h3>Character Attributes</h3>
-
+              {% for attr in attributes %}
               <div class="mb-3">
-                <label for="id_hp" class="form-label">HP</label>
-                <input type="number" id="id_hp" name="hp" class="form-control"
-                  value="{{ character.hp|default_if_none:'10' }}" step="1" min="0"
-                  oninput="this.value = this.value.replace(/[^0-9]/g, '');">
+                <label for="id_{{ attr }}" class="form-label text-capitalize">{{ attr }}</label>
+                <input type="number" id="id_{{ attr }}" name="{{ attr }}" class="form-control"
+                  value="{{ character|get_attr:attr|default_if_none:'10' }}" step="1" min="0">
               </div>
-
-              <div class="mb-3">
-                <label for="id_mp" class="form-label">MP</label>
-                <input type="number" id="id_mp" name="mp" class="form-control"
-                  value="{{ character.mp|default_if_none:'5' }}" step="1" min="0"
-                  oninput="this.value = this.value.replace(/[^0-9]/g, '');">
-              </div>
-
-              <div class="mb-3">
-                <label for="id_strength" class="form-label">Strength</label>
-                <input type="number" id="id_strength" name="strength" class="form-control"
-                  value="{{ character.strength|default_if_none:'10' }}" step="1" min="1"
-                  oninput="this.value = this.value.replace(/[^0-9]/g, '');">
-              </div>
-
-              <div class="mb-3">
-                <label for="id_dexterity" class="form-label">Dexterity</label>
-                <input type="number" id="id_dexterity" name="dexterity" class="form-control"
-                  value="{{ character.dexterity|default_if_none:'10' }}" step="1" min="1"
-                  oninput="this.value = this.value.replace(/[^0-9]/g, '');">
-              </div>
-
-              <div class="mb-3">
-                <label for="id_constitution" class="form-label">Constitution</label>
-                <input type="number" id="id_constitution" name="constitution" class="form-control"
-                  value="{{ character.constitution|default_if_none:'10' }}" step="1" min="1"
-                  oninput="this.value = this.value.replace(/[^0-9]/g, '');">
-              </div>
-
-              <div class="mb-3">
-                <label for="id_intelligence" class="form-label">Intelligence</label>
-                <input type="number" id="id_intelligence" name="intelligence" class="form-control"
-                  value="{{ character.intelligence|default_if_none:'10' }}" step="1" min="1"
-                  oninput="this.value = this.value.replace(/[^0-9]/g, '');">
-              </div>
-
-              <div class="mb-3">
-                <label for="id_wisdom" class="form-label">Wisdom</label>
-                <input type="number" id="id_wisdom" name="wisdom" class="form-control"
-                  value="{{ character.wisdom|default_if_none:'10' }}" step="1" min="1"
-                  oninput="this.value = this.value.replace(/[^0-9]/g, '');">
-              </div>
-
-              <div class="mb-3">
-                <label for="id_charisma" class="form-label">Charisma</label>
-                <input type="number" id="id_charisma" name="charisma" class="form-control"
-                  value="{{ character.charisma|default_if_none:'10' }}" step="1" min="1"
-                  oninput="this.value = this.value.replace(/[^0-9]/g, '');">
-              </div>
+              {% endfor %}
             </div>
 
             <!-- Equipment Tab -->
             <div class="tab-pane fade" id="equipment" role="tabpanel">
               <div class="mb-3">
                 <label for="id_equipment" class="form-label">Equipment</label>
-                <textarea name="equipment" id="id_equipment"
-                  class="form-control">{{ character.equipment|default_if_none:'' }}</textarea>
+                <textarea name="equipment" id="id_equipment" class="form-control">{{ character.equipment|default_if_none:'' }}</textarea>
               </div>
             </div>
 
@@ -202,8 +167,7 @@
             <div class="tab-pane fade" id="weapons" role="tabpanel">
               <div class="mb-3">
                 <label for="id_weapons" class="form-label">Weapons</label>
-                <textarea name="weapons" id="id_weapons"
-                  class="form-control">{{ character.weapons|default_if_none:'' }}</textarea>
+                <textarea name="weapons" id="id_weapons" class="form-control">{{ character.weapons|default_if_none:'' }}</textarea>
               </div>
             </div>
 
@@ -211,8 +175,7 @@
             <div class="tab-pane fade" id="spells" role="tabpanel">
               <div class="mb-3">
                 <label for="id_spells" class="form-label">Spells</label>
-                <textarea name="spells" id="id_spells"
-                  class="form-control">{{ character.spells|default_if_none:'' }}</textarea>
+                <textarea name="spells" id="id_spells" class="form-control">{{ character.spells|default_if_none:'' }}</textarea>
               </div>
             </div>
           </div>
@@ -228,7 +191,7 @@
 
     <!-- Character List -->
     <hr class="mt-5 mb-4">
-    <h2>Your Characters</h2>
+    <h2>{% if is_dm %}All Characters{% else %}Your Characters{% endif %}</h2>
     {% if characters %}
     <div class="row character-grid">
       {% for c in characters %}
@@ -238,12 +201,13 @@
             <h5 class="card-title">{{ c.name }}</h5>
             <p class="card-text">Level {{ c.level }} — {{ c.class_type }}</p>
             <p class="card-text text-muted">HP: {{ c.health }} | Mana: {{ c.mana }}</p>
+            {% if is_dm %}
+            <p class="card-text"><small class="text-gold">Player: {{ c.player.username }}</small></p>
+            {% endif %}
             <div class="d-flex justify-content-between mt-3">
-              {% if user.is_authenticated %}
               <a href="{% url 'characters_edit' c.id %}" class="btn btn-sm btn-warning">Edit</a>
               <a href="{% url 'character_delete' c.id %}" class="btn btn-sm btn-danger"
                 onclick="return confirm('Are you sure you want to delete this character?');">Delete</a>
-              {% endif %}
             </div>
           </div>
         </div>
@@ -260,5 +224,4 @@
   <script src="{% static 'js/dice_roller.js' %}"></script>
   <script src="https://kit.fontawesome.com/f84e35c3bf.js" crossorigin="anonymous"></script>
 </body>
-
 </html>

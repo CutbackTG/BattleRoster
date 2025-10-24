@@ -27,7 +27,7 @@ class DiceRollForm(forms.Form):
     die2 = forms.ChoiceField(choices=DICE_CHOICES, required=False)
     die3 = forms.ChoiceField(choices=DICE_CHOICES, required=False)
 
-# ---------- Main Views ----------
+# ---------- Helpers ----------
 
 def index_view(request):
     return render(request, "index.html")
@@ -38,16 +38,43 @@ def to_int(value, default=0):
     except (TypeError, ValueError):
         return default
 
+
+# ---------- Character Views ----------
+
+@login_required
 def characters_view(request, pk=None):
-    if request.user.is_authenticated:
-        characters = Character.objects.filter(player=request.user).order_by('name')
+    """
+    Show all characters.
+    - Players: only see their own.
+    - DMs: see and manage all players' characters (CRUD).
+    Includes dice roller and optional filtering by player.
+    """
+    user = request.user
+    is_dm = getattr(user, "is_dungeon_master", False)
+    selected_player_id = request.GET.get("player")
+
+    # 🧭 Character list logic
+    if user.is_authenticated:
+        if is_dm:
+            if selected_player_id and selected_player_id != "all":
+                characters = Character.objects.filter(player__id=selected_player_id).order_by('name')
+            else:
+                characters = Character.objects.all().order_by('player__username', 'name')
+            players = User.objects.filter(game_characters__isnull=False).distinct().order_by('username')
+        else:
+            characters = Character.objects.filter(player=user).order_by('name')
+            players = None
     else:
         characters = request.session.get("characters", [])
+        players = None
 
     editing = None
     if pk is not None:
-        if request.user.is_authenticated:
-            editing = get_object_or_404(Character, pk=pk, player=request.user)
+        if user.is_authenticated:
+            if is_dm:
+                editing = get_object_or_404(Character, pk=pk)
+            else:
+                editing = get_object_or_404(Character, pk=pk, player=user)
         else:
             if int(pk) < len(characters):
                 editing = characters[int(pk)]
@@ -59,6 +86,7 @@ def characters_view(request, pk=None):
     total = None
     dice_form = DiceRollForm(request.POST or None)
 
+    # 🎲 Dice rolling
     if request.method == "POST" and "roll_dice" in request.POST:
         if dice_form.is_valid():
             dice = [dice_form.cleaned_data.get(f'die{i}') for i in range(1, 4)]
@@ -66,6 +94,7 @@ def characters_view(request, pk=None):
             results = [random.randint(1, d) for d in dice]
             total = sum(results)
 
+    # ✍️ Character Create/Update
     elif request.method == "POST":
         fields = {
             "name": request.POST.get("name", "").strip(),
@@ -86,29 +115,18 @@ def characters_view(request, pk=None):
         }
 
         if editing:
-            if request.user.is_authenticated:
-                for k, v in fields.items():
-                    setattr(editing, k, v)
-                editing.save()
-            else:
-                characters[int(pk)] = fields
-                request.session["characters"] = characters
+            for k, v in fields.items():
+                setattr(editing, k, v)
+            editing.save()
             messages.success(request, f"Character '{fields['name']}' updated successfully!")
         else:
-            if request.user.is_authenticated:
-                Character.objects.create(player=request.user, **fields)
-                messages.success(request, f"Character '{fields['name']}' created successfully!")
-            else:
-                if len(characters) >= 1:
-                    messages.info(request, "Sign up or log in to create more characters.")
-                    return redirect("/accounts/signup_login/?next=/characters/")
-                characters.append(fields)
-                request.session["characters"] = characters
-                messages.success(request, f"Character '{fields['name']}' created successfully!")
+            Character.objects.create(player=user, **fields)
+            messages.success(request, f"Character '{fields['name']}' created successfully!")
 
         return redirect("characters")
 
     attributes = ["strength", "dexterity", "constitution", "intelligence", "wisdom", "charisma"]
+
     return render(
         request,
         "characters.html",
@@ -120,8 +138,28 @@ def characters_view(request, pk=None):
             "dice_form": dice_form,
             "results": results,
             "total": total,
+            "is_dm": is_dm,
+            "players": players,
+            "selected_player_id": selected_player_id,
         },
     )
+
+
+@login_required
+def character_delete(request, pk):
+    """Allow players to delete their characters, or DMs to delete any."""
+    user = request.user
+    is_dm = getattr(user, "is_dungeon_master", False)
+
+    if is_dm:
+        character = get_object_or_404(Character, pk=pk)
+    else:
+        character = get_object_or_404(Character, pk=pk, player=user)
+
+    character.delete()
+    messages.success(request, f"Character '{character.name}' deleted successfully!")
+    return redirect("characters")
+
 
 # ---------- Party Views ----------
 
@@ -159,6 +197,7 @@ def party_view(request):
         "characters": characters,
     })
 
+
 @login_required
 def party_remove_member(request, pk):
     """Allow any party member (including DM) to remove another."""
@@ -180,6 +219,7 @@ def party_remove_member(request, pk):
             messages.success(request, f"{member_to_remove.username} has been removed from the party.")
 
     return redirect("party")
+
 
 @login_required
 def party_invite(request, pk):
@@ -210,20 +250,6 @@ def party_invite(request, pk):
 
     return redirect("party")
 
-# Delete a character
-@login_required
-def character_delete(request, pk):
-    if request.user.is_authenticated:
-        character = get_object_or_404(Character, pk=pk, player=request.user)
-        character.delete()
-    else:
-        characters = request.session.get("characters", [])
-        if int(pk) < len(characters):
-            characters.pop(int(pk))
-            request.session["characters"] = characters
-
-    messages.success(request, "Character deleted successfully!")
-    return redirect("characters")
 
 @login_required
 def party_detail(request, pk):
@@ -234,6 +260,7 @@ def party_detail(request, pk):
         "party": party,
         "members": members,
     })
+
 
 @login_required
 def dm_party_list(request):
@@ -261,16 +288,15 @@ def dm_party_list(request):
         party.delete()
         return redirect("dm_party_list")
 
-    # Show all parties for this DM
     parties = Party.objects.filter(dungeon_master=user).order_by("name")
     return render(request, "dm_party_dashboard.html", {"parties": parties})
+
 
 @login_required
 def party_select_character(request, pk):
     """Allow a player to pick which of their characters they’ll use in this party."""
     party = get_object_or_404(Party, pk=pk)
 
-    # Only members of the party can select a character
     if request.user not in party.members.all() and request.user != party.dungeon_master:
         return redirect("party_detail", pk=pk)
 
