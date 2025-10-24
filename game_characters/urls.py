@@ -13,4 +13,5 @@ urlpatterns = [
     path("party/<int:pk>/remove-member/", views.party_remove_member, name="party_remove_member"),
     path("party/<int:pk>/select-character/", views.party_select_character, name="party_select_character"),
     path("dm/parties/", views.dm_party_list, name="dm_party_list"),
+
 ]

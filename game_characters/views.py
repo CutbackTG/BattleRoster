@@ -224,3 +224,13 @@ def character_delete(request, pk):
 
     messages.success(request, "Character deleted successfully!")
     return redirect("characters")
+
+@login_required
+def party_detail(request, pk):
+    """View a specific party's details."""
+    party = get_object_or_404(Party, pk=pk)
+    members = party.members.all()
+    return render(request, "party_detail.html", {
+        "party": party,
+        "members": members,
+    })
