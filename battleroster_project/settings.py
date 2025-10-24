@@ -21,7 +21,7 @@ ALLOWED_HOSTS = os.getenv(
 
 # --- CSRF Trusted Origins ---
 CSRF_TRUSTED_ORIGINS = [
-    f"https://{host}"
+    "https://battlerosterhost-e22dbecc83dc.herokuapp.com"
     for host in ALLOWED_HOSTS
     if not host.startswith("localhost") and not host.startswith("127.")
 ]
