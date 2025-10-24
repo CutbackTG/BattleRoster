@@ -108,7 +108,7 @@
               <div class="mb-3">
                 <label for="id_name" class="form-label">Name</label>
                 <input type="text" name="name" id="id_name" class="form-control"
-                  value="{{ character.name|default_if_none:'' }}">
+                  value="{{ character.name|default_if_none:'' }}" placeholder="Enter character name...">
               </div>
               <div class="mb-3">
                 <label for="id_level" class="form-label">Level</label>
@@ -117,13 +117,25 @@
               </div>
               <div class="mb-3">
                 <label for="id_class_type" class="form-label">Class</label>
-                <input type="text" name="class_type" id="id_class_type" class="form-control"
-                  value="{{ character.class_type|default_if_none:'' }}">
+                <select name="class_type" id="id_class_type" class="form-control">
+                  <option value="">Select a class...</option>
+                  <option value="Fighter" {% if character.class_type="Fighter" %}selected{% endif %}>Fighter</option>
+                  <option value="Thief" {% if character.class_type="Thief" %}selected{% endif %}>Thief</option>
+                  <option value="Mage" {% if character.class_type="Mage" %}selected{% endif %}>Mage</option>
+                  <option value="Cleric" {% if character.class_type="Cleric" %}selected{% endif %}>Cleric</option>
+                </select>
               </div>
               <div class="mb-3">
-                <label for="id_race" class="form-label">Race</label>
-                <input type="text" name="race" id="id_race" class="form-control"
-                  value="{{ character.race|default_if_none:'' }}">
+                <label for="id_race" class="form-label">Class</label>
+                <select name="race" id="race" class="form-control">
+                  <option value="">Select a race...</option>
+                  <option value="Human" {% if character.class_type="Human" %}selected{% endif %}>Human</option>
+                  <option value="Dwarf" {% if character.class_type="Dwarf" %}selected{% endif %}>Dwarf</option>
+                  <option value="Elf" {% if character.class_type="Elf" %}selected{% endif %}>Elf</option>
+                  <option value="Orc" {% if character.class_type="Orc" %}selected{% endif %}>Orc</option>
+                  <option value="Gnome" {% if character.class_type="Gnome" %}selected{% endif %}>Gnome</option>
+                  <option value="Troll" {% if character.class_type="Troll" %}selected{% endif %}>Troll</option>
+                </select>
               </div>
               <div class="col-md-3">
                 <label for="health" class="form-label">Health (HP)</label>
@@ -139,7 +151,7 @@
 
           <!-- Attributes Tab -->
           <div class="tab-pane fade" id="attributes" role="tabpanel">
-            <h3>Character Attributes</h3>
+            <h3>Character Attributes - Roll 3x D6 for each attribute score</h3>
             {% for attr in attributes %}
             <div class="mb-3">
               <label for="id_{{ attr }}" class="form-label text-capitalize">{{ attr }}</label>
