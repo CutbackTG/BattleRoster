@@ -147,7 +147,7 @@ def character_delete(request, pk):
 def party_view(request):
     """Show the player's party page."""
     if not request.user.is_authenticated:
-        return redirect("login")
+        return redirect("signup_login")
 
     party = Party.objects.filter(members=request.user).first()
     characters = Character.objects.filter(player=request.user)
