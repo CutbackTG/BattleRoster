@@ -120,10 +120,10 @@
                 <label for="id_class_type" class="form-label">Class</label>
                 <select name="class_type" id="id_class_type" class="form-control">
                   <option value="">Select a class...</option>
-                  <option value="Fighter" {% if character.class_type=="Fighter" %}selected{% endif %}>Fighter</option>
-                  <option value="Thief" {% if character.class_type=="Thief" %}selected{% endif %}>Thief</option>
-                  <option value="Mage" {% if character.class_type=="Mage" %}selected{% endif %}>Mage</option>
-                  <option value="Cleric" {% if character.class_type=="Cleric" %}selected{% endif %}>Cleric</option>
+                  <option value="Fighter" {% if character.class_type == "Fighter" %}selected{% endif %}>Fighter</option>
+                  <option value="Thief" {% if character.class_type == "Thief" %}selected{% endif %}>Thief</option>
+                  <option value="Mage" {% if character.class_type == "Mage" %}selected{% endif %}>Mage</option>
+                  <option value="Cleric" {% if character.class_type == "Cleric" %}selected{% endif %}>Cleric</option>
                 </select>
               </div>
 
@@ -131,12 +131,12 @@
                 <label for="id_race" class="form-label">Race</label>
                 <select name="race" id="race" class="form-control">
                   <option value="">Select a race...</option>
-                  <option value="Human" {% if character.race=="Human" %}selected{% endif %}>Human</option>
-                  <option value="Dwarf" {% if character.race=="Dwarf" %}selected{% endif %}>Dwarf</option>
-                  <option value="Elf" {% if character.race=="Elf" %}selected{% endif %}>Elf</option>
-                  <option value="Orc" {% if character.race=="Orc" %}selected{% endif %}>Orc</option>
-                  <option value="Gnome" {% if character.race=="Gnome" %}selected{% endif %}>Gnome</option>
-                  <option value="Troll" {% if character.race=="Troll" %}selected{% endif %}>Troll</option>
+                  <option value="Human" {% if character.race == "Human" %}selected{% endif %}>Human</option>
+                  <option value="Dwarf" {% if character.race == "Dwarf" %}selected{% endif %}>Dwarf</option>
+                  <option value="Elf" {% if character.race == "Elf" %}selected{% endif %}>Elf</option>
+                  <option value="Orc" {% if character.race == "Orc" %}selected{% endif %}>Orc</option>
+                  <option value="Gnome" {% if character.race == "Gnome" %}selected{% endif %}>Gnome</option>
+                  <option value="Troll" {% if character.race == "Troll" %}selected{% endif %}>Troll</option>
                 </select>
               </div>
 
