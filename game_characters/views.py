@@ -250,17 +250,66 @@ def party_invite(request, pk):
 
     return redirect("party")
 
-
 @login_required
 def party_detail(request, pk):
-    """View a specific party's details."""
+    """
+    Dungeon Master and members can view a party.
+    Dungeon Masters see all characters from all members in a tabbed, editable layout.
+    """
     party = get_object_or_404(Party, pk=pk)
-    members = party.members.all()
-    return render(request, "party_detail.html", {
-        "party": party,
-        "members": members,
-    })
+    user = request.user
 
+    # Access control
+    if user != party.dungeon_master and user not in party.members.all():
+        messages.error(request, "You do not have permission to view this party.")
+        return redirect("party")
+
+    # Gather all characters from members
+    member_characters = Character.objects.filter(player__in=party.members.all()).order_by("player__username", "name")
+
+    # 🧙 DM Editing & Deletion
+    if user == party.dungeon_master and request.method == "POST":
+        char_id = request.POST.get("character_id")
+        character = get_object_or_404(Character, id=char_id)
+
+        # Delete character
+        if "delete_character" in request.POST:
+            char_name = character.name
+            character.delete()
+            messages.warning(request, f"Character '{char_name}' was deleted from the party.")
+            return redirect("party_detail", pk=pk)
+
+        # Update character
+        fields = {
+            "name": request.POST.get("name", "").strip(),
+            "level": int(request.POST.get("level", character.level)),
+            "race": request.POST.get("race", "").strip(),
+            "class_type": request.POST.get("class_type", "").strip(),
+            "health": int(request.POST.get("health", character.health)),
+            "mana": int(request.POST.get("mana", character.mana)),
+            "strength": int(request.POST.get("strength", character.strength)),
+            "dexterity": int(request.POST.get("dexterity", character.dexterity)),
+            "constitution": int(request.POST.get("constitution", character.constitution)),
+            "intelligence": int(request.POST.get("intelligence", character.intelligence)),
+            "wisdom": int(request.POST.get("wisdom", character.wisdom)),
+            "charisma": int(request.POST.get("charisma", character.charisma)),
+            "equipment": request.POST.get("equipment", character.equipment or "").strip(),
+            "weapons": request.POST.get("weapons", character.weapons or "").strip(),
+            "spells": request.POST.get("spells", character.spells or "").strip(),
+        }
+
+        for k, v in fields.items():
+            setattr(character, k, v)
+        character.save()
+        messages.success(request, f"✅ {character.name}'s sheet has been updated.")
+        return redirect("party_detail", pk=pk)
+
+    context = {
+        "party": party,
+        "member_characters": member_characters,
+        "is_dm": user == party.dungeon_master,
+    }
+    return render(request, "dm_party_characters.html", context)
 
 @login_required
 def dm_party_list(request):

@@ -1,0 +1,136 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ party.name }} | DM Party View</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <div class="container">
+    <a class="navbar-brand" href="{% url 'home' %}">
+      <img src="{% static 'images/battleroster-logo.png' %}" alt="Battle Roster" id="battleroster-logo">
+    </a>
+    <div class="collapse navbar-collapse">
+      <ul class="navbar-nav ms-auto">
+        <li class="nav-item"><a class="nav-link" href="{% url 'party' %}">Back to Parties</a></li>
+        <li class="nav-item"><a class="nav-link" href="{% url 'logout' %}">Logout</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<div class="container mt-5">
+  <h1 class="mb-4 text-center"> {{ party.name }} — Dungeon Master View</h1>
+  <p class="text-center text-muted">Review and edit all party member characters.</p>
+
+  {% if member_characters %}
+  <!-- Character Tabs -->
+  <ul class="nav nav-tabs mb-3" id="characterTabs" role="tablist">
+    {% for c in member_characters %}
+      <li class="nav-item" role="presentation">
+        <button class="nav-link {% if forloop.first %}active{% endif %}" id="tab-{{ c.id }}" data-bs-toggle="tab"
+                data-bs-target="#char-{{ c.id }}" type="button" role="tab">
+          {{ c.name }} ({{ c.player.username }})
+        </button>
+      </li>
+    {% endfor %}
+  </ul>
+
+  <!-- Character Sheets -->
+  <div class="tab-content" id="characterTabsContent">
+    {% for c in member_characters %}
+    <div class="tab-pane fade {% if forloop.first %}show active{% endif %}" id="char-{{ c.id }}" role="tabpanel">
+
+      <form method="POST" class="parchment-card p-4 mt-3">
+        {% csrf_token %}
+        <input type="hidden" name="character_id" value="{{ c.id }}">
+
+        <div class="row">
+          <!-- Sidebar Tabs -->
+          <div class="col-md-3 sidebar">
+            <div class="nav flex-column nav-pills" id="sheet-tabs-{{ c.id }}" role="tablist" aria-orientation="vertical">
+              <button class="nav-link active" data-bs-toggle="pill" data-bs-target="#basic-{{ c.id }}" type="button">Basic</button>
+              <button class="nav-link" data-bs-toggle="pill" data-bs-target="#attributes-{{ c.id }}" type="button">Attributes</button>
+              <button class="nav-link" data-bs-toggle="pill" data-bs-target="#equipment-{{ c.id }}" type="button">Equipment</button>
+              <button class="nav-link" data-bs-toggle="pill" data-bs-target="#weapons-{{ c.id }}" type="button">Weapons</button>
+              <button class="nav-link" data-bs-toggle="pill" data-bs-target="#spells-{{ c.id }}" type="button">Spells</button>
+            </div>
+          </div>
+
+          <!-- Sheet Content -->
+          <div class="col-md-9">
+            <div class="tab-content" id="sheet-tab-content-{{ c.id }}">
+              <!-- Basic Info -->
+              <div class="tab-pane fade show active" id="basic-{{ c.id }}">
+                <h4>Basic Info</h4>
+                <label>Name</label>
+                <input type="text" class="form-control mb-2" name="name" value="{{ c.name }}">
+                <label>Level</label>
+                <input type="number" class="form-control mb-2" name="level" value="{{ c.level }}">
+                <label>Race</label>
+                <input type="text" class="form-control mb-2" name="race" value="{{ c.race }}">
+                <label>Class</label>
+                <input type="text" class="form-control mb-2" name="class_type" value="{{ c.class_type }}">
+              </div>
+
+              <!-- Attributes -->
+              <div class="tab-pane fade" id="attributes-{{ c.id }}">
+                <h4>Attributes</h4>
+                {% for attr in "health,mana,strength,dexterity,constitution,intelligence,wisdom,charisma".split(',') %}
+                <label class="mt-2 text-capitalize">{{ attr }}</label>
+                <input type="number" class="form-control" name="{{ attr }}" value="{{ c|getattr:attr }}">
+                {% endfor %}
+              </div>
+
+              <!-- Equipment -->
+              <div class="tab-pane fade" id="equipment-{{ c.id }}">
+                <h4>Equipment</h4>
+                <textarea name="equipment" class="form-control">{{ c.equipment }}</textarea>
+              </div>
+
+              <!-- Weapons -->
+              <div class="tab-pane fade" id="weapons-{{ c.id }}">
+                <h4>Weapons</h4>
+                <textarea name="weapons" class="form-control">{{ c.weapons }}</textarea>
+              </div>
+
+              <!-- Spells -->
+              <div class="tab-pane fade" id="spells-{{ c.id }}">
+                <h4>Spells</h4>
+                <textarea name="spells" class="form-control">{{ c.spells }}</textarea>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {% if is_dm %}
+        <div class="text-center mt-4 d-flex justify-content-center gap-3">
+          <button type="submit" class="btn btn-gold">💾 Save Changes</button>
+          <button type="submit" name="delete_character" value="1" class="btn btn-danger"
+                  onclick="return confirm('Are you sure you want to delete {{ c.name }}?');">
+             Delete Character
+          </button>
+        </div>
+        {% endif %}
+      </form>
+
+    </div>
+    {% endfor %}
+  </div>
+
+  {% else %}
+    <p class="text-center text-muted">No characters in this party yet.</p>
+  {% endif %}
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://kit.fontawesome.com/f84e35c3bf.js" crossorigin="anonymous"></script>
+</body>
+</html>
