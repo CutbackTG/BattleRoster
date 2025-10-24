@@ -149,13 +149,6 @@ def party_view(request):
     party = Party.objects.filter(members=request.user).first()
     characters = Character.objects.filter(player=request.user)
 
-    if not party:
-        messages.info(request, "You’re not currently in a party. You can join or create one below.")
-        return render(request, "party.html", {
-            "party": None,
-            "characters": characters,
-        })
-
     return render(request, "party.html", {
         "party": party,
         "characters": characters,
@@ -172,7 +165,7 @@ def party_remove_member(request, pk):
     """Allow any party member to remove another member."""
     party = get_object_or_404(Party, pk=pk)
 
-    # ✅ Only members of the party can remove someone
+    # Only members of the party can remove someone
     if request.user not in party.members.all() and request.user != party.dungeon_master:
         messages.error(request, "You must be a member of this party to make changes.")
         return redirect("party")
