@@ -6,7 +6,6 @@ from django import forms
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ObjectDoesNotExist
-from django.http import JsonResponse
 
 User = get_user_model()
 
@@ -86,30 +85,13 @@ def characters_view(request, pk=None):
     total = None
     dice_form = DiceRollForm(request.POST or None)
 
-
-def roll_dice_view(request):
-    if request.method == "POST":
-        # Determine which die was rolled (die1, die2, die3, or all)
-        die_to_roll = request.POST.get("die_to_roll", "all")
-
-        # Current dice sides and results passed from the client
-        dice_sides = [int(request.POST.get(f'die{i}', 6)) for i in range(1, 4)]
-        current_results = [int(request.POST.get(f'result{i}', 0)) for i in range(1, 4)]
-
-        # Roll the specified die(s)
-        new_results = current_results.copy()
-        if die_to_roll == "all":
-            new_results = [random.randint(1, sides) for sides in dice_sides]
-        else:
-            index = int(die_to_roll[-1]) - 1  # e.g. die2 → index 1
-            new_results[index] = random.randint(1, dice_sides[index])
-
-        total = sum(new_results)
-
-        return JsonResponse({
-            "results": new_results,
-            "total": total,
-        })
+    # Dice rolling
+    if request.method == "POST" and "roll_dice" in request.POST:
+        if dice_form.is_valid():
+            dice = [dice_form.cleaned_data.get(f'die{i}') for i in range(1, 4)]
+            dice = [int(d) for d in dice if d]
+            results = [random.randint(1, d) for d in dice]
+            total = sum(results)
 
     # Character Create/Update
     elif request.method == "POST":
