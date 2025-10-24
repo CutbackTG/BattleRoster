@@ -1,13 +1,13 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
+from .models import Character, Party
+import random
 from django import forms
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ObjectDoesNotExist
-import random
 
-from .models import Character, Party
-
+User = get_user_model()
 
 # ---------- Dice Roller Setup ----------
 
@@ -22,18 +22,15 @@ DICE_CHOICES = [
     (20, 'D20'),
 ]
 
-
 class DiceRollForm(forms.Form):
     die1 = forms.ChoiceField(choices=DICE_CHOICES, required=False)
     die2 = forms.ChoiceField(choices=DICE_CHOICES, required=False)
     die3 = forms.ChoiceField(choices=DICE_CHOICES, required=False)
 
-
 # ---------- Main Views ----------
 
 def index_view(request):
     return render(request, "index.html")
-
 
 # Helper to safely convert numeric fields
 def to_int(value, default=0):
@@ -42,10 +39,8 @@ def to_int(value, default=0):
     except (TypeError, ValueError):
         return default
 
-
 # List/create/update characters + dice roller
 def characters_view(request, pk=None):
-    # Get user characters or session characters
     if request.user.is_authenticated:
         characters = Character.objects.filter(player=request.user).order_by('name')
     else:
@@ -62,7 +57,7 @@ def characters_view(request, pk=None):
                 messages.error(request, "Character not found.")
                 return redirect("characters")
 
-    # ---------- Dice Roller Logic ----------
+    # ---------- Dice Roller ----------
     results = []
     total = None
     dice_form = DiceRollForm(request.POST or None)
@@ -74,7 +69,7 @@ def characters_view(request, pk=None):
             results = [random.randint(1, d) for d in dice]
             total = sum(results)
 
-    # ---------- Character Save/Update Logic ----------
+    # ---------- Character Create/Update ----------
     elif request.method == "POST":
         fields = {
             "name": request.POST.get("name", "").strip(),
@@ -94,7 +89,7 @@ def characters_view(request, pk=None):
             "spells": request.POST.get("spells", "").strip(),
         }
 
-        if editing:  # Update existing character
+        if editing:
             if request.user.is_authenticated:
                 for k, v in fields.items():
                     setattr(editing, k, v)
@@ -103,7 +98,7 @@ def characters_view(request, pk=None):
                 characters[int(pk)] = fields
                 request.session["characters"] = characters
             messages.success(request, f"Character '{fields['name']}' updated successfully!")
-        else:  # Create new character
+        else:
             if request.user.is_authenticated:
                 Character.objects.create(player=request.user, **fields)
                 messages.success(request, f"Character '{fields['name']}' created successfully!")
@@ -117,7 +112,6 @@ def characters_view(request, pk=None):
 
         return redirect("characters")
 
-    # ---------- Context for Template ----------
     attributes = ["strength", "dexterity", "constitution", "intelligence", "wisdom", "charisma"]
     return render(
         request,
@@ -130,9 +124,8 @@ def characters_view(request, pk=None):
             "dice_form": dice_form,
             "results": results,
             "total": total,
-        }
+        },
     )
-
 
 # Delete a character
 def character_delete(request, pk):
@@ -148,50 +141,31 @@ def character_delete(request, pk):
     messages.success(request, "Character deleted successfully!")
     return redirect("characters")
 
-
 # ---------- Party Views ----------
-
-User = get_user_model()
-
 
 @login_required
 def party_view(request):
-    """
-    Show the player's party page — even if they don't have one yet.
-    Supports direct creation and management for both players and DMs.
-    """
+    """Show the player's party page — even if they don't have one yet."""
     party = Party.objects.filter(members=request.user).first()
     characters = Character.objects.filter(player=request.user)
 
-    # Handle new party creation
-    if request.method == "POST" and "create_party" in request.POST:
-        name = request.POST.get("party_name", "").strip() or f"{request.user.username}'s Party"
-        party = Party.objects.create(name=name, dungeon_master=request.user)
-        party.members.add(request.user)
-        messages.success(request, f"Party '{name}' created successfully!")
-        return redirect("party")
-
-    # Display empty party page
     if not party:
         messages.info(request, "You’re not currently in a party. You can join or create one below.")
-        return render(request, "game_characters/party.html", {
+        return render(request, "party.html", {
             "party": None,
             "characters": characters,
         })
 
-    # Normal view with an existing party
-    return render(request, "game_characters/party.html", {
+    return render(request, "party.html", {
         "party": party,
         "characters": characters,
     })
-
 
 @login_required
 def party_detail(request, pk):
     """Detailed view of a party and its members."""
     party = get_object_or_404(Party, pk=pk)
-    return render(request, "game_characters/party_detail.html", {"party": party})
-
+    return render(request, "party_detail.html", {"party": party})
 
 @login_required
 def party_remove_member(request, pk):
@@ -213,7 +187,6 @@ def party_remove_member(request, pk):
         messages.success(request, f"{member_to_remove.username} has been removed from the party.")
 
     return redirect("party_detail", pk=pk)
-
 
 @login_required
 def party_invite(request, pk):
@@ -240,12 +213,10 @@ def party_invite(request, pk):
 
     return redirect("party_detail", pk=pk)
 
-
 @login_required
 def party_select_character(request, pk):
     messages.info(request, "Character selection not yet implemented.")
     return redirect("party_detail", pk=pk)
-
 
 @login_required
 def dm_party_list(request):
@@ -257,8 +228,7 @@ def dm_party_list(request):
     if request.method == "POST" and "create_party" in request.POST:
         name = request.POST.get("party_name")
         if name:
-            party = Party.objects.create(name=name, dungeon_master=request.user)
-            party.members.add(request.user)
+            Party.objects.create(name=name, dungeon_master=request.user)
             messages.success(request, f"Party '{name}' created successfully!")
             return redirect("dm_party_list")
 
@@ -270,4 +240,4 @@ def dm_party_list(request):
         return redirect("dm_party_list")
 
     parties = Party.objects.filter(dungeon_master=request.user).order_by("name")
-    return render(request, "game_characters/party_list.html", {"parties": parties})
+    return render(request, "party_list.html", {"parties": parties})

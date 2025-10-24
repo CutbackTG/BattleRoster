@@ -1,81 +1,107 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block content %}
-<div class="container mt-5">
-  <h1 class="mb-4 text-center text-warning fw-bold">
-    {% if party %}{{ party.name }}{% else %}Your Party{% endif %}
-  </h1>
+<div class="container mt-5 text-center">
+  <h1 class="mb-4">Your Party</h1>
 
-  <!-- Empty party state -->
-  {% if not party %}
-    <div class="card shadow-sm p-4 text-center bg-dark text-light">
-      <p class="lead">You’re not currently in a party. Create one below!</p>
-
-      <form method="post" class="d-flex justify-content-center mt-3">
-        {% csrf_token %}
-        <input type="text" name="party_name" class="form-control w-50 me-2"
-               placeholder="Enter new party name">
-        <button type="submit" name="create_party" class="btn btn-warning fw-bold px-4">
-          + Create Party
-        </button>
-      </form>
+  {% if messages %}
+    <div class="mb-3">
+      {% for message in messages %}
+        <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+      {% endfor %}
     </div>
+  {% endif %}
 
-  {% else %}
-  <!-- Existing party section -->
-    <div class="card shadow-sm mb-4">
-      <div class="card-body bg-dark text-light">
-        <h4 class="card-title text-warning">Dungeon Master</h4>
-        <p class="card-text">{{ party.dungeon_master.username }}</p>
+  {% if party %}
+    <!-- Party Info -->
+    <div class="card shadow-sm mb-4 border-warning">
+      <div class="card-body">
+        <h2 class="card-title text-warning">{{ party.name }}</h2>
+        <p class="card-text">
+          <strong>Dungeon Master:</strong> {{ party.dungeon_master.username }}
+        </p>
+        <p class="card-text">
+          <strong>Members:</strong>
+          {% for member in party.members.all %}
+            <span class="badge bg-secondary me-1">{{ member.username }}</span>
+          {% empty %}
+            <span class="text-muted">No members yet</span>
+          {% endfor %}
+        </p>
       </div>
     </div>
 
-    <div class="card shadow-sm mb-4">
-      <div class="card-body bg-dark text-light">
-        <h4 class="card-title text-warning">Party Members</h4>
-        {% if party.members.all %}
-          <ul class="list-group list-group-flush">
-            {% for member in party.members.all %}
-              <li class="list-group-item bg-secondary text-light d-flex justify-content-between align-items-center">
-                <span>{{ member.username }}</span>
-                <form method="post" action="{% url 'party_remove_member' party.pk %}" class="m-0">
-                  {% csrf_token %}
-                  <input type="hidden" name="member_id" value="{{ member.id }}">
-                  <button class="btn btn-sm btn-warning fw-bold text-dark">
-                    ✖ Remove
-                  </button>
-                </form>
-              </li>
-            {% empty %}
-              <li class="list-group-item bg-dark text-light">No members in this party yet.</li>
-            {% endfor %}
-          </ul>
-        {% else %}
-          <p>No members in this party yet.</p>
-        {% endif %}
-      </div>
-    </div>
-
-    <!-- Invite member -->
-    <div class="card shadow-sm mb-4">
-      <div class="card-body bg-dark text-light">
-        <h4 class="card-title text-warning">Invite a Member</h4>
-        <form method="post" action="{% url 'party_invite' party.pk %}">
+    <!-- Invite Player -->
+    <div class="card mb-4 shadow-sm border-0">
+      <div class="card-body">
+        <h4 class="text-warning mb-3">Invite a Player</h4>
+        <form method="post" action="{% url 'party_invite' party.pk %}" class="d-flex justify-content-center">
           {% csrf_token %}
-          <div class="input-group">
-            <input type="text" name="username" class="form-control" placeholder="Enter username" required>
-            <button class="btn btn-warning fw-bold text-dark" type="submit">Invite</button>
-          </div>
+          <input
+            type="text"
+            name="username"
+            class="form-control w-50 me-2"
+            placeholder="Enter username"
+            required
+          />
+          <button type="submit" class="btn btn-warning text-dark fw-bold px-4">Invite</button>
         </form>
       </div>
     </div>
 
-  {% endif %}
+    <!-- Remove Member -->
+    <div class="card mb-4 shadow-sm border-0">
+      <div class="card-body">
+        <h4 class="text-warning mb-3">Remove a Member</h4>
+        <form method="post" action="{% url 'party_remove_member' party.pk %}" class="d-flex justify-content-center">
+          {% csrf_token %}
+          <select name="member_id" class="form-select w-50 me-2" required>
+            <option value="">Select member</option>
+            {% for member in party.members.all %}
+              <option value="{{ member.id }}">{{ member.username }}</option>
+            {% endfor %}
+          </select>
+          <button type="submit" class="btn btn-outline-warning text-dark fw-bold px-4">Remove</button>
+        </form>
+      </div>
+    </div>
 
-  <div class="text-center mt-4">
-    <a href="{% url 'characters' %}" class="btn btn-outline-warning px-4 fw-bold">
-      ← Back to Characters
-    </a>
-  </div>
+    <!-- Player Characters -->
+    <div class="card mb-4 shadow-sm border-0">
+      <div class="card-body">
+        <h4 class="text-warning mb-3">Your Characters</h4>
+        {% if characters %}
+          <div class="list-group">
+            {% for char in characters %}
+              <div class="list-group-item d-flex justify-content-between align-items-center">
+                <span>
+                  <strong>{{ char.name }}</strong> — Level {{ char.level }} {{ char.race }} {{ char.class_type }}
+                </span>
+                <a href="{% url 'characters_edit' char.pk %}" class="btn btn-sm btn-outline-warning text-dark fw-bold">Edit</a>
+              </div>
+            {% endfor %}
+          </div>
+        {% else %}
+          <p class="text-muted">You don’t have any characters yet. Create one on the <a href="{% url 'characters' %}">Characters</a> page.</p>
+        {% endif %}
+      </div>
+    </div>
+
+  {% else %}
+    <!-- No Party Yet -->
+    <div class="alert alert-warning">
+      <strong>You’re not in a party yet.</strong><br>
+      You can join or create one below.
+    </div>
+
+    <div class="mt-4">
+      {% if user.is_authenticated %}
+        <a href="{% url 'dm_party_list' %}" class="btn btn-warning text-dark fw-bold px-4">Create or Manage Party</a>
+      {% else %}
+        <a href="{% url 'signup_login' %}" class="btn btn-warning text-dark fw-bold px-4">Log In to Create a Party</a>
+      {% endif %}
+    </div>
+  {% endif %}
 </div>
 {% endblock %}
