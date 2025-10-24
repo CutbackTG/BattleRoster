@@ -83,7 +83,7 @@
               <!-- Attributes -->
               <div class="tab-pane fade" id="attributes-{{ c.id }}">
                 <h4>Attributes</h4>
-                {% for attr in "health,mana,strength,dexterity,constitution,intelligence,wisdom,charisma".split(',') %}
+                {% for attr in attr_list %}
                 <label class="mt-2 text-capitalize">{{ attr }}</label>
                 <input type="number" class="form-control" name="{{ attr }}" value="{{ c|getattr:attr }}">
                 {% endfor %}

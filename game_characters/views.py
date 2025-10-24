@@ -366,3 +366,14 @@ def party_select_character(request, pk):
         "party": party,
         "characters": characters,
     })
+
+context = {
+    "party": party,  # defined above with get_object_or_404
+    "member_characters": member_characters,  # also defined above
+    "is_dm": (user == party.dungeon_master),
+    "attr_list": [
+        "health", "mana", "strength", "dexterity",
+        "constitution", "intelligence", "wisdom", "charisma",
+    ],
+}
+
