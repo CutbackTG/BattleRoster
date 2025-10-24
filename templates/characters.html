@@ -45,23 +45,6 @@
 
   <div class="container mt-5">
 
-    <!-- 🔸 Filter by Player (visible only to DMs) -->
-    {% if is_dm and players %}
-    <div class="text-center mb-4">
-      <form method="get" class="d-inline-flex align-items-center gap-2">
-        <label for="player" class="fw-bold text-gold">Filter by Player:</label>
-        <select name="player" id="player" class="form-select w-auto text-center" onchange="this.form.submit()">
-          <option value="all" {% if not selected_player_id or selected_player_id == 'all' %}selected{% endif %}>All Players</option>
-          {% for player in players %}
-          <option value="{{ player.id }}" {% if selected_player_id == player.id|stringformat:"s" %}selected{% endif %}>
-            {{ player.username }}
-          </option>
-          {% endfor %}
-        </select>
-      </form>
-    </div>
-    {% endif %}
-
     <div class="row">
       <!-- Sidebar Tabs + Dice Roller -->
       <div class="col-md-3 sidebar">
