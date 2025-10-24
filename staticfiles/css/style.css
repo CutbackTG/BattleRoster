@@ -228,13 +228,17 @@ textarea.form-control { resize: vertical; }
   border-radius: 10px;
   transition: 0.2s ease-in-out;
 }
-.btn-gold:hover { background-color: #b8860b; color: white; }
+
+.btn-gold:hover {
+  background-color: #b8860b;
+  color: #fff;
+  transform: scale(1.03);
+}
 
 .bg-gold { background-color: #d4af37 !important; color: #000 !important; }
 
-/* ======================= */
+
 /* Character Cards */
-/* ======================= */
 .character-grid { display: grid; gap: 1.5rem; margin-top: 2rem; }
 
 .card {
