@@ -146,19 +146,22 @@ def character_delete(request, pk):
 # Party view (show all characters in user's party)
 @login_required
 def party_view(request):
-    """Show the player's party page."""
+    """Show the player's party page — even if they don't have one yet."""
     party = Party.objects.filter(members=request.user).first()
     characters = Character.objects.filter(player=request.user)
 
     if not party:
-        messages.info(request, "You’re not in a party yet.")
-        return redirect("characters")
+        # Let the player see an empty party state instead of redirecting
+        messages.info(request, "You’re not currently in a party. You can join or create one below.")
+        return render(request, "party.html", {
+            "party": None,
+            "characters": characters,
+        })
 
     return render(request, "party.html", {
         "party": party,
         "characters": characters,
     })
-
 
 @login_required
 def party_detail(request, pk):
