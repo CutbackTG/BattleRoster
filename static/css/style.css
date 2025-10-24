@@ -444,48 +444,39 @@ a.btn:focus, button:focus, input:focus, select:focus, textarea:focus {
   border-color: #8b6508 !important;
 }
 
-/* Keep parchment close to content */
-form {
-  background: url('/static/images/parchment-bg.jpg') repeat;
-  background-size: contain;
+/* Keep parchment tightly around character form */
+.character-form {
+  background: url('/static/images/parchment-bg.jpg') center/cover no-repeat;
   border: 3px solid goldenrod;
-  border-radius: 10px;
+  border-radius: 12px;
   padding: 1.5rem 2rem;
   margin: 1rem auto;
   max-width: 850px;
   color: #2b1a07;
-  box-shadow: 0 0 20px rgba(255, 215, 0, 0.15);
+  box-shadow: 0 0 25px rgba(255, 215, 0, 0.15);
 }
 
-/* Only parchment cards get their own textured background */
-.parchment-card {
-  background: url('/static/images/parchment-texture.jpg') center/cover;
-  border: 2px solid goldenrod;
-  border-radius: 10px;
-  box-shadow: 0 0 20px rgba(0,0,0,0.3), inset 0 0 10px rgba(0,0,0,0.15);
-  padding: 1rem;
-}
-
-/* Remove background from tab-pane to prevent huge parchment area */
-.tab-pane {
+/* Prevent the parchment from repeating for every tab */
+.tab-content {
   background: none;
-  padding: 1rem 0;
   border: none;
+  padding: 0;
 }
 
-/* Ensure textarea fits nicely inside */
-textarea.form-control {
-  background-color: rgba(255, 248, 230, 0.9); /* light parchment tone */
-  border: 1px solid #c2a06b;
-  color: #3e2f1c;
-  min-height: 120px;
-  resize: vertical;
+/* Tab sections sit neatly inside parchment */
+.tab-pane {
+  padding: 1rem 0;
 }
 
-.main-content {
-  padding-top: 1rem !important;
+/* Inputs look clean on parchment */
+.character-form .form-control {
+  background-color: rgba(255, 255, 255, 0.9);
+  border: 1px solid goldenrod;
+  border-radius: 6px;
+  color: #111;
 }
-.parchment-card {
-  box-shadow: 0 0 20px rgba(0,0,0,0.3), inset 0 0 10px rgba(0,0,0,0.15);
+.character-form .form-control:focus {
+  border-color: gold;
+  box-shadow: 0 0 8px rgba(255, 215, 0, 0.5);
 }
 
