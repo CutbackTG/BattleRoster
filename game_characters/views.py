@@ -169,49 +169,63 @@ def party_detail(request, pk):
 
 @login_required
 def party_remove_member(request, pk):
-    """Allow any member (DM or player) to remove someone from their party."""
+    """Allow any party member to remove another member."""
     party = get_object_or_404(Party, pk=pk)
+
+    # ✅ Only members of the party can remove someone
+    if request.user not in party.members.all() and request.user != party.dungeon_master:
+        messages.error(request, "You must be a member of this party to make changes.")
+        return redirect("party")
 
     if request.method == "POST":
         member_id = request.POST.get("member_id")
         if not member_id:
             messages.error(request, "Invalid request — no member selected.")
-            return redirect("party_detail", pk=pk)
+            return redirect("party")
 
         member_to_remove = party.members.filter(id=member_id).first()
         if not member_to_remove:
             messages.warning(request, "That member was not found in this party.")
-            return redirect("party_detail", pk=pk)
+        elif member_to_remove == request.user:
+            messages.warning(request, "You cannot remove yourself.")
+        else:
+            party.members.remove(member_to_remove)
+            messages.success(request, f"{member_to_remove.username} has been removed from the party.")
 
-        party.members.remove(member_to_remove)
-        messages.success(request, f"{member_to_remove.username} has been removed from the party.")
-
-    return redirect("party_detail", pk=pk)
+    return redirect("party")
 
 @login_required
 def party_invite(request, pk):
     """Allow any party member to invite another user by username."""
     party = get_object_or_404(Party, pk=pk)
 
+    # Only members of this party can invite
+    if request.user not in party.members.all() and request.user != party.dungeon_master:
+        messages.error(request, "You must be a member of this party to invite others.")
+        return redirect("party")
+
     if request.method == "POST":
         username = request.POST.get("username")
         if not username:
             messages.warning(request, "Please enter a username.")
-            return redirect("party_detail", pk=pk)
+            return redirect("party")
 
+        from django.contrib.auth import get_user_model
+        User = get_user_model()
         try:
             invited_user = User.objects.get(username=username)
-        except ObjectDoesNotExist:
+        except User.DoesNotExist:
             messages.error(request, f"User '{username}' does not exist.")
-            return redirect("party_detail", pk=pk)
+            return redirect("party")
 
+        # Prevent duplicates
         if invited_user in party.members.all():
             messages.info(request, f"{invited_user.username} is already in the party.")
         else:
             party.members.add(invited_user)
             messages.success(request, f"{invited_user.username} has been added to the party!")
 
-    return redirect("party_detail", pk=pk)
+    return redirect("party")
 
 @login_required
 def party_select_character(request, pk):

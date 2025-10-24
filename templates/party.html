@@ -41,34 +41,43 @@
       </div>
     </div>
 
-    <!-- Invite Player -->
-    <div class="card mb-4 border-gold bg-dark text-gold">
-      <div class="card-header text-uppercase fw-bold">Invite Player</div>
-      <div class="card-body">
-        <form method="post" action="/characters/party/{{ party.pk }}/invite/" class="d-flex justify-content-center">
-          {% csrf_token %}
-          <input type="text" name="username" class="form-control w-50 me-2 text-center" placeholder="Enter username" required />
-          <button type="submit" class="btn btn-warning text-dark fw-bold px-4">Invite</button>
-        </form>
+    {% if user == party.dungeon_master or user in party.members.all %}
+      <!-- Invite Player -->
+      <div class="card mb-4 border-gold bg-dark text-gold">
+        <div class="card-header text-uppercase fw-bold">Invite Player</div>
+        <div class="card-body">
+          <form method="post" action="/characters/party/{{ party.pk }}/invite/" class="d-flex justify-content-center">
+            {% csrf_token %}
+            <input type="text" name="username" class="form-control w-50 me-2 text-center" placeholder="Enter username" required />
+            <button type="submit" class="btn btn-warning text-dark fw-bold px-4">Invite</button>
+          </form>
+        </div>
       </div>
-    </div>
 
-    <!-- Remove Member -->
-    <div class="card mb-4 border-gold bg-dark text-gold">
-      <div class="card-header text-uppercase fw-bold">Remove Member</div>
-      <div class="card-body">
-        <form method="post" action="/characters/party/{{ party.pk }}/remove-member/" class="d-flex justify-content-center">
-          {% csrf_token %}
-          <select name="member_id" class="form-select w-50 me-2 text-center" required>
-            <option value="">Select member</option>
-            {% for member in party.members.all %}
-              <option value="{{ member.id }}">{{ member.username }}</option>
-            {% endfor %}
-          </select>
-          <button type="submit" class="btn btn-outline-warning text-dark fw-bold px-4">Remove</button>
-        </form>
+      <!-- Remove Member -->
+      <div class="card mb-4 border-gold bg-dark text-gold">
+        <div class="card-header text-uppercase fw-bold">Remove Member</div>
+        <div class="card-body">
+          <form method="post" action="/characters/party/{{ party.pk }}/remove-member/" class="d-flex justify-content-center">
+            {% csrf_token %}
+            <select name="member_id" class="form-select w-50 me-2 text-center" required>
+              <option value="">Select member</option>
+              {% for member in party.members.all %}
+                {% if member != user %}
+                  <option value="{{ member.id }}">{{ member.username }}</option>
+                {% endif %}
+              {% endfor %}
+            </select>
+            <button type="submit" class="btn btn-outline-warning text-dark fw-bold px-4">Remove</button>
+          </form>
+        </div>
       </div>
-    </div>
+    {% else %}
+      <!-- Not in Party Message -->
+      <div class="alert alert-warning bg-dark text-gold border-gold">
+        You must be a party member to invite or remove others.
+      </div>
+    {% endif %}
 
   {% else %}
     <!-- No Party Yet -->
