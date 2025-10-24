@@ -1,0 +1,112 @@
+{% load static dict_extras %}
+
+<div class="p-3 bg-secondary bg-opacity-25 rounded shadow-sm">
+  <!-- Party Header -->
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h2 class="mb-0 text-gold">{{ party.name }}</h2>
+    <span class="badge bg-gold text-dark">Members: {{ members|length }}</span>
+  </div>
+  <p class="small text-muted mb-4">
+    Dungeon Master: <strong>@{{ party.dungeon_master.username }}</strong>
+  </p>
+
+  <div class="row g-4">
+    <!-- Invite Column -->
+    <div class="col-lg-4">
+      <div class="card bg-dark border-secondary h-100">
+        <div class="card-header d-flex justify-content-between align-items-center">
+          <strong>Invitations</strong>
+        </div>
+        <div class="card-body">
+          {% if is_dm or is_member %}
+          <form id="invite-form" data-party="{{ party.pk }}" class="d-flex gap-2 mb-3">
+            <input class="form-control form-control-sm" type="text" name="username" placeholder="Invite by username">
+            <button class="btn btn-sm btn-gold" type="submit">Invite</button>
+          </form>
+          {% endif %}
+
+          <ul id="invite-list" class="list-group list-group-flush small">
+            {% for inv in invitations %}
+              <li class="list-group-item bg-dark text-light d-flex justify-content-between align-items-center">
+                <span>@{{ inv.to_username }} — {{ inv.status|title }}</span>
+              </li>
+            {% empty %}
+              <li class="list-group-item bg-dark text-light">No invitations yet.</li>
+            {% endfor %}
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Members Column -->
+    <div class="col-lg-8">
+      <div class="card bg-dark border-secondary">
+        <div class="card-header d-flex justify-content-between align-items-center">
+          <strong>Members</strong>
+        </div>
+        <div class="card-body">
+          <div class="row g-3" id="member-grid">
+            {% for m in members %}
+              <div class="col-12 col-md-6" id="member-{{ m.pk }}">
+                <div class="card bg-secondary bg-opacity-25 h-100">
+                  <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start">
+                      <div>
+                        <h5 class="card-title mb-0">@{{ m.username }}</h5>
+                        {% if m.pk == user.pk %}
+                          <span class="badge bg-info text-dark">You</span>
+                        {% endif %}
+                      </div>
+                      <div class="btn-group">
+                        {% if user == party.dungeon_master %}
+                          <button class="btn btn-sm btn-outline-danger remove-member" data-user="{{ m.pk }}">Remove</button>
+                        {% elif m.pk == user.pk %}
+                          <button class="btn btn-sm btn-outline-warning remove-member" data-user="{{ m.pk }}">Leave</button>
+                        {% endif %}
+                      </div>
+                    </div>
+
+                    <hr class="border-secondary">
+
+                    {% with active=active_map.m.pk %}
+                    {% endwith %}
+                    {% with active=active_map|get_item:m.pk %}
+                      {% if m.pk == user.pk %}
+                        <form class="select-character d-flex gap-2 align-items-center" data-party="{{ party.pk }}">
+                          <select class="form-select form-select-sm" name="character_id">
+                            {% for c in my_characters %}
+                              <option value="{{ c.pk }}" {% if active and c.pk == active.pk %}selected{% endif %}>
+                                {{ c.name }} (Lv {{ c.level }} {{ c.class_type|default:"Adventurer" }})
+                              </option>
+                            {% endfor %}
+                          </select>
+                          <button class="btn btn-sm btn-gold" type="submit">Set Active</button>
+                        </form>
+                      {% endif %}
+
+                      {% if active %}
+                        <div class="mt-3 small">
+                          <strong>{{ active.name }}</strong><br>
+                          {% if user == party.dungeon_master or m.pk == user.pk %}
+                            HP: {{ active.health }} | MP: {{ active.mana }}<br>
+                            Class: {{ active.class_type }} (Lv {{ active.level }})
+                          {% else %}
+                            HP: {{ active.health }} | MP: {{ active.mana }}
+                          {% endif %}
+                        </div>
+                      {% else %}
+                        <div class="small text-muted mt-3">No character selected.</div>
+                      {% endif %}
+                    {% endwith %}
+                  </div>
+                </div>
+              </div>
+            {% empty %}
+              <div class="col-12 text-center text-muted">No members yet.</div>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
