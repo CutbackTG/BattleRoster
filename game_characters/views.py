@@ -144,61 +144,61 @@ def character_delete(request, pk):
 
 
 # Party view (show all characters in user's party)
+@login_required
 def party_view(request):
     """Show the player's party page."""
-    if not request.user.is_authenticated:
-        return redirect("signup_login")
-
     party = Party.objects.filter(members=request.user).first()
     characters = Character.objects.filter(player=request.user)
+
+    if not party:
+        messages.info(request, "You’re not in a party yet.")
+        return redirect("characters")
 
     return render(request, "party.html", {
         "party": party,
         "characters": characters,
     })
 
+
+@login_required
 def party_detail(request, pk):
+    """Detailed view of a party and its members."""
     party = get_object_or_404(Party, pk=pk)
     return render(request, "game_characters/party_detail.html", {"party": party})
 
+
 @login_required
 def party_remove_member(request, pk):
-    """Allow the Dungeon Master to remove a member from their party."""
+    """Allow any member (DM or player) to remove someone from their party."""
     party = get_object_or_404(Party, pk=pk)
-
-    # Security check: only the dungeon master can remove members
-    if request.user != party.dungeon_master:
-        messages.error(request, "You do not have permission to modify this party.")
-        return redirect("party_detail", pk=pk)
 
     if request.method == "POST":
         member_id = request.POST.get("member_id")
-        if member_id:
-            member_to_remove = party.members.filter(id=member_id).first()
-            if member_to_remove:
-                party.members.remove(member_to_remove)
-                messages.success(request, f"{member_to_remove.username} was removed from the party.")
-            else:
-                messages.warning(request, "That member was not found in this party.")
-        else:
+        if not member_id:
             messages.error(request, "Invalid request — no member selected.")
+            return redirect("party_detail", pk=pk)
+
+        member_to_remove = party.members.filter(id=member_id).first()
+        if not member_to_remove:
+            messages.warning(request, "That member was not found in this party.")
+            return redirect("party_detail", pk=pk)
+
+        # ✅ Allow both DM and players to remove others (you can add restrictions later)
+        party.members.remove(member_to_remove)
+        messages.success(request, f"{member_to_remove.username} has been removed from the party.")
 
     return redirect("party_detail", pk=pk)
 
+
 from django.contrib.auth import get_user_model
 User = get_user_model()
-
 from django.core.exceptions import ObjectDoesNotExist
+
 
 @login_required
 def party_invite(request, pk):
-    """Allow a Dungeon Master to invite another user to join their party by username."""
+    """Allow any party member to invite another user by username."""
     party = get_object_or_404(Party, pk=pk)
-
-    # Only the dungeon master can invite
-    if request.user != party.dungeon_master:
-        messages.error(request, "Only the Dungeon Master can invite members.")
-        return redirect("party_detail", pk=pk)
 
     if request.method == "POST":
         username = request.POST.get("username")
@@ -212,29 +212,21 @@ def party_invite(request, pk):
             messages.error(request, f"User '{username}' does not exist.")
             return redirect("party_detail", pk=pk)
 
-        # Check if already in party
+        # Prevent duplicates
         if invited_user in party.members.all():
             messages.info(request, f"{invited_user.username} is already in the party.")
         else:
-            # Add the user directly (simple system; you could extend this to use tokens)
             party.members.add(invited_user)
             messages.success(request, f"{invited_user.username} has been added to the party!")
 
     return redirect("party_detail", pk=pk)
+
 
 @login_required
 def party_select_character(request, pk):
     messages.info(request, "Character selection not yet implemented.")
     return redirect("party_detail", pk=pk)
 
-@login_required
-def dm_party_list(request):
-    if not hasattr(request.user, "is_dungeon_master") or not request.user.is_dungeon_master:
-        messages.error(request, "Only Dungeon Masters can view all parties.")
-        return redirect("party")
-    
-    parties = Party.objects.filter(dungeon_master=request.user)
-    return render(request, "game_characters/party_list.html", {"parties": parties})
 
 @login_required
 def dm_party_list(request):
