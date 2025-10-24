@@ -1,59 +1,66 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block content %}
-<div class="container mt-5">
-  <h1 class="mb-4">{{ party.name }}</h1>
+<div class="container mt-4">
 
-  <div class="card mb-4 shadow-sm">
-    <div class="card-body">
-      <h5 class="card-title">Dungeon Master</h5>
-      <p class="card-text">{{ party.dungeon_master.username }}</p>
-    </div>
-  </div>
+  <h2 class="text-center mb-4">🏰 Party</h2>
 
-  <div class="card mb-4 shadow-sm">
-    <div class="card-body">
-      <h5 class="card-title">Party Members</h5>
-      {% if party.members.all %}
-        <ul class="list-group list-group-flush">
-          {% for member in party.members.all %}
-            <li class="list-group-item d-flex justify-content-between align-items-center">
-              <span>{{ member.username }}</span>
-              {% if user == party.dungeon_master %}
-                <form method="post" action="{% url 'party_remove_member' party.pk %}" class="m-0">
-                  {% csrf_token %}
-                  <input type="hidden" name="member_id" value="{{ member.id }}">
-                  <button class="btn btn-sm btn-danger">Remove</button>
-                </form>
-              {% endif %}
-            </li>
-          {% empty %}
-            <li class="list-group-item">No members in this party yet.</li>
-          {% endfor %}
-        </ul>
-      {% else %}
-        <p>No members in this party yet.</p>
-      {% endif %}
-    </div>
-  </div>
-
-  {% if user == party.dungeon_master %}
-    <div class="card mb-4 shadow-sm mt-4">
-      <div class="card-body">
-        <h5 class="card-title">Invite a Member</h5>
-        <form method="post" action="{% url 'party_invite' party.pk %}">
-          {% csrf_token %}
-          <div class="input-group">
-            <input type="text" name="username" class="form-control" placeholder="Enter username" required>
-            <button class="btn btn-primary" type="submit">Invite</button>
-          </div>
-        </form>
-      </div>
+  <!-- Gold alert messages -->
+  {% if messages %}
+    <div class="mt-2">
+      {% for message in messages %}
+        <div class="alert alert-gold">{{ message }}</div>
+      {% endfor %}
     </div>
   {% endif %}
 
-  <a href="{% url 'characters' %}" class="btn btn-secondary mt-3">
-    ← Back to Characters
-  </a>
+  {% if not party %}
+    <!-- No existing party -->
+    <div class="text-center my-5">
+      <h4>You’re not currently in a party!</h4>
+      <p class="text-muted">Create a new one to start your adventure.</p>
+      <form method="post" action="{% url 'dm_party_list' %}">
+        {% csrf_token %}
+        <input type="hidden" name="create_party" value="1">
+        <div class="d-flex justify-content-center align-items-center gap-2 mt-3">
+          <input type="text" name="party_name" class="form-control w-auto" placeholder="Enter party name" required>
+          <button type="submit" class="btn btn-gold">Create Party</button>
+        </div>
+      </form>
+    </div>
+
+  {% else %}
+    <!-- Party exists -->
+    <div class="card shadow-sm p-4 mb-4">
+      <h4 class="mb-3 text-center">{{ party.name }}</h4>
+
+      <h5>🧙 Members:</h5>
+      <ul class="list-group mb-3">
+        {% for member in party.members.all %}
+          <li class="list-group-item d-flex justify-content-between align-items-center">
+            {{ member.username }}
+            <form method="post" action="{% url 'party_remove_member' party.pk %}" class="m-0">
+              {% csrf_token %}
+              <input type="hidden" name="member_id" value="{{ member.id }}">
+              <button type="submit" class="btn btn-outline-danger btn-sm">Remove</button>
+            </form>
+          </li>
+        {% empty %}
+          <li class="list-group-item text-muted text-center">No members yet.</li>
+        {% endfor %}
+      </ul>
+
+      <h5>✨ Invite a member:</h5>
+      <form method="post" action="{% url 'party_invite' party.pk %}">
+        {% csrf_token %}
+        <div class="input-group mb-3">
+          <input type="text" name="username" class="form-control" placeholder="Enter username to invite" required>
+          <button type="submit" class="btn btn-gold">Invite</button>
+        </div>
+      </form>
+    </div>
+
+  {% endif %}
 </div>
 {% endblock %}

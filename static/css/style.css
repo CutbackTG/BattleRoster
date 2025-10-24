@@ -459,3 +459,42 @@ select.form-select-sm {
 #member-grid .card.removed {
   opacity: 0.6;
 }
+
+.alert-gold {
+  background-color: #d4af37;   /* rich gold */
+  color: #000;                 /* black text */
+  border: 2px solid #b8860b;   /* darker gold border */
+  border-radius: 12px;
+  padding: 10px 16px;
+  margin-bottom: 15px;
+  font-weight: bold;
+  text-align: center;
+  box-shadow: 0 0 8px rgba(0,0,0,0.2);
+}
+
+.btn-gold {
+  background-color: #d4af37;
+  border: none;
+  color: #000;
+  font-weight: bold;
+  padding: 6px 14px;
+  border-radius: 10px;
+  transition: 0.2s ease-in-out;
+}
+
+.btn-gold:hover {
+  background-color: #b8860b;
+  color: white;
+}
+
+.alert-gold {
+  background-color: #d4af37;
+  color: #000;
+  border: 2px solid #b8860b;
+  border-radius: 12px;
+  padding: 10px 16px;
+  margin-bottom: 15px;
+  font-weight: bold;
+  text-align: center;
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.2);
+}
