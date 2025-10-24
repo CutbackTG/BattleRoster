@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-5 text-center">
+
+  <h1 class="mb-4 text-warning fw-bold">Dungeon Master Dashboard</h1>
+  <p class="text-muted mb-4">Manage your parties — create, view, and delete them below.</p>
+
+  {% if messages %}
+    <div class="mb-3">
+      {% for message in messages %}
+        <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+      {% endfor %}
+    </div>
+  {% endif %}
+
+  <!-- Create New Party -->
+  <div class="card mb-4 shadow-sm border-warning">
+    <div class="card-body">
+      <h4 class="text-warning mb-3">Create a New Party</h4>
+      <form method="post" action="{% url 'dm_party_list' %}" class="d-flex justify-content-center">
+        {% csrf_token %}
+        <input
+          type="text"
+          name="party_name"
+          class="form-control w-50 me-2"
+          placeholder="Enter new party name"
+          required
+        />
+        <button type="submit" name="create_party" class="btn btn-warning text-dark fw-bold px-4">
+          Create
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Existing Parties -->
+  <div class="card shadow-sm border-0">
+    <div class="card-body">
+      <h4 class="text-warning mb-3">Your Current Parties</h4>
+
+      {% if parties %}
+        <div class="list-group text-start">
+          {% for party in parties %}
+            <div class="list-group-item d-flex justify-content-between align-items-center">
+              <div>
+                <strong>{{ party.name }}</strong>
+                <br>
+                <small class="text-muted">
+                  {{ party.members.count }} member{{ party.members.count|pluralize }}
+                </small>
+              </div>
+              <div>
+                <a href="{% url 'party_detail' party.pk %}" class="btn btn-sm btn-outline-warning text-dark fw-bold me-2">
+                  View
+                </a>
+                <form method="post" action="{% url 'dm_party_list' %}" class="d-inline">
+                  {% csrf_token %}
+                  <input type="hidden" name="party_id" value="{{ party.id }}">
+                  <button type="submit" name="delete_party" class="btn btn-sm btn-outline-danger fw-bold">
+                    Delete
+                  </button>
+                </form>
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+      {% else %}
+        <p class="text-muted mt-3">You don’t have any parties yet. Create one above to get started!</p>
+      {% endif %}
+    </div>
+  </div>
+
+  <div class="mt-4">
+    <a href="{% url 'party' %}" class="btn btn-outline-warning text-dark fw-bold px-4">Back to Party Page</a>
+  </div>
+</div>
+{% endblock %}
