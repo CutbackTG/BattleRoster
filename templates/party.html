@@ -1,135 +1,59 @@
-{% load static %}
-<!DOCTYPE html>
-<html lang="en-US">
+{% extends "base.html" %}
 
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Party | BattleRoster</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="{% static 'css/style.css' %}">
-</head>
+{% block content %}
+<div class="container mt-5">
+  <h1 class="mb-4">{{ party.name }}</h1>
 
-<body>
+  <div class="card mb-4 shadow-sm">
+    <div class="card-body">
+      <h5 class="card-title">Dungeon Master</h5>
+      <p class="card-text">{{ party.dungeon_master.username }}</p>
+    </div>
+  </div>
 
-  <!-- Navbar -->
-  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-    <div class="container">
-      <!-- Logo -->
-      <a class="navbar-brand" href="{% url 'home' %}">
-        <img class="home" src="{% static 'images/battleroster-logo.png' %}" alt="BattleRoster Logo"
-          id="battleroster-logo">
-      </a>
-
-      <!-- Hamburger button -->
-      <button class="navbar-toggler ms-auto custom-toggler" type="button" data-bs-toggle="collapse"
-        data-bs-target="#navMenu" aria-controls="navMenu" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon custom-toggler"></span>
-      </button>
-
-      <!-- Navbar items -->
-      <div class="collapse navbar-collapse justify-content-end" id="navMenu">
-        <ul class="navbar-nav flex-column align-items-start">
-          <li class="nav-item"><a class="nav-link" href="{% url 'characters' %}"><i
-                class="fa-solid fa-user me-2 text-gold"></i>Characters</a></li>
-          <li class="nav-item"><a class="nav-link" href="{% url 'party' %}"><i
-                class="fa-solid fa-users me-2 text-gold"></i>Party</a></li>
-          {% if user.is_authenticated %}
-          <li class="nav-item"><a class="nav-link" href="{% url 'logout' %}"><i
-                class="fa-solid fa-right-from-bracket me-2 text-gold"></i>Log out</a></li>
-          {% else %}
-          <li class="nav-item"><a class="nav-link" href="{% url 'signup_login' %}"><i
-                class="fa-solid fa-save me-2 text-gold"></i>Sign-up / Log-in</a></li>
-          {% endif %}
-          <li class="nav-item"><a class="nav-link" href="{% url 'contact' %}"><i
-                class="fa-solid fa-scroll me-2 text-gold"></i>Contact</a></li>
+  <div class="card mb-4 shadow-sm">
+    <div class="card-body">
+      <h5 class="card-title">Party Members</h5>
+      {% if party.members.all %}
+        <ul class="list-group list-group-flush">
+          {% for member in party.members.all %}
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+              <span>{{ member.username }}</span>
+              {% if user == party.dungeon_master %}
+                <form method="post" action="{% url 'party_remove_member' party.pk %}" class="m-0">
+                  {% csrf_token %}
+                  <input type="hidden" name="member_id" value="{{ member.id }}">
+                  <button class="btn btn-sm btn-danger">Remove</button>
+                </form>
+              {% endif %}
+            </li>
+          {% empty %}
+            <li class="list-group-item">No members in this party yet.</li>
+          {% endfor %}
         </ul>
+      {% else %}
+        <p>No members in this party yet.</p>
+      {% endif %}
+    </div>
+  </div>
+
+  {% if user == party.dungeon_master %}
+    <div class="card mb-4 shadow-sm mt-4">
+      <div class="card-body">
+        <h5 class="card-title">Invite a Member</h5>
+        <form method="post" action="{% url 'party_invite' party.pk %}">
+          {% csrf_token %}
+          <div class="input-group">
+            <input type="text" name="username" class="form-control" placeholder="Enter username" required>
+            <button class="btn btn-primary" type="submit">Invite</button>
+          </div>
+        </form>
       </div>
     </div>
-  </nav>
+  {% endif %}
 
-  <!-- Main -->
-  <main class="container py-5">
-
-    <h1 class="text-center mb-4 text-gold">Your Party</h1>
-
-    {% if guest_mode %}
-    <div class="alert alert-warning text-center">
-      🧙 You're currently exploring as a <strong>guest</strong>. Log in or sign up to join or manage parties.
-      <a href="{% url 'signup_login' %}" class="btn btn-sm btn-gold ms-2">Sign Up / Log In</a>
-    </div>
-    {% endif %}
-
-    <!-- Messages -->
-    {% if messages %}
-    {% for message in messages %}
-    <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
-      {{ message }}
-      <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-    </div>
-    {% endfor %}
-    {% endif %}
-
-    {% if not guest_mode %}
-    {% if parties %}
-    <div class="row">
-      {% for party in parties %}
-      <div class="col-md-6">
-        <div class="party-card">
-          <h4 class="text-gold">{{ party.name }}</h4>
-          <p><strong>Dungeon Master:</strong> {{ party.dungeon_master.username }}</p>
-
-          <h6>Members:</h6>
-          <ul>
-            {% for member in party.members.all %}
-            <li>{{ member.username }}</li>
-            {% empty %}
-            <li>No members yet.</li>
-            {% endfor %}
-          </ul>
-
-          {% if user == party.dungeon_master %}
-          <form method="POST" class="mt-3">
-            {% csrf_token %}
-            <input type="hidden" name="party_id" value="{{ party.id }}">
-            <div class="input-group">
-              <input type="text" name="username" class="form-control" placeholder="Add player by username">
-              <button name="action" value="add" class="btn btn-gold">Add</button>
-              <button name="action" value="remove" class="btn btn-danger">Remove</button>
-            </div>
-          </form>
-          {% endif %}
-        </div>
-      </div>
-      {% endfor %}
-    </div>
-    {% else %}
-    <p class="text-center mt-4">No parties found. You can create or join one soon!</p>
-    {% endif %}
-    {% else %}
-    <p class="text-center">Join the ranks! Log in to form or join parties.</p>
-    {% endif %}
-  </main>
-
-  <!-- Footer -->
-  <footer id="footerSocials">
-    <ul id="social-networks" class="socials list-unstyled d-flex gap-5 justify-content-center">
-      <li><a href="https://www.facebook.com/" target="_blank" rel="noopener"
-          aria-label="visit our Facebook page (opens in a new tab)"><i class="fa-brands fa-facebook"></i></a></li>
-      <li><a href="https://www.X.com/" target="_blank" rel="noopener"
-          aria-label="visit our X page (opens in a new tab)"><i class="fa-brands fa-square-x-twitter"></i></a></li>
-      <li><a href="https://www.youtube.com/" target="_blank" rel="noopener"
-          aria-label="visit our YouTube page (opens in a new tab)"><i class="fa-brands fa-youtube-square"></i></a></li>
-      <li><a href="https://www.instagram.com/" target="_blank" rel="noopener"
-          aria-label="visit our Instagram page (opens in a new tab)"><i class="fa-brands fa-instagram"></i></a></li>
-    </ul>
-  </footer>
-
-  <!-- Scripts -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"
-    crossorigin="anonymous"></script>
-  <script src="{% static 'js/main.js' %}"></script>
-  <script src="https://kit.fontawesome.com/f84e35c3bf.js" crossorigin="anonymous"></script>
-</body>
-
-</html>
+  <a href="{% url 'characters' %}" class="btn btn-secondary mt-3">
+    ← Back to Characters
+  </a>
+</div>
+{% endblock %}

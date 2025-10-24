@@ -5,7 +5,6 @@ import random
 from django import forms
 from django.contrib.auth.decorators import login_required
 
-
 # ---------- Dice Roller Setup ----------
 
 DICE_CHOICES = [
@@ -146,12 +145,17 @@ def character_delete(request, pk):
 
 # Party view (show all characters in user's party)
 def party_view(request):
-    if request.user.is_authenticated:
-        characters = Character.objects.filter(player=request.user).order_by('name')
-    else:
-        characters = request.session.get("characters", [])
+    """Show the player's party page."""
+    if not request.user.is_authenticated:
+        return redirect("login")
 
-    return render(request, "party.html", {"characters": characters})
+    party = Party.objects.filter(members=request.user).first()
+    characters = Character.objects.filter(player=request.user)
+
+    return render(request, "party.html", {
+        "party": party,
+        "characters": characters,
+    })
 
 def party_detail(request, pk):
     party = get_object_or_404(Party, pk=pk)
@@ -223,3 +227,40 @@ def party_select_character(request, pk):
     messages.info(request, "Character selection not yet implemented.")
     return redirect("party_detail", pk=pk)
 
+@login_required
+def dm_party_list(request):
+    if not hasattr(request.user, "is_dungeon_master") or not request.user.is_dungeon_master:
+        messages.error(request, "Only Dungeon Masters can view all parties.")
+        return redirect("party")
+    
+    parties = Party.objects.filter(dungeon_master=request.user)
+    return render(request, "game_characters/party_list.html", {"parties": parties})
+
+@login_required
+def dm_party_list(request):
+    """Dungeon Master dashboard: list, create, and delete parties."""
+    # Only DMs can access
+    if not hasattr(request.user, "is_dungeon_master") or not request.user.is_dungeon_master:
+        messages.error(request, "Only Dungeon Masters can manage parties.")
+        return redirect("party")
+
+    # Create new party
+    if request.method == "POST" and "create_party" in request.POST:
+        name = request.POST.get("party_name")
+        if name:
+            Party.objects.create(name=name, dungeon_master=request.user)
+            messages.success(request, f"Party '{name}' created successfully!")
+            return redirect("dm_party_list")
+
+    # Delete existing party
+    if request.method == "POST" and "delete_party" in request.POST:
+        party_id = request.POST.get("party_id")
+        party = get_object_or_404(Party, id=party_id, dungeon_master=request.user)
+        messages.warning(request, f"Party '{party.name}' deleted.")
+        party.delete()
+        return redirect("dm_party_list")
+
+    # Fetch DM's current parties
+    parties = Party.objects.filter(dungeon_master=request.user).order_by("name")
+
+    return render(request, "game_characters/party_list.html", {"parties": parties})

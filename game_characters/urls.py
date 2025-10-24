@@ -12,4 +12,6 @@ urlpatterns = [
     # path("party/invite/decline/<str:token>/", views.party_invite_decline, name="party_invite_decline"),
     path("party/<int:pk>/remove-member/", views.party_remove_member, name="party_remove_member"),
     path("party/<int:pk>/select-character/", views.party_select_character, name="party_select_character"),
+    path("party/", views.dm_party_list, name="dm_party_list"),
+
 ]
