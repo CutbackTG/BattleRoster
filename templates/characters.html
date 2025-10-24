@@ -150,46 +150,47 @@
                 <input type="number" name="mana" id="mana" class="form-control" value="{{ editing.mana|default:50 }}">
               </div>
             </div>
-          </div>
+          
 
-          <!-- Attributes Tab -->
-          <div class="tab-pane fade" id="attributes" role="tabpanel">
-            <h3>Character Attributes - Roll 3x D6 for each attribute score</h3>
-            {% for attr in attributes %}
-            <div class="mb-3">
-              <label for="id_{{ attr }}" class="form-label text-capitalize">{{ attr }}</label>
-              <input type="number" id="id_{{ attr }}" name="{{ attr }}" class="form-control"
-                value="{{ character|get_attr:attr|default_if_none:'10' }}" step="1" min="0">
+            <!-- Attributes Tab -->
+            <div class="tab-pane fade" id="attributes" role="tabpanel">
+              <h3>Character Attributes</h3>
+              {% for attr in attributes %}
+              <div class="mb-3">
+                <label for="id_{{ attr }}" class="form-label text-capitalize">{{ attr }}</label>
+                <input type="number" id="id_{{ attr }}" name="{{ attr }}" class="form-control"
+                  value="{{ character|get_attr:attr|default_if_none:'10' }}" step="1" min="0">
+              </div>
+              {% endfor %}
             </div>
-            {% endfor %}
-          </div>
 
-          <!-- Equipment Tab -->
-          <div class="tab-pane fade" id="equipment" role="tabpanel">
-            <div class="mb-3">
-              <label for="id_equipment" class="form-label">Equipment</label>
-              <textarea name="equipment" id="id_equipment"
-                class="form-control">{{ character.equipment|default_if_none:'' }}</textarea>
+            <!-- Equipment Tab -->
+            <div class="tab-pane fade" id="equipment" role="tabpanel">
+              <div class="mb-3">
+                <label for="id_equipment" class="form-label">Equipment</label>
+                <textarea name="equipment" id="id_equipment"
+                  class="form-control">{{ character.equipment|default_if_none:'' }}</textarea>
+              </div>
             </div>
-          </div>
 
-          <!-- Weapons Tab -->
-          <div class="tab-pane fade" id="weapons" role="tabpanel">
-            <div class="mb-3">
-              <label for="id_weapons" class="form-label">Weapons</label>
-              <textarea name="weapons" id="id_weapons"
-                class="form-control">{{ character.weapons|default_if_none:'' }}</textarea>
+            <!-- Weapons Tab -->
+            <div class="tab-pane fade" id="weapons" role="tabpanel">
+              <div class="mb-3">
+                <label for="id_weapons" class="form-label">Weapons</label>
+                <textarea name="weapons" id="id_weapons"
+                  class="form-control">{{ character.weapons|default_if_none:'' }}</textarea>
+              </div>
             </div>
-          </div>
 
-          <!-- Spells Tab -->
-          <div class="tab-pane fade" id="spells" role="tabpanel">
-            <div class="mb-3">
-              <label for="id_spells" class="form-label">Spells</label>
-              <textarea name="spells" id="id_spells"
-                class="form-control">{{ character.spells|default_if_none:'' }}</textarea>
+            <!-- Spells Tab -->
+            <div class="tab-pane fade" id="spells" role="tabpanel">
+              <div class="mb-3">
+                <label for="id_spells" class="form-label">Spells</label>
+                <textarea name="spells" id="id_spells"
+                  class="form-control">{{ character.spells|default_if_none:'' }}</textarea>
+              </div>
             </div>
-          </div>
+        </div>
       </div>
 
       <div class="mt-3 bottom-center">

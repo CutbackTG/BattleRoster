@@ -445,15 +445,32 @@ a.btn:focus, button:focus, input:focus, select:focus, textarea:focus {
 }
 
 /* Keep parchment close to content */
-.parchment-card,
-.tab-pane,
-.main-content {
+form {
   background: url('/static/images/parchment-bg.jpg') repeat;
-  background-size: cover;
-  padding: 20px 25px;
-  margin: 0 auto;
+  background-size: contain;
+  border: 3px solid goldenrod;
   border-radius: 10px;
-  min-height: auto; /* Prevent tall empty parchment */
+  padding: 1.5rem 2rem;
+  margin: 1rem auto;
+  max-width: 850px;
+  color: #2b1a07;
+  box-shadow: 0 0 20px rgba(255, 215, 0, 0.15);
+}
+
+/* Only parchment cards get their own textured background */
+.parchment-card {
+  background: url('/static/images/parchment-texture.jpg') center/cover;
+  border: 2px solid goldenrod;
+  border-radius: 10px;
+  box-shadow: 0 0 20px rgba(0,0,0,0.3), inset 0 0 10px rgba(0,0,0,0.15);
+  padding: 1rem;
+}
+
+/* Remove background from tab-pane to prevent huge parchment area */
+.tab-pane {
+  background: none;
+  padding: 1rem 0;
+  border: none;
 }
 
 /* Ensure textarea fits nicely inside */
