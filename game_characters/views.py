@@ -255,31 +255,36 @@ def party_detail(request, pk):
     """
     Dungeon Master and members can view a party.
     Dungeon Masters see all characters from all members in a tabbed, editable layout.
+    DMs can edit character sheets or safely remove characters from their party (not delete them permanently).
     """
     party = get_object_or_404(Party, pk=pk)
     user = request.user
 
-    # Access control
+    # Access control: only DM or members can view
     if user != party.dungeon_master and user not in party.members.all():
         messages.error(request, "You do not have permission to view this party.")
         return redirect("party")
 
-    # Gather all characters from members
-    member_characters = Character.objects.filter(player__in=party.members.all()).order_by("player__username", "name")
+    # Gather all characters currently in the party
+    member_characters = Character.objects.filter(
+        player__in=party.members.all()
+    ).order_by("player__username", "name")
 
-    # DM Editing & Deletion
+    # DM-only management
     if user == party.dungeon_master and request.method == "POST":
         char_id = request.POST.get("character_id")
         character = get_object_or_404(Character, id=char_id)
 
-        # Delete character
-        if "delete_character" in request.POST:
-            char_name = character.name
-            character.delete()
-            messages.warning(request, f"Character '{char_name}' was deleted from the party.")
+        # Remove from party — not delete
+        if "remove_character" in request.POST:
+            removed = PartyCharacter.objects.filter(party=party, character=character).delete()
+            if removed[0] > 0:
+                messages.info(request, f"✅ {character.name} was removed from this party.")
+            else:
+                messages.warning(request, f"{character.name} was not linked to this party.")
             return redirect("party_detail", pk=pk)
 
-        # Update character
+        # Update character details
         fields = {
             "name": request.POST.get("name", "").strip(),
             "level": int(request.POST.get("level", character.level)),
@@ -301,17 +306,19 @@ def party_detail(request, pk):
         for k, v in fields.items():
             setattr(character, k, v)
         character.save()
-        messages.success(request, f"✅ {character.name}'s sheet has been updated.")
+
+        messages.success(request, f" {character.name}'s sheet has been updated.")
         return redirect("party_detail", pk=pk)
 
+    # Render DM or player party detail view
     context = {
-        "party": party,  # defined above with get_object_or_404
-        "member_characters": member_characters,  # also defined above
+        "party": party,
+        "member_characters": member_characters,
         "is_dm": (user == party.dungeon_master),
         "attr_list": [
-        "health", "mana", "strength", "dexterity",
-        "constitution", "intelligence", "wisdom", "charisma",
-    ],
+            "health", "mana", "strength", "dexterity",
+            "constitution", "intelligence", "wisdom", "charisma",
+        ],
     }
     return render(request, "dm_party_characters.html", context)
 
