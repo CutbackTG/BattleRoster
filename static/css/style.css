@@ -460,7 +460,7 @@ select.form-select-sm {
   opacity: 0.6;
 }
 
-.alert-gold {
+.alert {
   background-color: #d4af37;   /* rich gold */
   color: #000;                 /* black text */
   border: 2px solid #b8860b;   /* darker gold border */

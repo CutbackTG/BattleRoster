@@ -408,3 +408,93 @@ textarea.form-control {
 @media (max-width: 768px) {
   .left-column-dice { width: 100%; }
 }
+
+/* === Party system additions === */
+
+.party-card {
+  border: 1px solid rgba(255, 215, 0, 0.3);
+  border-radius: 0.75rem;
+  box-shadow: 0 0 8px rgba(255, 215, 0, 0.15);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.party-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0 12px rgba(255, 215, 0, 0.25);
+}
+
+.btn-gold {
+  background-color: #d4af37;
+  color: #000;
+  font-weight: 600;
+  border: none;
+}
+.btn-gold:hover {
+  background-color: #f0cf57;
+  color: #000;
+}
+
+.bg-gold {
+  background-color: #d4af37 !important;
+  color: #000 !important;
+}
+
+select.form-select-sm {
+  background-color: #222;
+  color: #eee;
+  border: 1px solid #444;
+}
+
+#invite-list li,
+#member-grid .card {
+  transition: background-color 0.25s ease, opacity 0.25s ease;
+}
+
+#invite-list li.added,
+#member-grid .card.added {
+  background-color: rgba(0, 255, 100, 0.15);
+}
+
+#invite-list li.removed,
+#member-grid .card.removed {
+  opacity: 0.6;
+}
+
+.alert {
+  background-color: #d4af37;   /* rich gold */
+  color: #000;                 /* black text */
+  border: 2px solid #b8860b;   /* darker gold border */
+  border-radius: 12px;
+  padding: 10px 16px;
+  margin-bottom: 15px;
+  font-weight: bold;
+  text-align: center;
+  box-shadow: 0 0 8px rgba(0,0,0,0.2);
+}
+
+.btn-gold {
+  background-color: #d4af37;
+  border: none;
+  color: #000;
+  font-weight: bold;
+  padding: 6px 14px;
+  border-radius: 10px;
+  transition: 0.2s ease-in-out;
+}
+
+.btn-gold:hover {
+  background-color: #b8860b;
+  color: white;
+}
+
+.alert-gold {
+  background-color: #d4af37;
+  color: #000;
+  border: 2px solid #b8860b;
+  border-radius: 12px;
+  padding: 10px 16px;
+  margin-bottom: 15px;
+  font-weight: bold;
+  text-align: center;
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.2);
+}
