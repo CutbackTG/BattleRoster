@@ -221,13 +221,32 @@
         <div class="card-body">
           <h5 class="card-title">{{ c.name }}</h5>
           <p class="card-text">Level {{ c.level }} — {{ c.class_type }}</p>
-          <div class="progress-bar bg-danger" role="progressbar" style="width: {{ c.health|default:0 }}%;"
-            aria-valuenow="{{ c.health }}" aria-valuemin="0" aria-valuemax="100">
-            {{ c.health }}
+
+        <!-- Health Bar -->
+          <div class="mt-2">
+            <small class="text-uppercase fw-bold">Health (HP)</small>
+              <div class="progress" style="height: 14px;">
+                <div class="progress-bar bg-danger" role="progressbar"
+                  style="width: {{ c.health|default:0 }}%;"
+                  aria-valuenow="{{ c.health|default:0 }}" aria-valuemin="0" aria-valuemax="100">
+                  {{ c.health }}
+                </div>
+              </div>
+           </div>
+
+        <!-- Mana Bar -->
+          <div class="mt-2">
+            <small class="text-uppercase fw-bold">Mana (MP)</small>
+              <div class="progress" style="height: 14px;">
+                <div class="progress-bar bg-info" role="progressbar"
+                   style="width: {{ c.mana|default:0 }}%;"
+                    aria-valuenow="{{ c.mana|default:0 }}" aria-valuemin="0" aria-valuemax="100">
+                  {{ c.mana }}
+                </div>
+              </div>
+            </div>
           </div>
-          aria-valuenow="{{ c.health }}" aria-valuemin="0" aria-valuemax="100">
-          {{ c.health }}
-        </div>
+
         {% if is_dm %}
         <p class="card-text"><small class="text-gold">Player: {{ c.player.username }}</small></p>
         {% endif %}
