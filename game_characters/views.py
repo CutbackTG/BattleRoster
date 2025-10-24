@@ -267,7 +267,7 @@ def party_detail(request, pk):
     # Gather all characters from members
     member_characters = Character.objects.filter(player__in=party.members.all()).order_by("player__username", "name")
 
-    # 🧙 DM Editing & Deletion
+    # DM Editing & Deletion
     if user == party.dungeon_master and request.method == "POST":
         char_id = request.POST.get("character_id")
         character = get_object_or_404(Character, id=char_id)
@@ -305,9 +305,13 @@ def party_detail(request, pk):
         return redirect("party_detail", pk=pk)
 
     context = {
-        "party": party,
-        "member_characters": member_characters,
-        "is_dm": user == party.dungeon_master,
+        "party": party,  # defined above with get_object_or_404
+        "member_characters": member_characters,  # also defined above
+        "is_dm": (user == party.dungeon_master),
+        "attr_list": [
+        "health", "mana", "strength", "dexterity",
+        "constitution", "intelligence", "wisdom", "charisma",
+    ],
     }
     return render(request, "dm_party_characters.html", context)
 
@@ -366,14 +370,3 @@ def party_select_character(request, pk):
         "party": party,
         "characters": characters,
     })
-
-context = {
-    "party": party,  # defined above with get_object_or_404
-    "member_characters": member_characters,  # also defined above
-    "is_dm": (user == party.dungeon_master),
-    "attr_list": [
-        "health", "mana", "strength", "dexterity",
-        "constitution", "intelligence", "wisdom", "charisma",
-    ],
-}
-
