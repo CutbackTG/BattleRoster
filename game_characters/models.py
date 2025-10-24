@@ -4,7 +4,7 @@ from django.conf import settings
 class Character(models.Model):
     """A D&D-style character associated with a user or anonymous player."""
     name = models.CharField(max_length=100)
-    level = models.PositiveIntegerField(default=1)
+    level = models.PositiveIntegerField(default=1, max_length=100, blank=True)
     race = models.CharField(max_length=100, blank=True, null=True)
     class_type = models.CharField(max_length=100, blank=True, null=True)
     health = models.PositiveIntegerField(default=100)

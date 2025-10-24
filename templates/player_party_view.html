@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-4">
+  {% if party %}
+    <div class="card bg-dark text-light parchment-card mb-4">
+      <div class="card-body">
+        <h2>{{ party.name }}</h2>
+        <p><strong>Dungeon Master:</strong> {{ party.dungeon_master.username }}</p>
+
+        <hr>
+        <h4>Party Members</h4>
+        <ul>
+          {% for m in members %}
+            <li>{{ m.username }}</li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+
+    <!-- Character selection -->
+    <div class="card bg-secondary text-light p-4">
+      <h4>Your Character</h4>
+      {% if selected_pc %}
+        <p>You are using <strong>{{ selected_pc.character.name }}</strong> (Level {{ selected_pc.character.level }}) in this party.</p>
+        <form method="post" action="{% url 'party_select_character' party.id %}">
+          {% csrf_token %}
+          <button class="btn btn-warning">Change Character</button>
+        </form>
+      {% else %}
+        <p>You haven’t selected a character for this party yet.</p>
+        <form method="post" action="{% url 'party_select_character' party.id %}">
+          {% csrf_token %}
+          <button class="btn btn-primary">Select Character</button>
+        </form>
+      {% endif %}
+    </div>
+  {% else %}
+    <div class="alert alert-info mt-4">
+      You are not currently in a party. Ask your Dungeon Master to invite you.
+    </div>
+  {% endif %}
+</div>
+{% endblock %}

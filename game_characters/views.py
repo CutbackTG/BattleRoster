@@ -162,16 +162,20 @@ def character_delete(request, pk):
 
 
 # ---------- Party Views ----------
-
 @login_required
 def party_view(request):
-    """Show player's party or DM dashboard."""
+    """
+    Show party information.
+    - DMs see their dashboard of all owned parties.
+    - Players see their current party, members, and their selected character.
+    """
     user = request.user
 
-    # 🔸 If Dungeon Master, show DM dashboard
-    if hasattr(user, "is_dungeon_master") and user.is_dungeon_master:
+    # Dungeon Master view
+    if getattr(user, "is_dungeon_master", False):
         parties = Party.objects.filter(dungeon_master=user).order_by("name")
 
+        # Create new party
         if request.method == "POST" and "create_party" in request.POST:
             name = request.POST.get("party_name")
             if name:
@@ -179,6 +183,7 @@ def party_view(request):
                 messages.success(request, f"Party '{name}' created successfully!")
                 return redirect("party")
 
+        # Delete a party
         if request.method == "POST" and "delete_party" in request.POST:
             party_id = request.POST.get("party_id")
             party = get_object_or_404(Party, id=party_id, dungeon_master=user)
@@ -188,14 +193,26 @@ def party_view(request):
 
         return render(request, "dm_party_dashboard.html", {"parties": parties})
 
-    # 🔸 Otherwise, regular player
-    party = Party.objects.filter(members=user).first()
-    characters = Character.objects.filter(player=user)
+    # Player view
+    else:
+        party = Party.objects.filter(members=user).first()
 
-    return render(request, "party.html", {
-        "party": party,
-        "characters": characters,
-    })
+        if not party:
+            messages.info(request, "You are not in a party yet.")
+            return render(request, "party.html", {"party": None})
+
+        # Player’s characters
+        characters = Character.objects.filter(player=user)
+        selected_pc = PartyCharacter.objects.filter(party=party, player=user).first()
+
+        context = {
+            "party": party,
+            "characters": characters,
+            "selected_pc": selected_pc,
+            "members": party.members.all(),
+        }
+
+        return render(request, "player_party_view.html", context)
 
 
 @login_required
