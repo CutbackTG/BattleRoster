@@ -127,7 +127,11 @@ def characters_view(request, pk=None):
     - DMs: can view or edit all players' characters.
     """
     user = request.user
-    is_dm = getattr(user, "is_dungeon_master", False)
+
+    # Handle both boolean field and method
+    is_dm_attr = getattr(user, "is_dungeon_master", False)
+    is_dm = is_dm_attr() if callable(is_dm_attr) else is_dm_attr
+
     selected_player_id = request.GET.get("player")
 
     # Character Query Logic
