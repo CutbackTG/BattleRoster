@@ -1,14 +1,11 @@
-// ----------------------
 // Toggle dice roller panel
-// ----------------------
+
 function toggleDiceRoller() {
   const panel = document.getElementById("dice-roller-panel");
   panel.classList.toggle("open");
 }
 
-// ----------------------
 // Roll a single die
-// ----------------------
 function rollSingle(i) {
   i = parseInt(i, 10);
   const select = document.getElementById('die' + i);
@@ -21,9 +18,7 @@ function rollSingle(i) {
   updateResults(i, roll, sides);
 }
 
-// ----------------------
 // Roll all dice
-// ----------------------
 function rollAll() {
   for (let i = 1; i <= 3; i++) {
     const select = document.getElementById(`die${i}`);
@@ -31,12 +26,10 @@ function rollAll() {
     const roll = Math.floor(Math.random() * sides) + 1;
     updateResults(i, roll, sides);
   }
-  scrollToResults();
 }
 
-// ----------------------
+
 // Update individual die result
-// ----------------------
 function updateResults(dieNum, value, sides) {
   const list = document.getElementById("dice-results-list");
   let li = list.querySelector(`#roll-${dieNum}`);
@@ -60,9 +53,7 @@ function updateResults(dieNum, value, sides) {
   updateTotalFromList();
 }
 
-// ----------------------
 // Recalculate total from list items
-// ----------------------
 function updateTotalFromList() {
   const list = document.getElementById("dice-results-list");
   const rolls = Array.from(list.children)
@@ -75,20 +66,7 @@ function updateTotalFromList() {
   totalEl.classList.remove("critical");
 }
 
-// ----------------------
-// Scroll to dice results
-// ----------------------
-function scrollToResults() {
-  const resultsDiv = document.getElementById("dice-results");
-  if (!resultsDiv) return;
-  const offset = 80;
-  const top = resultsDiv.getBoundingClientRect().top + window.pageYOffset - offset;
-  window.scrollTo({ top, behavior: "smooth" });
-}
-
-// ----------------------
 // Sparkle effect for criticals
-// ----------------------
 function spawnSparkles(targetEl, count = 8) {
   for (let i = 0; i < count; i++) {
     const sparkle = document.createElement("div");
@@ -114,9 +92,7 @@ function spawnSparkles(targetEl, count = 8) {
   }
 }
 
-// ----------------------
 // Event bindings
-// ----------------------
 document.querySelectorAll('.btn-small').forEach(btn => {
   btn.addEventListener('click', function() {
     const i = parseInt(this.dataset.die, 10);
