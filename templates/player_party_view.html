@@ -12,61 +12,76 @@
   </div>
 
   {% if selected_pc %}
-    <div class="alert alert-dark parchment-card shadow-sm mb-4">
-      <h4 class="text-gold mb-2">You are playing as:</h4>
-      <div class="d-flex align-items-center">
-        <div class="flex-grow-1">
-          <h5 class="mb-0">{{ selected_pc.character.name }}</h5>
-          <p class="mb-0 small">
-            Level {{ selected_pc.character.level }} {{ selected_pc.character.class_type }}
-          </p>
-        </div>
+  <div class="alert alert-dark parchment-card shadow-sm mb-4">
+    <h4 class="text-gold mb-2">You are playing as:</h4>
+    <div class="d-flex align-items-center">
+      <div class="flex-grow-1">
+        <h5 class="mb-0">{{ selected_pc.character.name }}</h5>
+        <p class="mb-0 small">
+          Level {{ selected_pc.character.level }} {{ selected_pc.character.class_type }}
+        </p>
       </div>
     </div>
+  </div>
   {% else %}
-    <div class="alert alert-warning text-dark">
-      You haven’t selected a character yet. <a href="{% url 'party_select_character' party.id %}">Choose one now.</a>
-    </div>
+  <div class="alert alert-warning text-dark">
+    You haven’t selected a character yet. <a href="{% url 'party_select_character' party.id %}">Choose one now.</a>
+  </div>
   {% endif %}
 
   <hr class="text-gold" />
 
+  {% if party and user in party.members.all %}
+  <div class="invite-form mt-4 mb-4">
+    <h4 class="text-gold">Invite a Player</h4>
+    <form method="POST" action="{% url 'party_invite' party.id %}" class="d-flex gap-2">
+      {% csrf_token %}
+      <input type="text" name="username" placeholder="Enter username" class="form-control" required>
+      <button type="submit" class="btn btn-gold">Invite</button>
+    </form>
+  </div>
+  {% endif %}
+
   <h4 class="text-gold mb-3">Party Members</h4>
 
   {% if member_characters %}
-    <div class="row">
-      {% for c in member_characters %}
-      <div class="col-md-4 mb-4">
-        <div class="card parchment-card shadow h-100 {% if selected_pc and c.id == selected_pc.character.id %}border-gold glowing{% endif %}">
-          <div class="card-body">
-            <h5 class="card-title text-gold">{{ c.name }}</h5>
-            <p class="mb-1 small text-muted">Level {{ c.level }} {{ c.class_type }}</p>
-            {% if c.player == user %}
-              <span class="badge bg-warning text-dark mb-2">You</span>
-            {% endif %}
-            <div class="mb-2">
-              <strong>Health:</strong>
-              <div class="progress" style="height: 10px;">
-                <div class="progress-bar bg-danger" role="progressbar"
-                  style="width: {{ c.health|default:0 }}%;"></div>
-              </div>
+  <div class="row">
+    {% for c in member_characters %}
+    <div class="col-md-4 mb-4">
+      <div
+        class="card parchment-card shadow h-100 {% if selected_pc and c.id == selected_pc.character.id %}border-gold glowing{% endif %}">
+        <div class="card-body">
+          <h5 class="card-title text-gold">{{ c.name }}</h5>
+          <p class="mb-1 small text-muted">Level {{ c.level }} {{ c.class_type }}</p>
+          {% if c.player == user %}
+          <span class="badge bg-warning text-dark mb-2">You</span>
+          {% endif %}
+          <div class="mb-2">
+            <strong>Health:</strong>
+            <div class="progress" style="height: 10px;">
+              <div class="progress-bar bg-danger" role="progressbar" style="width: {{ c.health|default:0 }}%;"></div>
             </div>
-            <div class="mb-2">
-              <strong>Mana:</strong>
-              <div class="progress" style="height: 10px;">
-                <div class="progress-bar bg-primary" role="progressbar"
-                  style="width: {{ c.mana|default:0 }}%;"></div>
-              </div>
-            </div>
-            <p class="mb-0"><small>Player: {{ c.player.username }}</small></p>
           </div>
+          <div class="mb-2">
+            <strong>Mana:</strong>
+            <div class="progress" style="height: 10px;">
+              <div class="progress-bar bg-primary" role="progressbar" style="width: {{ c.mana|default:0 }}%;"></div>
+            </div>
+          </div>
+          <p class="mb-0"><small>Player: {{ c.player.username }}</small></p>
         </div>
       </div>
-      {% endfor %}
     </div>
+    {% endfor %}
+  </div>
   {% else %}
-    <p class="text-muted">No characters in this party yet.</p>
+  <p class="text-muted">No characters in this party yet.</p>
   {% endif %}
 </div>
+
+<a href="{% url 'characters' %}?view={{ c.id }}" class="btn btn-sm btn-gold mt-2">
+  View Character Sheet
+</a>
+
 
 {% endblock %}
