@@ -133,6 +133,7 @@ def characters_view(request, pk=None):
             "characters": characters,
             "attributes": attributes,
             "editing": editing,
+            "character": editing,
             "pk": pk,
             "dice_form": dice_form,
             "results": results,
