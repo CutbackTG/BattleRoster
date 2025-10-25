@@ -167,7 +167,8 @@
               <div class="mb-3">
                 <label for="id_{{ attr }}" class="form-label text-capitalize">{{ attr }}</label>
                 <input type="number" id="id_{{ attr }}" name="{{ attr }}" class="form-control"
-                  value="{{ character|get_attr:attr|default_if_none:'10' }}" step="1" min="0">
+                  value="{{ character|get_attr:attr|default_if_none:'10' }}" step="1" min="0"
+                  title="Roll 3 x D6 for attribute scores" data-bs-toggle="tooltip">
               </div>
               {% endfor %}
             </div>
