@@ -2,44 +2,111 @@
 {% load static %}
 
 {% block content %}
-<div class="container mt-4">
-  {% if party %}
-    <div class="card bg-dark text-light parchment-card mb-4">
-      <div class="card-body">
-        <h2>{{ party.name }}</h2>
-        <p><strong>Dungeon Master:</strong> {{ party.dungeon_master.username }}</p>
+<div class="container mt-5 text-light">
 
-        <hr>
-        <h4>Party Members</h4>
-        <ul>
-          {% for m in members %}
-            <li>{{ m.username }}</li>
-          {% endfor %}
-        </ul>
+  <h1 class="mb-4">Party: {{ party.name }}</h1>
+
+  <!-- Player’s Selected Character -->
+  <section class="mb-5">
+    <h2>Your Character</h2>
+
+    {% if selected_pc and selected_pc.character %}
+      <div class="card bg-dark parchment-card text-light mb-4 shadow-lg">
+        <div class="card-body">
+          <h3 class="card-title">{{ selected_pc.character.name }}</h3>
+          <p class="card-text">
+            Level {{ selected_pc.character.level }} — {{ selected_pc.character.class_type }} <br>
+            Race: {{ selected_pc.character.race }}
+          </p>
+
+          <!-- Health Bar -->
+          <div class="mt-2">
+            <small class="text-uppercase fw-bold">Health (HP)</small>
+            <div class="progress" style="height: 14px;">
+              <div class="progress-bar bg-danger"
+                   style="width: {{ selected_pc.character.health|default:0 }}%;"
+                   aria-valuenow="{{ selected_pc.character.health|default:0 }}"
+                   aria-valuemin="0" aria-valuemax="100">
+                {{ selected_pc.character.health }}
+              </div>
+            </div>
+          </div>
+
+          <!-- Mana Bar -->
+          <div class="mt-2">
+            <small class="text-uppercase fw-bold">Mana (MP)</small>
+            <div class="progress" style="height: 14px;">
+              <div class="progress-bar bg-info"
+                   style="width: {{ selected_pc.character.mana|default:0 }}%;"
+                   aria-valuenow="{{ selected_pc.character.mana|default:0 }}"
+                   aria-valuemin="0" aria-valuemax="100">
+                {{ selected_pc.character.mana }}
+              </div>
+            </div>
+          </div>
+
+          <div class="mt-4 d-flex gap-2">
+            <a href="{% url 'characters_edit' selected_pc.character.id %}" class="btn btn-warning">Edit Sheet</a>
+            <a href="{% url 'party_select_character' party.id %}" class="btn btn-gold">Change Character</a>
+          </div>
+        </div>
       </div>
-    </div>
+    {% else %}
+      <p>You haven’t selected a character for this party yet.</p>
+      <a href="{% url 'party_select_character' party.id %}" class="btn btn-gold mt-3">Select Character</a>
+    {% endif %}
+  </section>
 
-    <!-- Character selection -->
-    <div class="card bg-secondary text-light p-4">
-      <h4>Your Character</h4>
-      {% if selected_pc %}
-        <p>You are using <strong>{{ selected_pc.character.name }}</strong> (Level {{ selected_pc.character.level }}) in this party.</p>
-        <form method="post" action="{% url 'party_select_character' party.id %}">
-          {% csrf_token %}
-          <button class="btn btn-warning">Change Character</button>
-        </form>
-      {% else %}
-        <p>You haven’t selected a character for this party yet.</p>
-        <form method="post" action="{% url 'party_select_character' party.id %}">
-          {% csrf_token %}
-          <button class="btn btn-primary">Select Character</button>
-        </form>
-      {% endif %}
-    </div>
-  {% else %}
-    <div class="alert alert-info mt-4">
-      You are not currently in a party. Ask your Dungeon Master to invite you.
-    </div>
-  {% endif %}
+  <hr class="mb-5">
+
+  <!-- Party Members Section -->
+  <section>
+    <h2>Other Party Members</h2>
+
+    {% if member_characters %}
+      <div class="row">
+        {% for c in member_characters %}
+          {% if c.player != user %}
+          <div class="col-md-4 mb-4">
+            <div class="card bg-dark text-light parchment-card shadow">
+              <div class="card-body">
+                <h5 class="card-title">{{ c.name }}</h5>
+                <p class="card-text mb-1"><small>Player: {{ c.player.username }}</small></p>
+                <p class="card-text">Level {{ c.level }} — {{ c.class_type }}</p>
+
+                <div class="mt-2">
+                  <small class="text-uppercase fw-bold">Health (HP)</small>
+                  <div class="progress" style="height: 14px;">
+                    <div class="progress-bar bg-danger"
+                         style="width: {{ c.health|default:0 }}%;"
+                         aria-valuenow="{{ c.health|default:0 }}"
+                         aria-valuemin="0" aria-valuemax="100">
+                      {{ c.health }}
+                    </div>
+                  </div>
+                </div>
+
+                <div class="mt-2">
+                  <small class="text-uppercase fw-bold">Mana (MP)</small>
+                  <div class="progress" style="height: 14px;">
+                    <div class="progress-bar bg-info"
+                         style="width: {{ c.mana|default:0 }}%;"
+                         aria-valuenow="{{ c.mana|default:0 }}"
+                         aria-valuemin="0" aria-valuemax="100">
+                      {{ c.mana }}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          {% endif %}
+        {% endfor %}
+      </div>
+    {% else %}
+      <p>No other characters are in this party yet.</p>
+    {% endif %}
+  </section>
+
 </div>
 {% endblock %}

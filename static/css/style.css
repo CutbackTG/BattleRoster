@@ -505,3 +505,7 @@ a.btn:focus, button:focus, input:focus, select:focus, textarea:focus {
 .bg-info {
   background-color: #2980b9 !important; /* MP */
 }
+
+.border-warning {
+  box-shadow: 0 0 12px rgba(255, 215, 0, 0.7);
+}
