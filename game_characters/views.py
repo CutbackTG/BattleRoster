@@ -231,10 +231,24 @@ def character_delete(request, pk):
 # ---------- Party Views ----------
 @login_required
 def party_view(request):
+    """
+    Show party information.
+    - DMs see their dashboard of all owned parties.
+    - Players see their current party, members, and their selected character.
+    """
     user = request.user
 
-    if getattr(user, "is_dungeon_master", False):
+    # Handle both method and boolean field cases
+    is_dm = (
+        user.is_dungeon_master()
+        if callable(getattr(user, "is_dungeon_master", None))
+        else getattr(user, "is_dungeon_master", False)
+    )
+
+    # Dungeon Master view
+    if is_dm:
         parties = Party.objects.filter(dungeon_master=user).order_by("name")
+
         if request.method == "POST":
             if "create_party" in request.POST:
                 name = request.POST.get("party_name")
@@ -242,14 +256,17 @@ def party_view(request):
                     Party.objects.create(name=name, dungeon_master=user)
                     messages.success(request, f"Party '{name}' created successfully!")
                     return redirect("party")
+
             elif "delete_party" in request.POST:
                 party_id = request.POST.get("party_id")
                 party = get_object_or_404(Party, id=party_id, dungeon_master=user)
                 messages.warning(request, f"Party '{party.name}' deleted.")
                 party.delete()
                 return redirect("party")
+
         return render(request, "dm_party_dashboard.html", {"parties": parties})
 
+    # Player view
     else:
         party = Party.objects.filter(members=user).first()
         if not party:
@@ -258,7 +275,9 @@ def party_view(request):
 
         characters = Character.objects.filter(player=user)
         selected_pc = PartyCharacter.objects.filter(party=party, player=user).first()
-        member_characters = Character.objects.filter(player__in=party.members.all()).order_by("player__username", "name")
+        member_characters = Character.objects.filter(
+            player__in=party.members.all()
+        ).order_by("player__username", "name")
 
         context = {
             "party": party,
@@ -270,6 +289,7 @@ def party_view(request):
                 "constitution", "intelligence", "wisdom", "charisma",
             ],
         }
+
         return render(request, "player_party_view.html", context)
 
 
