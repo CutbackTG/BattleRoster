@@ -61,6 +61,35 @@ def party_remove_member(request, pk):
 
     return redirect("party_detail", pk=party.pk)
 
+@login_required
+def party_invite(request, pk):
+    """Allow any party member or DM to invite others."""
+    party = get_object_or_404(Party, pk=pk)
+
+    # Only members or DM can invite
+    if request.user not in party.members.all() and request.user != party.dungeon_master:
+        messages.error(request, "You must be a member of this party to invite others.")
+        return redirect("party_detail", pk=party.pk)
+
+    if request.method == "POST":
+        username = request.POST.get("username")
+        if not username:
+            messages.warning(request, "Please enter a username.")
+            return redirect("party_detail", pk=party.pk)
+
+        try:
+            invited_user = User.objects.get(username=username)
+        except User.DoesNotExist:
+            messages.error(request, f"User '{username}' does not exist.")
+            return redirect("party_detail", pk=party.pk)
+
+        if invited_user in party.members.all():
+            messages.info(request, f"{invited_user.username} is already in the party.")
+        else:
+            party.members.add(invited_user)
+            messages.success(request, f"{invited_user.username} has been added to the party!")
+
+    return redirect("party_detail", pk=party.pk)
 
 # ---------- DM Party List ----------
 @login_required

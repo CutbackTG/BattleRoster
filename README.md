@@ -130,6 +130,21 @@ User (Dungeon Master) records represent users responsible for creating game sess
 
 Extra local versions of users and characters are also created — User (local) and Character (local). These represent offline or stand-alone character sheets that can exist without an account as an online registered user. The local entities will use the same structure as those that are created online, but link only to the owner instead of an authenticated user, using the owner_id Foreign Key.
 
+## Url to View Map
+
+| **URL Pattern**                      | **View Function**        | **Name**                 | **Purpose / Description**                                                                           |
+| ------------------------------------ | ------------------------ | ------------------------ | --------------------------------------------------------------------------------------------------- |
+| `/characters/`                       | `characters_view`        | `characters`             | Main character list and creation page. Displays all characters for a player or all players (if DM). |
+| `/characters/<int:pk>/`              | `characters_view`        | `character_edit`         | Edit an existing character’s sheet.                                                                 |
+| `/characters/delete/<int:pk>/`       | `character_delete`       | `character_delete`       | Delete a character (player or DM permissions).                                                      |
+| `/characters/party/`                 | `party_view`             | `party`                  | Displays either the DM party dashboard or the player’s current party view.                          |
+| `/characters/party/<int:pk>/`        | `party_detail`           | `party_detail`           | Shows detailed info about a specific party, including all member characters.                        |
+| `/characters/party/<int:pk>/remove/` | `party_remove_member`    | `party_remove_member`    | Remove a member from a party (DM or authorized member).                                             |
+| `/characters/party/<int:pk>/invite/` | `party_invite`           | `party_invite`           | Invite another user to join a party.                                                                |
+| `/characters/party/<int:pk>/select/` | `party_select_character` | `party_select_character` | Players select which of their characters to use in the current party.                               |
+| `/characters/dm/parties/`            | `dm_party_list`          | `dm_party_list`          | Dungeon Master dashboard — view, create, or delete managed parties.                                 |
+
+
 ## BattleRoster Test Documentation
 
 | Issue / Feature | Test | Result / Fix |
