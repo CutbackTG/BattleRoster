@@ -45,6 +45,22 @@
             {% endfor %}
         </ul>
 
+        <!-- Invite Form for Dungeon Master -->
+        <div class="mt-4">
+            <h5 class="text-gold">Invite a Player</h5>
+            <form method="POST" action="{% url 'party_invite' party.id %}">
+                {% csrf_token %}
+                <div class="input-group">
+                    <input type="text" name="username" class="form-control" placeholder="Enter username" required>
+                    <button type="submit" class="btn btn-gold">Invite</button>
+                </div>
+            </form>
+        </div>
+
+        <div class="mt-4">
+            <a href="{% url 'dm_party_list' %}" class="btn btn-secondary">← Back to DM Dashboard</a>
+        </div>
+
         <!-- Character Sheets -->
         <div class="tab-content" id="characterTabsContent">
             {% for c in member_characters %}
