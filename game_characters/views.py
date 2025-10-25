@@ -3,12 +3,10 @@ from django.contrib import messages
 from .models import Character, Party, PartyCharacter
 import random
 from django import forms
-from django.contrib.auth.decorators import login_required
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.mail import send_mail, BadHeaderError
 from django.conf import settings
-
 
 User = get_user_model()
 
@@ -41,12 +39,16 @@ def to_int(value, default=0):
     except (TypeError, ValueError):
         return default
 
-@login_required
+
+# ---------- Party Management ----------
 def party_remove_member(request, pk):
     """Allow any party member (including DM) to remove another."""
+    if not request.user.is_authenticated:
+        messages.warning(request, "This feature is available to members only — why not sign up for a free account?")
+        return redirect("signup_login")
+
     party = get_object_or_404(Party, pk=pk)
 
-    # Check permission: only members or DM can act
     if request.user not in party.members.all() and request.user != party.dungeon_master:
         messages.error(request, "You must be a member of this party to make changes.")
         return redirect("party")
@@ -64,12 +66,15 @@ def party_remove_member(request, pk):
 
     return redirect("party_detail", pk=party.pk)
 
-@login_required
+
 def party_invite(request, pk):
     """Allow any party member or DM to invite others."""
+    if not request.user.is_authenticated:
+        messages.warning(request, "This feature is available to members only — why not sign up for a free account?")
+        return redirect("signup_login")
+
     party = get_object_or_404(Party, pk=pk)
 
-    # Only members or DM can invite
     if request.user not in party.members.all() and request.user != party.dungeon_master:
         messages.error(request, "You must be a member of this party to invite others.")
         return redirect("party_detail", pk=party.pk)
@@ -94,10 +99,13 @@ def party_invite(request, pk):
 
     return redirect("party_detail", pk=party.pk)
 
-# ---------- DM Party List ----------
-@login_required
+
+# ---------- Dungeon Master Party List ----------
 def dm_party_list(request):
-    """Dungeon Master dashboard for managing parties."""
+    if not request.user.is_authenticated:
+        messages.warning(request, "This feature is available to members only — why not sign up for a free account?")
+        return redirect("signup_login")
+
     user = request.user
     if not getattr(user, "is_dungeon_master", False):
         messages.error(request, "Only Dungeon Masters can manage parties.")
@@ -122,14 +130,13 @@ def dm_party_list(request):
     return render(request, "dm_party_dashboard.html", {"parties": parties})
 
 
-@login_required
+# ---------- Character View ----------
 def characters_view(request, pk=None):
     """
-    Shows all characters.
-    - Players: only see and edit their own characters.
-    - DMs: can view or edit all players' characters.
+    Guests can open and try character creation, but must sign up to save or use party features.
     """
     user = request.user
+    is_authenticated = user.is_authenticated
 
     # Handle both boolean field and method
     is_dm_attr = getattr(user, "is_dungeon_master", False)
@@ -138,82 +145,79 @@ def characters_view(request, pk=None):
     selected_player_id = request.GET.get("player")
 
     # Character Query Logic
-    if is_dm:
-        # DMs can filter by player or view all
-        if selected_player_id and selected_player_id != "all":
-            characters = Character.objects.filter(player__id=selected_player_id).order_by("name")
+    if is_authenticated:
+        if is_dm:
+            if selected_player_id and selected_player_id != "all":
+                characters = Character.objects.filter(player__id=selected_player_id).order_by("name")
+            else:
+                characters = Character.objects.all().order_by("player__username", "name")
+            players = User.objects.filter(game_characters__isnull=False).distinct().order_by("username")
         else:
-            characters = Character.objects.all().order_by("player__username", "name")
-        players = (
-            User.objects.filter(game_characters__isnull=False)
-            .distinct()
-            .order_by("username")
-        )
+            characters = Character.objects.filter(player=user).order_by("name")
+            players = None
     else:
-        # Players can only ever see their own characters
-        characters = Character.objects.filter(player=user).order_by("name")
+        characters = []
         players = None
 
     # Character Editing Logic
     editing = None
-    if pk is not None:
-        # Only allow editing if user owns it or is DM
+    if pk is not None and is_authenticated:
         if is_dm:
             editing = get_object_or_404(Character, pk=pk)
         else:
             editing = get_object_or_404(Character, pk=pk, player=user)
 
-    # Dice Rolling Logic
     results, total = [], None
     dice_form = DiceRollForm(request.POST or None)
 
-    if request.method == "POST" and "roll_dice" in request.POST:
-        if dice_form.is_valid():
-            dice = [dice_form.cleaned_data.get(f"die{i}") for i in range(1, 4)]
-            dice = [int(d) for d in dice if d]
-            results = [random.randint(1, d) for d in dice]
-            total = sum(results)
+    if request.method == "POST":
+        if not is_authenticated:
+            messages.warning(
+                request,
+                "This feature is available to members only — why not sign up for a free account?"
+            )
+            return redirect("signup_login")
 
-    # Character Create/Update Logic
-    elif request.method == "POST":
-        fields = {
-            "name": request.POST.get("name", "").strip(),
-            "level": to_int(request.POST.get("level"), 1),
-            "race": request.POST.get("race", "").strip(),
-            "class_type": request.POST.get("class_type", "").strip(),
-            "health": to_int(request.POST.get("health"), 100),
-            "mana": to_int(request.POST.get("mana"), 50),
-            "strength": to_int(request.POST.get("strength"), 10),
-            "dexterity": to_int(request.POST.get("dexterity"), 10),
-            "constitution": to_int(request.POST.get("constitution"), 10),
-            "intelligence": to_int(request.POST.get("intelligence"), 10),
-            "wisdom": to_int(request.POST.get("wisdom"), 10),
-            "charisma": to_int(request.POST.get("charisma"), 10),
-            "equipment": request.POST.get("equipment", "").strip(),
-            "weapons": request.POST.get("weapons", "").strip(),
-            "spells": request.POST.get("spells", "").strip(),
-        }
-
-        if editing:
-            # Check ownership before saving
-            if is_dm or editing.player == user:
-                for k, v in fields.items():
-                    setattr(editing, k, v)
-                editing.save()
-                messages.success(request, f"Character '{fields['name']}' updated successfully!")
-            else:
-                messages.error(request, "You don't have permission to edit this character.")
+        if "roll_dice" in request.POST:
+            if dice_form.is_valid():
+                dice = [dice_form.cleaned_data.get(f"die{i}") for i in range(1, 4)]
+                dice = [int(d) for d in dice if d]
+                results = [random.randint(1, d) for d in dice]
+                total = sum(results)
         else:
-            Character.objects.create(player=user, **fields)
-            messages.success(request, f"Character '{fields['name']}' created successfully!")
+            fields = {
+                "name": request.POST.get("name", "").strip(),
+                "level": to_int(request.POST.get("level"), 1),
+                "race": request.POST.get("race", "").strip(),
+                "class_type": request.POST.get("class_type", "").strip(),
+                "health": to_int(request.POST.get("health"), 100),
+                "mana": to_int(request.POST.get("mana"), 50),
+                "strength": to_int(request.POST.get("strength"), 10),
+                "dexterity": to_int(request.POST.get("dexterity"), 10),
+                "constitution": to_int(request.POST.get("constitution"), 10),
+                "intelligence": to_int(request.POST.get("intelligence"), 10),
+                "wisdom": to_int(request.POST.get("wisdom"), 10),
+                "charisma": to_int(request.POST.get("charisma"), 10),
+                "equipment": request.POST.get("equipment", "").strip(),
+                "weapons": request.POST.get("weapons", "").strip(),
+                "spells": request.POST.get("spells", "").strip(),
+            }
 
-        return redirect("characters")
+            if editing:
+                if is_dm or editing.player == user:
+                    for k, v in fields.items():
+                        setattr(editing, k, v)
+                    editing.save()
+                    messages.success(request, f"Character '{fields['name']}' updated successfully!")
+                else:
+                    messages.error(request, "You don't have permission to edit this character.")
+            else:
+                Character.objects.create(player=user, **fields)
+                messages.success(request, f"Character '{fields['name']}' created successfully!")
 
-    # Context and Render
-    attributes = [
-        "strength", "dexterity", "constitution",
-        "intelligence", "wisdom", "charisma",
-    ]
+            return redirect("characters")
+
+    attributes = ["strength", "dexterity", "constitution", "intelligence", "wisdom", "charisma"]
 
     return render(
         request,
@@ -234,9 +238,12 @@ def characters_view(request, pk=None):
     )
 
 
-
-@login_required
+# ---------- Delete Character ----------
 def character_delete(request, pk):
+    if not request.user.is_authenticated:
+        messages.warning(request, "This feature is available to members only — why not sign up for a free account?")
+        return redirect("signup_login")
+
     user = request.user
     is_dm = getattr(user, "is_dungeon_master", False)
     if is_dm:
@@ -249,24 +256,23 @@ def character_delete(request, pk):
     return redirect("characters")
 
 
-# Party Views
-@login_required
+# ---------- Party Views ----------
 def party_view(request):
-    """
-    Show party information.
-    - DMs see their dashboard of all owned parties.
-    - Players see their current party, members, and their selected character.
-    """
     user = request.user
 
-    # Handle both method and boolean field cases
+    if not user.is_authenticated:
+        messages.warning(
+            request,
+            "This feature is available to members only — why not sign up for a free account?"
+        )
+        return redirect("signup_login")
+
     is_dm = (
         user.is_dungeon_master()
         if callable(getattr(user, "is_dungeon_master", None))
         else getattr(user, "is_dungeon_master", False)
     )
 
-    # Dungeon Master view
     if is_dm:
         parties = Party.objects.filter(dungeon_master=user).order_by("name")
 
@@ -287,7 +293,6 @@ def party_view(request):
 
         return render(request, "dm_party_dashboard.html", {"parties": parties})
 
-    # Player view
     else:
         party = Party.objects.filter(members=user).first()
         if not party:
@@ -300,23 +305,27 @@ def party_view(request):
             player__in=party.members.all()
         ).order_by("player__username", "name")
 
-        context = {
-            "party": party,
-            "member_characters": member_characters,
-            "selected_pc": selected_pc,
-            "is_dm": False,
-            "attr_list": [
-                "health", "mana", "strength", "dexterity",
-                "constitution", "intelligence", "wisdom", "charisma",
-            ],
-        }
+        return render(
+            request,
+            "player_party_view.html",
+            {
+                "party": party,
+                "member_characters": member_characters,
+                "selected_pc": selected_pc,
+                "is_dm": False,
+                "attr_list": [
+                    "health", "mana", "strength", "dexterity",
+                    "constitution", "intelligence", "wisdom", "charisma",
+                ],
+            },
+        )
 
-        return render(request, "player_party_view.html", context)
 
-
-@login_required
 def party_select_character(request, pk):
-    """Allow a player to select which of their characters to use in a party."""
+    if not request.user.is_authenticated:
+        messages.warning(request, "This feature is available to members only — why not sign up for a free account?")
+        return redirect("signup_login")
+
     party = get_object_or_404(Party, pk=pk)
     user = request.user
 
@@ -342,15 +351,15 @@ def party_select_character(request, pk):
     return render(
         request,
         "party_select_character.html",
-        {
-            "party": party,
-            "characters": characters,
-            "selected_pc": selected_pc,
-        },
+        {"party": party, "characters": characters, "selected_pc": selected_pc},
     )
 
-@login_required
+
 def party_detail(request, pk):
+    if not request.user.is_authenticated:
+        messages.warning(request, "This feature is available to members only — why not sign up for a free account?")
+        return redirect("signup_login")
+
     party = get_object_or_404(Party, pk=pk)
     user = request.user
 
@@ -394,6 +403,8 @@ def party_detail(request, pk):
         },
     )
 
+
+# ---------- Contact View ----------
 def contact_view(request):
     if request.method == "POST":
         name = request.POST.get("name")
@@ -404,14 +415,12 @@ def contact_view(request):
             messages.error(request, "Please fill in all fields before submitting.")
             return redirect("contact")
 
-        # Email sent to site owner (you)
         admin_subject = f"BattleRoster Contact - {name}"
         admin_message = (
             f"📨 New message received via the BattleRoster contact form:\n\n"
             f"Name: {name}\nEmail: {email}\n\nMessage:\n{message}"
         )
 
-        # Confirmation email sent to user
         user_subject = "Thanks for contacting BattleRoster!"
         user_message = (
             f"Hi {name},\n\n"
@@ -423,35 +432,13 @@ def contact_view(request):
         )
 
         try:
-            # Send to admin (you)
-            send_mail(
-                admin_subject,
-                admin_message,
-                settings.DEFAULT_FROM_EMAIL,
-                ["tylerworth.media@gmail.com"],
-                fail_silently=False,
-            )
-
-            # Send confirmation to user
-            send_mail(
-                user_subject,
-                user_message,
-                settings.DEFAULT_FROM_EMAIL,
-                [email],
-                fail_silently=True,  # If this fails, it won’t interrupt the main flow
-            )
-
-            messages.success(
-                request, "Your message has been sent successfully! Check your inbox for confirmation."
-            )
-
+            send_mail(admin_subject, admin_message, settings.DEFAULT_FROM_EMAIL, ["tylerworth.media@gmail.com"], fail_silently=False)
+            send_mail(user_subject, user_message, settings.DEFAULT_FROM_EMAIL, [email], fail_silently=True)
+            messages.success(request, "Your message has been sent successfully! Check your inbox for confirmation.")
         except BadHeaderError:
             messages.error(request, "Invalid header detected. Please try again.")
-        except Exception as e:
-            messages.error(
-                request,
-                f"Something went wrong while sending your message. Please try again later or email us directly.",
-            )
+        except Exception:
+            messages.error(request, "Something went wrong while sending your message. Please try again later or email us directly.")
 
         return redirect("contact")
 

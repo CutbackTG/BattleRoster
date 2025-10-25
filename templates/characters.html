@@ -270,6 +270,45 @@
   <script src="{% static 'js/main.js' %}"></script>
   <script src="{% static 'js/dice_roller.js' %}"></script>
   <script src="https://kit.fontawesome.com/f84e35c3bf.js" crossorigin="anonymous"></script>
+
+  {% if not user.is_authenticated %}
+<script>
+  // Intercept save/create buttons
+  document.addEventListener("DOMContentLoaded", function() {
+    const restrictedButtons = document.querySelectorAll(
+      'button[type="submit"], .btn-new-character, a[href*="party"]'
+    );
+
+    restrictedButtons.forEach(btn => {
+      btn.addEventListener("click", function(event) {
+        event.preventDefault();
+        const modal = document.createElement("div");
+        modal.innerHTML = `
+          <div class="modal fade show" style="display:block; background: rgba(0,0,0,0.6);">
+            <div class="modal-dialog modal-dialog-centered">
+              <div class="modal-content" style="background:#2a2a2a; color:gold; border:2px solid gold;">
+                <div class="modal-header border-0">
+                  <h5 class="modal-title">Members Only</h5>
+                </div>
+                <div class="modal-body">
+                  This feature is available to members only.<br>
+                  Why not sign up for a free account?
+                </div>
+                <div class="modal-footer border-0">
+                  <a href="{% url 'signup_login' %}" class="btn btn-primary">Sign Up / Log In</a>
+                  <button type="button" class="btn btn-secondary" onclick="this.closest('.modal').remove()">Cancel</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+        document.body.appendChild(modal);
+      });
+    });
+  });
+</script>
+{% endif %}
+
 </body>
 
 </html>
