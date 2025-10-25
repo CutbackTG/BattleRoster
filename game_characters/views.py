@@ -304,6 +304,7 @@ def party_select_character(request, pk):
         return redirect("party_detail", pk=party.pk)
 
     characters = Character.objects.filter(player=user)
+    selected_pc = PartyCharacter.objects.filter(party=party, player=user).first()
 
     if request.method == "POST":
         char_id = request.POST.get("character_id")
@@ -317,8 +318,15 @@ def party_select_character(request, pk):
             messages.success(request, f"{character.name} selected for {party.name}.")
             return redirect("party_detail", pk=party.pk)
 
-    return render(request, "party_select_character.html", {"party": party, "characters": characters})
-
+    return render(
+        request,
+        "party_select_character.html",
+        {
+            "party": party,
+            "characters": characters,
+            "selected_pc": selected_pc,
+        },
+    )
 
 @login_required
 def party_detail(request, pk):
