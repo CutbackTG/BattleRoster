@@ -214,7 +214,7 @@ textarea.form-control { resize: vertical; }
 .btn-danger:hover { background-color: #c94444; }
 
 .btn-gold {
-  background-color: #d4af37;
+  background-color: gold;
   border: none;
   color: #000;
   font-weight: bold;
@@ -395,9 +395,9 @@ textarea.form-control { resize: vertical; }
 #invite-list li.removed, #member-grid .card.removed { opacity: 0.6; }
 
 .alert {
-  background-color: #d4af37;
+  background-color: #e2a101;
   color: #000;
-  border: 2px solid #b8860b;
+  border: 2px solid gold;
   border-radius: 12px;
   padding: 10px 16px;
   margin-bottom: 15px;
