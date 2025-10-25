@@ -416,3 +416,22 @@ footer#footerSocials {
   margin: 0; /* prevent gaps */
 }
 
+/* Welcome Adventurer section styles */
+#welcome-adventurer-text h1,
+#welcome-adventurer-text h1 strong {
+  color: #d4af37; /* rich gold */
+  text-shadow: 2px 2px 4px #000; /* subtle black shadow */
+}
+
+/* make emphasized text inside the paragraph gold + shadow too */
+#welcome-adventurer-text strong {
+  color: #d4af37 !important;
+  text-shadow: 1px 1px 3px #000;
+  font-weight: 700;
+}
+
+/* keep other <strong> elsewhere black (as before) */
+body strong:not(#welcome-adventurer-text strong) {
+  color: #000;
+  text-shadow: none;
+}

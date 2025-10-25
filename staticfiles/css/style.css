@@ -17,11 +17,12 @@ body {
 }
 
 /* Typography */
-h1, h2, h5 {
+h1, h2, h5, h6 {
   font-family: "Oswald", sans-serif;
   text-transform: uppercase;
   letter-spacing: 2px;
   color: gold;
+  text-shadow: #000;
   margin: 0.25rem 0;
 }
 
@@ -237,8 +238,8 @@ textarea.form-control { resize: vertical; }
 
 #welcome-adventurer-text .p-5 {
   background: url("../images/parchment-texture.jpg");
-  color: rgb(92, 46, 13);
-  border: 2px solid goldenrod;
+  color: rgb(62, 36, 17);
+  border: 3px solid goldenrod;
   background-size: cover;
   background-repeat: no-repeat;
 }
@@ -415,3 +416,22 @@ footer#footerSocials {
   margin: 0; /* prevent gaps */
 }
 
+/* Welcome Adventurer section styles */
+#welcome-adventurer-text h1,
+#welcome-adventurer-text h1 strong {
+  color: #d4af37; /* rich gold */
+  text-shadow: 2px 2px 4px #000; /* subtle black shadow */
+}
+
+/* make emphasized text inside the paragraph gold + shadow too */
+#welcome-adventurer-text strong {
+  color: #d4af37 !important;
+  text-shadow: 1px 1px 3px #000;
+  font-weight: 700;
+}
+
+/* keep other <strong> elsewhere black (as before) */
+body strong:not(#welcome-adventurer-text strong) {
+  color: #000;
+  text-shadow: none;
+}
