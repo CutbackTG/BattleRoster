@@ -33,7 +33,7 @@ h3, h4 {
   margin: 0.25rem 0;
 }
 
-strong { color: goldenrod; }
+strong { color: #2a2a2a; }
 
 /* Navbar */
 
@@ -395,7 +395,7 @@ textarea.form-control { resize: vertical; }
 #invite-list li.removed, #member-grid .card.removed { opacity: 0.6; }
 
 .alert {
-  background-color: url("/static/images/parchment-texture.jpg") no-repeat center/cover;
+  background-color: #c8bda1;
   color: #000;
   border: 2px solid gold;
   border-radius: 12px;
@@ -427,7 +427,7 @@ a.btn:focus, button:focus, input:focus, select:focus, textarea:focus {
 }
 
 .alert-warning, .alert-danger {
-  background-color: #b8860b !important;
+  background-color: #c8bda1 !important;
   color: #000 !important;
   border-color: #8b6508 !important;
 }
