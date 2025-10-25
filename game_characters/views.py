@@ -7,40 +7,9 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ObjectDoesNotExist
 
-@login_required
-def dm_party_list(request):
-    """Dungeon Master dashboard for managing parties."""
-    user = request.user
-
-    # Only allow DMs to access
-    if not getattr(user, "is_dungeon_master", False):
-        messages.error(request, "Only Dungeon Masters can manage parties.")
-        return redirect("party")
-
-    # Create a new party
-    if request.method == "POST" and "create_party" in request.POST:
-        name = request.POST.get("party_name")
-        if name:
-            Party.objects.create(name=name, dungeon_master=user)
-            messages.success(request, f"Party '{name}' created successfully!")
-            return redirect("dm_party_list")
-
-    # Delete an existing party
-    if request.method == "POST" and "delete_party" in request.POST:
-        party_id = request.POST.get("party_id")
-        party = get_object_or_404(Party, id=party_id, dungeon_master=user)
-        messages.warning(request, f"Party '{party.name}' deleted.")
-        party.delete()
-        return redirect("dm_party_list")
-
-    # List all parties for this DM
-    parties = Party.objects.filter(dungeon_master=user).order_by("name")
-    return render(request, "dm_party_dashboard.html", {"parties": parties})
-
-
 User = get_user_model()
 
-# Dice Roller Setup
+# ---------- Dice Roller Setup ----------
 
 DICE_CHOICES = [
     (3, 'D3'),
@@ -58,8 +27,8 @@ class DiceRollForm(forms.Form):
     die2 = forms.ChoiceField(choices=DICE_CHOICES, required=False)
     die3 = forms.ChoiceField(choices=DICE_CHOICES, required=False)
 
-# ---------- Helpers ----------
 
+# ---------- Helpers ----------
 def index_view(request):
     return render(request, "index.html")
 
@@ -70,29 +39,49 @@ def to_int(value, default=0):
         return default
 
 
-# ---------- Character Views ----------
+# ---------- DM Party List ----------
+@login_required
+def dm_party_list(request):
+    """Dungeon Master dashboard for managing parties."""
+    user = request.user
+    if not getattr(user, "is_dungeon_master", False):
+        messages.error(request, "Only Dungeon Masters can manage parties.")
+        return redirect("party")
 
+    if request.method == "POST":
+        if "create_party" in request.POST:
+            name = request.POST.get("party_name")
+            if name:
+                Party.objects.create(name=name, dungeon_master=user)
+                messages.success(request, f"Party '{name}' created successfully!")
+                return redirect("dm_party_list")
+
+        elif "delete_party" in request.POST:
+            party_id = request.POST.get("party_id")
+            party = get_object_or_404(Party, id=party_id, dungeon_master=user)
+            messages.warning(request, f"Party '{party.name}' deleted.")
+            party.delete()
+            return redirect("dm_party_list")
+
+    parties = Party.objects.filter(dungeon_master=user).order_by("name")
+    return render(request, "dm_party_dashboard.html", {"parties": parties})
+
+
+# ---------- Character Views ----------
 def characters_view(request, pk=None):
-    """
-    Show all characters.
-    - Players: only see their own.
-    - DMs: see and manage all players' characters (CRUD).
-    Includes dice roller and optional filtering by player.
-    """
     user = request.user
     is_dm = getattr(user, "is_dungeon_master", False)
     selected_player_id = request.GET.get("player")
 
-    # Character list logic
     if user.is_authenticated:
         if is_dm:
             if selected_player_id and selected_player_id != "all":
-                characters = Character.objects.filter(player__id=selected_player_id).order_by('name')
+                characters = Character.objects.filter(player__id=selected_player_id).order_by("name")
             else:
-                characters = Character.objects.all().order_by('player__username', 'name')
-            players = User.objects.filter(game_characters__isnull=False).distinct().order_by('username')
+                characters = Character.objects.all().order_by("player__username", "name")
+            players = User.objects.filter(game_characters__isnull=False).distinct().order_by("username")
         else:
-            characters = Character.objects.filter(player=user).order_by('name')
+            characters = Character.objects.filter(player=user).order_by("name")
             players = None
     else:
         characters = request.session.get("characters", [])
@@ -112,19 +101,16 @@ def characters_view(request, pk=None):
                 messages.error(request, "Character not found.")
                 return redirect("characters")
 
-    results = []
-    total = None
+    results, total = [], None
     dice_form = DiceRollForm(request.POST or None)
 
-    # Dice rolling
     if request.method == "POST" and "roll_dice" in request.POST:
         if dice_form.is_valid():
-            dice = [dice_form.cleaned_data.get(f'die{i}') for i in range(1, 4)]
+            dice = [dice_form.cleaned_data.get(f"die{i}") for i in range(1, 4)]
             dice = [int(d) for d in dice if d]
             results = [random.randint(1, d) for d in dice]
             total = sum(results)
 
-    # Character Create/Update
     elif request.method == "POST":
         fields = {
             "name": request.POST.get("name", "").strip(),
@@ -164,7 +150,7 @@ def characters_view(request, pk=None):
             "characters": characters,
             "attributes": attributes,
             "editing": editing,
-            "character": editing,  # Fix for edit pre-fill
+            "character": editing,
             "pk": pk,
             "dice_form": dice_form,
             "results": results,
@@ -178,10 +164,8 @@ def characters_view(request, pk=None):
 
 @login_required
 def character_delete(request, pk):
-    """Allow players to delete their characters, or DMs to delete any."""
     user = request.user
     is_dm = getattr(user, "is_dungeon_master", False)
-
     if is_dm:
         character = get_object_or_404(Character, pk=pk)
     else:
@@ -193,21 +177,12 @@ def character_delete(request, pk):
 
 
 # ---------- Party Views ----------
-
 @login_required
 def party_view(request):
-    """
-    Show party information.
-    - DMs see their dashboard of all owned parties.
-    - Players see their current party, members, and their selected character.
-    """
     user = request.user
 
-    # Dungeon Master view
     if getattr(user, "is_dungeon_master", False):
         parties = Party.objects.filter(dungeon_master=user).order_by("name")
-
-        # Create or delete party
         if request.method == "POST":
             if "create_party" in request.POST:
                 name = request.POST.get("party_name")
@@ -215,17 +190,14 @@ def party_view(request):
                     Party.objects.create(name=name, dungeon_master=user)
                     messages.success(request, f"Party '{name}' created successfully!")
                     return redirect("party")
-
             elif "delete_party" in request.POST:
                 party_id = request.POST.get("party_id")
                 party = get_object_or_404(Party, id=party_id, dungeon_master=user)
                 messages.warning(request, f"Party '{party.name}' deleted.")
                 party.delete()
                 return redirect("party")
-
         return render(request, "dm_party_dashboard.html", {"parties": parties})
 
-    # Player view
     else:
         party = Party.objects.filter(members=user).first()
         if not party:
@@ -246,84 +218,47 @@ def party_view(request):
                 "constitution", "intelligence", "wisdom", "charisma",
             ],
         }
-
         return render(request, "player_party_view.html", context)
 
 
 @login_required
-def party_remove_member(request, pk):
-    """Allow any party member (including DM) to remove another."""
+def party_select_character(request, pk):
+    """Allow a player to select which of their characters to use in a party."""
     party = get_object_or_404(Party, pk=pk)
+    user = request.user
 
-    if request.user not in party.members.all() and request.user != party.dungeon_master:
-        messages.error(request, "You must be a member of this party to make changes.")
-        return redirect("party")
+    if not party.members.filter(id=user.id).exists():
+        messages.error(request, "You are not a member of this party.")
+        return redirect("party_detail", pk=party.pk)
+
+    characters = Character.objects.filter(player=user)
 
     if request.method == "POST":
-        member_id = request.POST.get("member_id")
-        member_to_remove = party.members.filter(id=member_id).first()
-        if not member_to_remove:
-            messages.warning(request, "That member was not found in this party.")
-        elif member_to_remove == request.user:
-            messages.warning(request, "You cannot remove yourself.")
+        char_id = request.POST.get("character_id")
+        if not char_id:
+            messages.error(request, "Please select a character.")
         else:
-            party.members.remove(member_to_remove)
-            messages.success(request, f"{member_to_remove.username} has been removed from the party.")
+            character = get_object_or_404(Character, pk=char_id, player=user)
+            PartyCharacter.objects.update_or_create(
+                party=party, player=user, defaults={"character": character}
+            )
+            messages.success(request, f"{character.name} selected for {party.name}.")
+            return redirect("party_detail", pk=party.pk)
 
-    return redirect("party")
+    return render(request, "select_character.html", {"party": party, "characters": characters})
 
-
-@login_required
-def party_invite(request, pk):
-    """Allow any party member or DM to invite others."""
-    party = get_object_or_404(Party, pk=pk)
-
-    if request.user not in party.members.all() and request.user != party.dungeon_master:
-        messages.error(request, "You must be a member of this party to invite others.")
-        return redirect("party")
-
-    if request.method == "POST":
-        username = request.POST.get("username")
-        if not username:
-            messages.warning(request, "Please enter a username.")
-            return redirect("party")
-
-        try:
-            invited_user = User.objects.get(username=username)
-        except User.DoesNotExist:
-            messages.error(request, f"User '{username}' does not exist.")
-            return redirect("party")
-
-        if invited_user in party.members.all():
-            messages.info(request, f"{invited_user.username} is already in the party.")
-        else:
-            party.members.add(invited_user)
-            messages.success(request, f"{invited_user.username} has been added to the party!")
-
-    return redirect("party")
 
 @login_required
 def party_detail(request, pk):
     party = get_object_or_404(Party, pk=pk)
     user = request.user
 
-    # Only DM or members can view
     if user != party.dungeon_master and user not in party.members.all():
         messages.error(request, "You do not have permission to view this party.")
         return redirect("party")
 
-    # Dungeon Master view
     if user == party.dungeon_master:
-        member_characters = Character.objects.filter(
-            player__in=party.members.all()
-        ).order_by("player__username", "name")
-
-        if request.method == "POST":
-            char_id = request.POST.get("character_id")
-            character = get_object_or_404(Character, id=char_id)
-            # remove or update logic (same as before)
-            ...
-
+        member_characters = Character.objects.filter(player__in=party.members.all()).order_by("player__username", "name")
         return render(
             request,
             "dm_party_characters.html",
@@ -338,7 +273,6 @@ def party_detail(request, pk):
             },
         )
 
-    # Player view
     selected_pc = PartyCharacter.objects.filter(party=party, player=user).first()
     characters = Character.objects.filter(player=user)
     member_characters = Character.objects.filter(player__in=party.members.all())
