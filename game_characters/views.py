@@ -317,7 +317,7 @@ def party_select_character(request, pk):
             messages.success(request, f"{character.name} selected for {party.name}.")
             return redirect("party_detail", pk=party.pk)
 
-    return render(request, "select_character.html", {"party": party, "characters": characters})
+    return render(request, "party_select_character.html", {"party": party, "characters": characters})
 
 
 @login_required
