@@ -420,13 +420,13 @@ footer#footerSocials {
 #welcome-adventurer-text h1,
 #welcome-adventurer-text h1 strong {
   color: #d4af37; /* rich gold */
-  text-shadow: 2px 2px 4px #000; /* subtle black shadow */
+  text-shadow: 1px 1px 2px #000; /* subtle black shadow */
 }
 
 /* make emphasized text inside the paragraph gold + shadow too */
 #welcome-adventurer-text strong {
   color: #d4af37 !important;
-  text-shadow: 1px 1px 3px #000;
+  text-shadow: 1px 1px 2px #000;
   font-weight: 700;
 }
 
