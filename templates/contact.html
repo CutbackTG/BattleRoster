@@ -53,6 +53,31 @@
         </div>
     </nav>
 
+    <!-- Flash Messages -->
+    <div class="container mt-3">
+        {% if messages %}
+        {% for message in messages|slice:":1" %}
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show text-center fw-bold" role="alert"
+            style="background-color: #d4af37; color: black; border: none; border-radius: 10px;">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        {% endfor %}
+        {% endif %}
+    </div>
+
+    <script>
+        // Auto-dismiss after 4 seconds
+        setTimeout(() => {
+            const alertEl = document.querySelector('.alert');
+            if (alertEl) {
+                const bsAlert = new bootstrap.Alert(alertEl);
+                bsAlert.close();
+            }
+        }, 4000);
+    </script>
+
+
     <!-- Main content -->
     <div class="container-fluid bg-dark text-light py-5">
         <div class="row justify-content-center align-items-center">

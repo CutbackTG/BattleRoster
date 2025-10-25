@@ -6,6 +6,9 @@ from django import forms
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ObjectDoesNotExist
+from django.core.mail import send_mail, BadHeaderError
+from django.conf import settings
+
 
 User = get_user_model()
 
@@ -391,11 +394,6 @@ def party_detail(request, pk):
         },
     )
 
-from django.shortcuts import render, redirect
-from django.core.mail import send_mail, BadHeaderError
-from django.contrib import messages
-from django.conf import settings
-
 def contact_view(request):
     if request.method == "POST":
         name = request.POST.get("name")
@@ -403,25 +401,57 @@ def contact_view(request):
         message = request.POST.get("message")
 
         if not name or not email or not message:
-            messages.error(request, "Please fill in all fields.")
+            messages.error(request, "Please fill in all fields before submitting.")
             return redirect("contact")
 
-        subject = f"BattleRoster Contact Form: {name}"
-        body = f"Name: {name}\nEmail: {email}\n\nMessage:\n{message}"
+        # Email sent to site owner (you)
+        admin_subject = f"BattleRoster Contact - {name}"
+        admin_message = (
+            f"📨 New message received via the BattleRoster contact form:\n\n"
+            f"Name: {name}\nEmail: {email}\n\nMessage:\n{message}"
+        )
+
+        # Confirmation email sent to user
+        user_subject = "Thanks for contacting BattleRoster!"
+        user_message = (
+            f"Hi {name},\n\n"
+            "Thanks for reaching out to the BattleRoster team.\n"
+            "We’ve received your message and will get back to you as soon as possible.\n\n"
+            "Your Message:\n"
+            f"{message}\n\n"
+            "— The BattleRoster Team ⚔️"
+        )
 
         try:
+            # Send to admin (you)
             send_mail(
-                subject,
-                body,
+                admin_subject,
+                admin_message,
                 settings.DEFAULT_FROM_EMAIL,
                 ["tylerworth.media@gmail.com"],
                 fail_silently=False,
             )
-            messages.success(request, "Your message has been sent successfully!")
+
+            # Send confirmation to user
+            send_mail(
+                user_subject,
+                user_message,
+                settings.DEFAULT_FROM_EMAIL,
+                [email],
+                fail_silently=True,  # If this fails, it won’t interrupt the main flow
+            )
+
+            messages.success(
+                request, "Your message has been sent successfully! Check your inbox for confirmation."
+            )
+
         except BadHeaderError:
-            messages.error(request, "Invalid header found.")
+            messages.error(request, "Invalid header detected. Please try again.")
         except Exception as e:
-            messages.error(request, f"Error sending email: {e}")
+            messages.error(
+                request,
+                f"Something went wrong while sending your message. Please try again later or email us directly.",
+            )
 
         return redirect("contact")
 
