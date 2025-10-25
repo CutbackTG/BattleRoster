@@ -5,9 +5,7 @@
   box-sizing: border-box;
 }
 
-html {
-  scroll-behavior: smooth;
-}
+html { scroll-behavior: smooth; }
 
 body {
   background-color: #1e1e1e;
@@ -37,9 +35,8 @@ h3, h4 {
 
 strong { color: goldenrod; }
 
-/* ======================= */
 /* Navbar */
-/* ======================= */
+
 .navbar {
   background-color: #2a2a2a;
   border-bottom: 3px solid gold;
@@ -120,9 +117,8 @@ strong { color: goldenrod; }
   .navbar-nav { text-align: right; }
 }
 
-/* ======================= */
 /* Footer / Social Links */
-/* ======================= */
+
 #social-networks {
   background-color: #1a1a1a;
   display: flex;
@@ -143,9 +139,8 @@ strong { color: goldenrod; }
 
 #social-networks a:hover { color: gold; transform: scale(1.1); }
 
-/* ======================= */
 /* Forms and Tabs */
-/* ======================= */
+
 form {
   background: url("/static/images/parchment-texture.jpg") no-repeat center/cover;
   border: 3px solid goldenrod;
@@ -194,9 +189,8 @@ textarea.form-control { resize: vertical; }
   color: #1e1e1e;
 }
 
-/* ======================= */
 /* Buttons */
-/* ======================= */
+
 .btn-primary,
 .btn-warning {
   background-color: #d4af37 !important;
@@ -237,8 +231,8 @@ textarea.form-control { resize: vertical; }
 
 .bg-gold { background-color: #d4af37 !important; color: #000 !important; }
 
-
 /* Character Cards */
+
 .character-grid { display: grid; gap: 1.5rem; margin-top: 2rem; }
 
 .card {
@@ -255,15 +249,6 @@ textarea.form-control { resize: vertical; }
   box-shadow: 0 6px 20px rgba(255, 215, 0, 0.4);
 }
 
-.card.border-gold {
-  border-color: #d4af37 !important;
-  box-shadow: 0 0 10px rgba(255, 215, 0, 0.15);
-}
-.card.border-gold:hover {
-  box-shadow: 0 0 16px rgba(255, 215, 0, 0.3);
-  transform: translateY(-3px);
-}
-
 .card-title {
   font-family: "Oswald", sans-serif;
   border-bottom: 1px solid goldenrod;
@@ -273,9 +258,8 @@ textarea.form-control { resize: vertical; }
 
 .card-text { font-family: "Lato", sans-serif; color: #3a2a00; }
 
-/* ======================= */
 /* Dice Roller */
-/* ======================= */
+
 .left-column-dice { margin-top: 1rem; }
 
 .dice-toggle-btn {
@@ -393,7 +377,7 @@ textarea.form-control { resize: vertical; }
 
 @media (max-width: 768px) { .left-column-dice { width: 100%; } }
 
-/* === Party system additions === */
+/* Party system additions */
 .party-card {
   border: 1px solid rgba(255, 215, 0, 0.3);
   border-radius: 0.75rem;
@@ -422,7 +406,7 @@ textarea.form-control { resize: vertical; }
   box-shadow: 0 0 8px rgba(0,0,0,0.2);
 }
 
-/* === Bootstrap override cleanup === */
+/* Bootstrap override cleanup */
 a, a:hover, a:focus {
   color: goldenrod;
   text-decoration: none;
@@ -448,7 +432,7 @@ a.btn:focus, button:focus, input:focus, select:focus, textarea:focus {
   border-color: #8b6508 !important;
 }
 
-/* Keep parchment tightly around character form */
+/* Character Form */
 .character-form {
   background: url('/static/images/parchment-bg.jpg') center/cover no-repeat;
   border: 3px solid goldenrod;
@@ -460,19 +444,9 @@ a.btn:focus, button:focus, input:focus, select:focus, textarea:focus {
   box-shadow: 0 0 25px rgba(255, 215, 0, 0.15);
 }
 
-/* Prevent the parchment from repeating for every tab */
-.tab-content {
-  background: none;
-  border: none;
-  padding: 0;
-}
+.tab-content { background: none; border: none; padding: 0; }
+.tab-pane { padding: 1rem 0; }
 
-/* Tab sections sit neatly inside parchment */
-.tab-pane {
-  padding: 1rem 0;
-}
-
-/* Inputs look clean on parchment */
 .character-form .form-control {
   background-color: rgba(255, 255, 255, 0.9);
   border: 1px solid goldenrod;
@@ -484,28 +458,27 @@ a.btn:focus, button:focus, input:focus, select:focus, textarea:focus {
   box-shadow: 0 0 8px rgba(255, 215, 0, 0.5);
 }
 
+/* Progress Bars */
 .progress {
   background-color: rgba(255, 255, 255, 0.3);
   border-radius: 8px;
   overflow: hidden;
   margin-top: 4px;
 }
-
 .progress-bar {
   font-weight: bold;
   color: #fff;
   font-size: 0.85rem;
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
 }
+.bg-danger { background-color: #c0392b !important; }
+.bg-info { background-color: #2980b9 !important; }
 
-.bg-danger {
-  background-color: #c0392b !important; /* HP */
+/* Highlight / Borders */
+.border-gold {
+  border: 2px solid #d4af37 !important;
+  box-shadow: 0 0 12px rgba(255, 215, 0, 0.5);
 }
-
-.bg-info {
-  background-color: #2980b9 !important; /* MP */
-}
-
-.border-warning {
-  box-shadow: 0 0 12px rgba(255, 215, 0, 0.7);
+.glowing {
+  box-shadow: 0 0 12px #d4af37;
 }
