@@ -17,11 +17,12 @@ body {
 }
 
 /* Typography */
-h1, h2, h5 {
+h1, h2, h5, h6 {
   font-family: "Oswald", sans-serif;
   text-transform: uppercase;
   letter-spacing: 2px;
   color: gold;
+  text-shadow: #000;
   margin: 0.25rem 0;
 }
 
@@ -237,8 +238,8 @@ textarea.form-control { resize: vertical; }
 
 #welcome-adventurer-text .p-5 {
   background: url("../images/parchment-texture.jpg");
-  color: rgb(92, 46, 13);
-  border: 2px solid goldenrod;
+  color: rgb(62, 36, 17);
+  border: 3px solid goldenrod;
   background-size: cover;
   background-repeat: no-repeat;
 }
