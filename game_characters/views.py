@@ -119,40 +119,44 @@ def dm_party_list(request):
     return render(request, "dm_party_dashboard.html", {"parties": parties})
 
 
-# ---------- Character Views ----------
+@login_required
 def characters_view(request, pk=None):
+    """
+    Shows all characters.
+    - Players: only see and edit their own characters.
+    - DMs: can view or edit all players' characters.
+    """
     user = request.user
     is_dm = getattr(user, "is_dungeon_master", False)
     selected_player_id = request.GET.get("player")
 
-    if user.is_authenticated:
-        if is_dm:
-            if selected_player_id and selected_player_id != "all":
-                characters = Character.objects.filter(player__id=selected_player_id).order_by("name")
-            else:
-                characters = Character.objects.all().order_by("player__username", "name")
-            players = User.objects.filter(game_characters__isnull=False).distinct().order_by("username")
+    # Character Query Logic
+    if is_dm:
+        # DMs can filter by player or view all
+        if selected_player_id and selected_player_id != "all":
+            characters = Character.objects.filter(player__id=selected_player_id).order_by("name")
         else:
-            characters = Character.objects.filter(player=user).order_by("name")
-            players = None
+            characters = Character.objects.all().order_by("player__username", "name")
+        players = (
+            User.objects.filter(game_characters__isnull=False)
+            .distinct()
+            .order_by("username")
+        )
     else:
-        characters = request.session.get("characters", [])
+        # Players can only ever see their own characters
+        characters = Character.objects.filter(player=user).order_by("name")
         players = None
 
+    # Character Editing Logic
     editing = None
     if pk is not None:
-        if user.is_authenticated:
-            if is_dm:
-                editing = get_object_or_404(Character, pk=pk)
-            else:
-                editing = get_object_or_404(Character, pk=pk, player=user)
+        # Only allow editing if user owns it or is DM
+        if is_dm:
+            editing = get_object_or_404(Character, pk=pk)
         else:
-            if int(pk) < len(characters):
-                editing = characters[int(pk)]
-            else:
-                messages.error(request, "Character not found.")
-                return redirect("characters")
+            editing = get_object_or_404(Character, pk=pk, player=user)
 
+    # Dice Rolling Logic
     results, total = [], None
     dice_form = DiceRollForm(request.POST or None)
 
@@ -163,6 +167,7 @@ def characters_view(request, pk=None):
             results = [random.randint(1, d) for d in dice]
             total = sum(results)
 
+    # Character Create/Update Logic
     elif request.method == "POST":
         fields = {
             "name": request.POST.get("name", "").strip(),
@@ -183,17 +188,25 @@ def characters_view(request, pk=None):
         }
 
         if editing:
-            for k, v in fields.items():
-                setattr(editing, k, v)
-            editing.save()
-            messages.success(request, f"Character '{fields['name']}' updated successfully!")
+            # Check ownership before saving
+            if is_dm or editing.player == user:
+                for k, v in fields.items():
+                    setattr(editing, k, v)
+                editing.save()
+                messages.success(request, f"Character '{fields['name']}' updated successfully!")
+            else:
+                messages.error(request, "You don't have permission to edit this character.")
         else:
             Character.objects.create(player=user, **fields)
             messages.success(request, f"Character '{fields['name']}' created successfully!")
 
         return redirect("characters")
 
-    attributes = ["strength", "dexterity", "constitution", "intelligence", "wisdom", "charisma"]
+    # Context and Render
+    attributes = [
+        "strength", "dexterity", "constitution",
+        "intelligence", "wisdom", "charisma",
+    ]
 
     return render(
         request,
@@ -214,6 +227,7 @@ def characters_view(request, pk=None):
     )
 
 
+
 @login_required
 def character_delete(request, pk):
     user = request.user
@@ -228,7 +242,7 @@ def character_delete(request, pk):
     return redirect("characters")
 
 
-# ---------- Party Views ----------
+# Party Views
 @login_required
 def party_view(request):
     """
