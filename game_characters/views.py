@@ -38,6 +38,29 @@ def to_int(value, default=0):
     except (TypeError, ValueError):
         return default
 
+@login_required
+def party_remove_member(request, pk):
+    """Allow any party member (including DM) to remove another."""
+    party = get_object_or_404(Party, pk=pk)
+
+    # Check permission: only members or DM can act
+    if request.user not in party.members.all() and request.user != party.dungeon_master:
+        messages.error(request, "You must be a member of this party to make changes.")
+        return redirect("party")
+
+    if request.method == "POST":
+        member_id = request.POST.get("member_id")
+        member_to_remove = party.members.filter(id=member_id).first()
+        if not member_to_remove:
+            messages.warning(request, "That member was not found in this party.")
+        elif member_to_remove == request.user:
+            messages.warning(request, "You cannot remove yourself.")
+        else:
+            party.members.remove(member_to_remove)
+            messages.success(request, f"{member_to_remove.username} has been removed from the party.")
+
+    return redirect("party_detail", pk=party.pk)
+
 
 # ---------- DM Party List ----------
 @login_required
