@@ -18,34 +18,40 @@
 
 <body>
     <!-- Navbar -->
-  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-    <div class="container">
-      <!-- Logo -->
-      <a class="navbar-brand" href="{% url 'home' %}">
-        <img class="home" src="{% static 'images/battleroster-logo.png' %}" alt="BattleRoster Logo" id="battleroster-logo">
-      </a>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <!-- Logo -->
+            <a class="navbar-brand" href="{% url 'home' %}">
+                <img class="home" src="{% static 'images/battleroster-logo.png' %}" alt="BattleRoster Logo"
+                    id="battleroster-logo">
+            </a>
 
-      <!-- Hamburger button -->
-      <button class="navbar-toggler ms-auto custom-toggler" type="button" data-bs-toggle="collapse"
-        data-bs-target="#navMenu" aria-controls="navMenu" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon custom-toggler"></span>
-      </button>
+            <!-- Hamburger button -->
+            <button class="navbar-toggler ms-auto custom-toggler" type="button" data-bs-toggle="collapse"
+                data-bs-target="#navMenu" aria-controls="navMenu" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon custom-toggler"></span>
+            </button>
 
-      <!-- Navbar items -->
-      <div class="collapse navbar-collapse justify-content-end" id="navMenu">
-        <ul class="navbar-nav flex-column align-items-start">
-          <li class="nav-item"><a class="nav-link" href="{% url 'characters' %}"><i class="fa-solid fa-user me-2 text-gold"></i>Characters</a></li>
-          <li class="nav-item"><a class="nav-link" href="{% url 'party' %}"><i class="fa-solid fa-users me-2 text-gold"></i>Party</a></li>
-          {% if user.is_authenticated %}
-          <li class="nav-item"><a class="nav-link" href="{% url 'logout' %}"><i class="fa-solid fa-right-from-bracket me-2 text-gold"></i>Log out</a></li>
-          {% else %}
-          <li class="nav-item"><a class="nav-link" href="{% url 'signup_login' %}"><i class="fa-solid fa-save me-2 text-gold"></i>Sign-up / Log-in</a></li>
-          {% endif %}
-          <li class="nav-item"><a class="nav-link" href="{% url 'contact' %}"><i class="fa-solid fa-scroll me-2 text-gold"></i>Contact</a></li>
-        </ul>
-      </div>
-    </div>
-  </nav>
+            <!-- Navbar items -->
+            <div class="collapse navbar-collapse justify-content-end" id="navMenu">
+                <ul class="navbar-nav flex-column align-items-start">
+                    <li class="nav-item"><a class="nav-link" href="{% url 'characters' %}"><i
+                                class="fa-solid fa-user me-2 text-gold"></i>Characters</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'party' %}"><i
+                                class="fa-solid fa-users me-2 text-gold"></i>Party</a></li>
+                    {% if user.is_authenticated %}
+                    <li class="nav-item"><a class="nav-link" href="{% url 'logout' %}"><i
+                                class="fa-solid fa-right-from-bracket me-2 text-gold"></i>Log out</a></li>
+                    {% else %}
+                    <li class="nav-item"><a class="nav-link" href="{% url 'signup_login' %}"><i
+                                class="fa-solid fa-save me-2 text-gold"></i>Sign-up / Log-in</a></li>
+                    {% endif %}
+                    <li class="nav-item"><a class="nav-link" href="{% url 'contact' %}"><i
+                                class="fa-solid fa-scroll me-2 text-gold"></i>Contact</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
 
     <!-- Main content -->
     <div class="container-fluid bg-dark text-light py-5">
@@ -53,10 +59,13 @@
             <div class="col-12 col-md-6">
                 <div class="p-5" style="background-color: rgba(69, 64, 61, 0.7); border-radius: 0.5rem;">
                     <h1>Contact Us</h1>
-                    <p class="mb-4">Have questions or issues? Reach out and we’ll get back to you as soon as possible.</p>
+                    <p class="mb-4">Have questions or issues? Reach out and we’ll get back to you as soon as possible.
+                    </p>
 
                     <!-- Contact form -->
-                    <form id="contact-form">
+                    <form method="POST" action="{% url 'contact' %}" id="contact-form">
+                        {% csrf_token %}
+
                         <div class="mb-3">
                             <label for="name" class="form-label">Your Name</label>
                             <input type="text" class="form-control" id="name" name="name" required>
@@ -89,11 +98,13 @@
             </li>
             <li>
                 <a href="https://www.youtube.com/" target="_blank" rel="noopener"
-                    aria-label="visit our YouTube page (opens in a new tab)"><i class="fa-brands fa-youtube-square"></i></a>
+                    aria-label="visit our YouTube page (opens in a new tab)"><i
+                        class="fa-brands fa-youtube-square"></i></a>
             </li>
             <li>
                 <a href="https://www.instagram.com/" target="_blank" rel="noopener"
-                    aria-label="visit our Instagram page (opens in a new tab)"><i class="fa-brands fa-instagram"></i></a>
+                    aria-label="visit our Instagram page (opens in a new tab)"><i
+                        class="fa-brands fa-instagram"></i></a>
             </li>
         </ul>
     </footer>

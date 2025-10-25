@@ -16,4 +16,7 @@ urlpatterns = [
 
     # Dungeon Master Dashboard
     path("dm/parties/", views.dm_party_list, name="dm_party_list"),
+
+    # contact email
+    path("contact/", views.contact_view, name="contact"),
 ]

@@ -238,7 +238,7 @@ textarea.form-control { resize: vertical; }
 #welcome-adventurer-text .p-5 {
   background: url("../images/parchment-texture.jpg");
   color: rgb(92, 46, 13);
-  border: goldenrod;
+  border: 2px solid goldenrod;
   background-size: cover;
   background-repeat: no-repeat;
 }
@@ -394,3 +394,24 @@ a.btn:focus, button:focus, input:focus, select:focus, textarea:focus {
   box-shadow: 0 0 12px rgba(255, 215, 0, 0.5);
 }
 .glowing { box-shadow: 0 0 12px #d4af37; }
+
+html, body {
+  height: 100%;
+  background-color: #1e1e1e; /* ensure consistent background */
+}
+
+/* Ensure main content fills available space */
+main.container, main.container-fluid {
+  flex: 1 0 auto;
+}
+
+/* Keep footer pinned to bottom and full width */
+footer#footerSocials {
+  flex-shrink: 0;
+  background-color: #1a1a1a;
+  width: 100%;
+  border-top: 2px solid gold;
+  padding: 1rem 0;
+  margin: 0; /* prevent gaps */
+}
+

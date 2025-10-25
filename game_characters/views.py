@@ -390,3 +390,39 @@ def party_detail(request, pk):
             ],
         },
     )
+
+from django.shortcuts import render, redirect
+from django.core.mail import send_mail, BadHeaderError
+from django.contrib import messages
+from django.conf import settings
+
+def contact_view(request):
+    if request.method == "POST":
+        name = request.POST.get("name")
+        email = request.POST.get("email")
+        message = request.POST.get("message")
+
+        if not name or not email or not message:
+            messages.error(request, "Please fill in all fields.")
+            return redirect("contact")
+
+        subject = f"BattleRoster Contact Form: {name}"
+        body = f"Name: {name}\nEmail: {email}\n\nMessage:\n{message}"
+
+        try:
+            send_mail(
+                subject,
+                body,
+                settings.DEFAULT_FROM_EMAIL,
+                ["tylerworth.media@gmail.com"],
+                fail_silently=False,
+            )
+            messages.success(request, "Your message has been sent successfully!")
+        except BadHeaderError:
+            messages.error(request, "Invalid header found.")
+        except Exception as e:
+            messages.error(request, f"Error sending email: {e}")
+
+        return redirect("contact")
+
+    return render(request, "contact.html")
