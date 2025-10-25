@@ -237,6 +237,8 @@ textarea.form-control { resize: vertical; }
 
 #welcome-adventurer-text .p-5 {
   background: url("../images/parchment-texture.jpg");
+  color: rgb(92, 46, 13);
+  border: goldenrod;
   background-size: cover;
   background-repeat: no-repeat;
 }
