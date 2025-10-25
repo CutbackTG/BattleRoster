@@ -7,6 +7,37 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ObjectDoesNotExist
 
+@login_required
+def dm_party_list(request):
+    """Dungeon Master dashboard for managing parties."""
+    user = request.user
+
+    # Only allow DMs to access
+    if not getattr(user, "is_dungeon_master", False):
+        messages.error(request, "Only Dungeon Masters can manage parties.")
+        return redirect("party")
+
+    # Create a new party
+    if request.method == "POST" and "create_party" in request.POST:
+        name = request.POST.get("party_name")
+        if name:
+            Party.objects.create(name=name, dungeon_master=user)
+            messages.success(request, f"Party '{name}' created successfully!")
+            return redirect("dm_party_list")
+
+    # Delete an existing party
+    if request.method == "POST" and "delete_party" in request.POST:
+        party_id = request.POST.get("party_id")
+        party = get_object_or_404(Party, id=party_id, dungeon_master=user)
+        messages.warning(request, f"Party '{party.name}' deleted.")
+        party.delete()
+        return redirect("dm_party_list")
+
+    # List all parties for this DM
+    parties = Party.objects.filter(dungeon_master=user).order_by("name")
+    return render(request, "dm_party_dashboard.html", {"parties": parties})
+
+
 User = get_user_model()
 
 # ---------- Dice Roller Setup ----------
