@@ -33,7 +33,7 @@
 
   {% if party and user in party.members.all %}
   <div class="invite-form mt-4 mb-4">
-    <h4 class="text-gold">Invite a Player</h4>
+    <h2 class="text-gold">Invite a Player</h2>
     <form method="POST" action="{% url 'party_invite' party.id %}" class="d-flex gap-2">
       {% csrf_token %}
       <input type="text" name="username" placeholder="Enter username" class="form-control" required>
@@ -42,7 +42,7 @@
   </div>
   {% endif %}
 
-  <h4 class="text-gold mb-3">Party Members</h4>
+  <h2 class="text-gold mb-3">Party Members</h2>
 
   {% if member_characters %}
   <div class="row">

@@ -395,7 +395,7 @@ textarea.form-control { resize: vertical; }
 #invite-list li.removed, #member-grid .card.removed { opacity: 0.6; }
 
 .alert {
-  background-color: #e2a101;
+  background-color: url("/static/images/parchment-texture.jpg") no-repeat center/cover;
   color: #000;
   border: 2px solid gold;
   border-radius: 12px;
