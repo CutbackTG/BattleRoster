@@ -242,7 +242,7 @@ A simple, bold and striking colour scheme was chosen, gold accents and warm brow
 
 I tested this scheme on Huemint to see its overall appearance and experiment with alternatives, it was here that I decided to add some browns here and there throughout to break through the colder, more warning colours of the plain black and yellow.
 
-<img src= static\images\readme_images\huemint_scheme.png alt ="Testing colour scheme on Huemint." width= 800>
+<img src= static\images\readme_images\huemint_scheme_test.png alt ="Testing colour scheme on Huemint." width= 800>
 
 ## Installation & Deployment
 
