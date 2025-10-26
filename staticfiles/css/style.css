@@ -553,35 +553,54 @@ footer#footerSocials {
   margin: 0;
 }
 
-/* =========================================================
-   Responsive Fixes (≤768px)
-   ========================================================= */
 @media (max-width: 768px) {
+  /* --- Welcome Section --- */
+  #welcome-adventurer-image {
+    text-align: center;
+    margin-bottom: 1rem;
+  }
 
-  /* Image scaling */
   #welcome-adventurer-image img {
-    width: 90%;
+    width: 70%;
+    max-width: 500px;
     height: auto;
-    margin: 0 auto 1rem;
+    margin: 0 auto;
     display: block;
   }
 
-  /* Parchment panel spacing */
-  #welcome-adventurer-text .p-5 {
-    padding: 1.5rem;
-    margin: 0 auto 1.5rem;
-    width: 90%;
+  /* Make parchment text span the full viewport width */
+  #welcome-adventurer-text {
+    flex: 0 0 100%;
+    max-width: 100%;
+    text-align: center;
   }
 
-  /* Prevent overflow and weird spacing */
+  #welcome-adventurer-text .p-5 {
+    width: 100%;
+    margin: 0;
+    padding: 2rem 1rem;
+    border-left: none;
+    border-right: none;
+    border-radius: 0;
+  }
+
+  /* Remove any leftover margins/padding from Bootstrap */
   .container-fluid > .row {
     margin-left: 0;
     margin-right: 0;
   }
 
-  /* Stack grid/flex layouts */
-  .row, .d-flex, .character-grid {
-    flex-direction: column !important;
-    grid-template-columns: 1fr !important;
+  /* --- Social Icons --- */
+  #social-networks {
+    flex-direction: row !important;
+    flex-wrap: nowrap;
+    justify-content: center;
+    gap: 1.5rem;
+  }
+
+  #social-networks a {
+    display: inline-block;
+    font-size: 1.8rem;
   }
 }
+
