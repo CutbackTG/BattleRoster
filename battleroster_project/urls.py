@@ -7,6 +7,8 @@ urlpatterns = [
     # Admin site
     path('admin/', admin.site.urls),
 
+    path('', include('your_app.urls')),
+
     # Homepage
     path('', game_views.index_view, name='home'),
 
