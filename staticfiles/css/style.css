@@ -46,7 +46,7 @@ strong { color: #2a2a2a; }
 .navbar-brand { display: flex; align-items: center; }
 
 #battleroster-logo {
-  width: 200px;
+  width: 8rem;
   height: auto;
   transition: transform 0.3s ease;
 }

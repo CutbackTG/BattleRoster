@@ -147,9 +147,9 @@ Extra local versions of users and characters are also created — User (local) a
 
 ## BattleRoster Test Documentation
 
-# Lighthouse Scores & W3C Validation checks
+### Lighthouse Scores & W3C Validation checks
 
-Hompage index.html
+Homepage index.html
 
 <img src= static\images\readme_images\Lighthouse_score_index.png  alt ="index.html lighthouse score" width= 600>
 
@@ -173,7 +173,7 @@ contact.html
 
 <img src= static\images\readme_images\W3c_test_contact.png alt ="contact.html W3C valiadation check" width= 600>
 
-# Test Runs
+### Test Runs
 
 | Issue / Feature | Test | Result / Fix |
 |------------------|-------|---------------|
@@ -190,7 +190,7 @@ contact.html
 | Security | Try accessing another user’s character or party via URL ID. Should return 403 or redirect. | Data leak risk — add user ownership checks in views. |
 | Deployment Check | Run on production environment (Heroku or similar). Verify DB connections and media/static paths. | Static files not loading — update `STATIC_ROOT` and add `whitenoise`. |
 
-## Automated Test Cases (Django / Pytest)
+### Automated Test Cases (Django / Pytest)
 
 | Area | Test | Expected Result |
 |-------|-------|----------------|
@@ -206,6 +206,10 @@ contact.html
 | Templates | Render core templates (character list, party view, dashboard). | All templates render without errors using `TemplateResponse`. |
 | Dice Roller Utility | Call dice roll function (e.g., `roll_dice('1d20')`). | Returns random integer within correct range; never outside dice bounds. |
 | Database Integrity | Run migrations and ensure models create properly. | No migration or schema errors on `python manage.py makemigrations` and `migrate`. |
+
+## UI & UX Design
+
+
 
 ## Installation & Deployment
 
