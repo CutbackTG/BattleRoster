@@ -517,6 +517,8 @@ Add tests for new features
 Update documentation as needed
 Keep pull requests focused on a single feature/fix
 
+---
+
 ### Credits & Acknowledgements
 
 Code Institute - Project Template and Assessment Criteria 
