@@ -209,7 +209,29 @@ contact.html
 
 ## UI & UX Design
 
+### Wireframes
 
+Homepage
+<img src= static\images\readme_images\homepage_concept.png alt ="homepage wireframe concept" width= 300>
+
+Characters
+<img src= static\images\readme_images\characters_concept.png alt ="Characters wireframe concept" width= 300>
+
+Signup/ Login
+<img src= static\images\readme_images\signup_concept.png alt ="signup/ login wireframe concept" width= 300>
+
+Contact
+<img src= static\images\readme_images\contact_concept.png alt ="Contact wireframe concept" width= 300>
+
+### Colour Scheme
+
+A simple, bold and striking colour scheme was chosen, gold accents and warm browns add to the effect of gold on wood and chests of gold, a goal for many role-players and one that fits with the Dungeons & Dragons game.
+
+<img src= static\images\readme_images\colour_scheme.png alt ="Battleroster colour scheme" width= 600>
+
+I tested this scheme on Huemint to see its overall appearance and experiment with alternatives, it was here that I decided to add some browns here and there throughout to break through the colder, more warning colours of the plain black and yellow.
+
+<img src= static\images\readme_images\huemint_scheme.png alt ="Testing colour scheme on Huemint." width= 800>
 
 ## Installation & Deployment
 
