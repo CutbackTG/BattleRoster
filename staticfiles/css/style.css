@@ -362,6 +362,37 @@ textarea.form-control { resize: vertical; }
   }
 }
 
+/* =========================================================
+   Fix for short wide screens (e.g. 1024x600 Nest Hub)
+   ========================================================= */
+@media (max-height: 700px) and (min-width: 900px) {
+  #welcome-adventurer-text {
+    padding: 1.5rem 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    overflow-y: auto;
+    max-height: calc(100vh - 180px); /* leave room for navbar/footer */
+  }
+
+  #welcome-adventurer-text img {
+    width: 65%;
+    max-width: 500px;
+    height: auto;
+    margin-bottom: 1rem;
+  }
+
+  #welcome-adventurer-text h1 {
+    font-size: 2rem;
+    margin-top: 0.5rem;
+  }
+
+  #welcome-adventurer-text p {
+    font-size: 1rem;
+    line-height: 1.4;
+  }
+}
 
 /* =========================================================
    Cards, Alerts, Layout Utilities
