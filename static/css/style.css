@@ -695,7 +695,7 @@ footer#footerSocials {
 /* For wide desktop monitors */
 @media (min-width: 1080px) {
   body {
-    font-size: 1.15rem; /* slightly larger default text */
+    font-size: 1rem;
   }
 
   #welcome-adventurer-text h1 {
@@ -704,8 +704,8 @@ footer#footerSocials {
   }
 
   #welcome-adventurer-text p {
-    font-size: 1.5rem;  /* readable paragraph text */
-    line-height: 1.7;
+    font-size: 1.2rem;  /* readable paragraph text */
+    line-height: 1.5;
   }
 
   #welcome-adventurer-text strong {
