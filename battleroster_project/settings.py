@@ -12,7 +12,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # --- Security ---
 SECRET_KEY = os.getenv('SECRET_KEY', 'unsafe-secret-key')
 
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = os.getenv(
     'ALLOWED_HOSTS',
@@ -36,11 +36,11 @@ if not DEBUG:
     SECURE_HSTS_SECONDS = 31536000  # 1 year
     SECURE_HSTS_INCLUDE_SUBDOMAINS = True
     SECURE_HSTS_PRELOAD = True
-    X_FRAME_OPTIONS = 'DENY'
-else:
-    SECURE_SSL_REDIRECT = False
-    SESSION_COOKIE_SECURE = False
-    CSRF_COOKIE_SECURE = False
+    X_FRAME_OPTIONS = 'ALLOWALL'
+# else:
+   # SECURE_SSL_REDIRECT = False
+    # SESSION_COOKIE_SECURE = False
+    # CSRF_COOKIE_SECURE = False
 
 # --- Installed Apps ---
 INSTALLED_APPS = [
