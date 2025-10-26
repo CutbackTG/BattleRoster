@@ -704,7 +704,7 @@ footer#footerSocials {
   }
 
   #welcome-adventurer-text p {
-    font-size: 1.25rem;  /* readable paragraph text */
+    font-size: 1.5rem;  /* readable paragraph text */
     line-height: 1.7;
   }
 
@@ -721,10 +721,10 @@ footer#footerSocials {
 /* Ultra-wide monitors */
 @media (min-width: 1600px) {
   #welcome-adventurer-text h1 {
-    font-size: 6rem;
+    font-size: 3rem;
   }
 
   #welcome-adventurer-text p {
-    font-size: 2rem;
+    font-size: 1.5rem;
   }
 }
