@@ -7,8 +7,6 @@ urlpatterns = [
     # Admin site
     path('admin/', admin.site.urls),
 
-    path('', include('BattleRoster.urls')),
-
     # Homepage
     path('', game_views.index_view, name='home'),
 
