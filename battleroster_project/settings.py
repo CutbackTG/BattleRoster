@@ -14,10 +14,10 @@ SECRET_KEY = os.getenv('SECRET_KEY', 'unsafe-secret-key')
 
 DEBUG = False
 
-ALLOWED_HOSTS = os.getenv(
+ALLOWED_HOSTS = [h.strip() for h in os.getenv(
     'ALLOWED_HOSTS',
-    'localhost,127.0.0.1,battlerosterhost.herokuapp.com,battlerosterhost-e22dbecc83dc.herokuapp.com',
-).split(',')
+    'localhost,127.0.0.1,battlerosterhost.herokuapp.com,battlerosterhost-e22dbecc83dc.herokuapp.com,battleroster.com,www.battleroster.com'
+).split(',')]
 
 # --- CSRF Trusted Origins ---
 CSRF_TRUSTED_ORIGINS = [
