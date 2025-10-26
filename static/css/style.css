@@ -708,10 +708,6 @@ footer#footerSocials {
     line-height: 1.5;
   }
 
-  #welcome-adventurer-text strong {
-    font-size: 1.25rem;
-  }
-
   /* Optional: make character/party headings bolder */
   h2, h3 {
     font-size: 1.6rem;
