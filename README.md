@@ -10,45 +10,45 @@
 
 ##Project Overview
 
-BattleRoster was developed as part of Code Institute’s Level 5 Web Application Development Diploma (Project 3: Full Stack Frameworks with Django).
+BattleRoster was designed as part of Code Institute’s Level 5 Web Application Development Diploma (Project 3: Full Stack Frameworks with Django). 
 
-The aim of this project was to create a data-driven web application using Django that allows user authentication, CRUD functionality, and responsive front-end design.
+The purpose of the project was to produce a data-driven web application using Django for user authentication, CRUD functionality, and responsive front-end design. 
 
-BattleRoster fulfills this by providing a role-playing game management system for players and dungeon masters to create and manage characters, parties, and campaigns.
+BattleRoster accomplishes this by providing a system for managing role-playing games, enabling players and dungeon masters to create and manage characters, parties and campaigns. 
 
-BattleRoster is a Django-based web application designed to streamline tabletop game management for both players and dungeon masters. Players can easily create, edit, and organize their character sheets, while dungeon masters can oversee groups, manage player sheets, and coordinate campaigns.
+BattleRoster is a web application built on Django to simplify how players and dungeon masters manage tabletop games. Players can create, edit and manage their character sheets, while dungeon masters can view groups, manage player sheets and coordinate their campaigns.
 
-Built with extensibility in mind, the system supports modular character sheet templates, making it adaptable for multiple game systems such as Dungeons & Dragons or BattleTech. The site emphasizes usability with responsive design, lightweight interactivity, and secure role-based permissions to protect player data.
+Designed with extensibility in mind, the system supports modular character sheet templates and can be used across multiple game systems, including Dungeons & Dragons and BattleTech. The site features usability emphasis through responsive design and lightweight interactivity, while user authentication and role-based permissions protect player data.
 
 ## Features
 
 ### User Roles & Authentication
-- **Player Account:** Create, edit, and delete own character sheets; invite others to groups
-- **Dungeon Master Account:** Manage all sheets in their group; send group invites
-- **Authentication:** Extended Django User model with role-based permissions (Player, DM)
+- **Player Account:** Create, edit, and delete character sheets; invite others to groups
+- **Dungeon Master Account:** Manage sheets for all members of their group; send invites to the group
+- **Authentication:** Extending the Django User model with member roles (Player, DM) and permission policies
 
-### Character Sheet Management
-- Full CRUD operations for character sheets
-- Fields include Name, Race, Class, Stats, Equipment, and more
-- Save individual field values dynamically
-- Support for multiple character sheets per player account
+### Character Sheet CRUD
+- Create, Read, Update, and Delete for Character sheets
+- Fields include Name, Race, Class, Stats, Equipment, etc.
+- Individual field values saved dynamically
+- Ability for player accounts to have multiple characters
 
-### Party System
-- Parties contain one Dungeon Master and multiple Players
-- Party invites via email or username
-- **Permissions:** Players manage their own sheets; DMs manage all sheets in their group
+### Parties
+- A party consists of a single Dungeon Master and: multiple players
+- Able to sign up via email or username
+- **Permissions:** Players can only manage their own sheets, while DMs manage all sheets within their group
 
-### Game System Extensibility
-- Modular character sheet templates for different game systems
-- Currently supports D&D 5e with plans for BattleTech and other systems
-- Easy-to-extend template system for adding new game types
+### Extensibility for Game Systems
+- Character sheet templates will be modular for different game systems
+- Currently supports D&D 5e with future support for BattleTech and others
+- New game systems can be added with relative ease
 
-### Future Features
-- Real-time chat integration
-- Built-in dice rolling tools
-- Campaign notes and session logs
-- Character sheet export options (PDF, JSON)
-- Mobile app companion
+### Future Work
+- In-app chat functionality
+- Dice rolling tools
+- Campaign notes and logs
+- Exporting sheets (PDF, JSON)
+- Companion mobile application
 
 ## Tech Stack
 
@@ -123,97 +123,6 @@ so that I can pick up where I left off without recreating my data.
 | **Dungeon Master (DM)** | A game organizer who runs campaigns and manages parties. | Oversee multiple parties and monitor players’ character stats during gameplay. | - Create and manage parties<br>- Add or view player characters<br>- Track stats during sessions |
 | **Experienced Player** | A long-time D&D player involved in several parties or campaigns. | Manage a roster of characters for multiple groups and easily switch between them. | - Create multiple characters<br>- Assign characters to different parties<br>- Manage party compositions |
 | **Returning User** | A previous user returning to continue gameplay. | Retrieve and update saved data without starting over. | - Log in<br>- View and edit saved characters<br>- Rejoin or create new parties |
-
-## Battleroster Entity Relationship Diagram
-
-<img src= static/images/readme_images/battleroster_erd.png  alt ="ERD for the battleroster project" width= 800>
-
-The Entity Relationship Diagram (ERD) outlines the central database structure for the BattleRoster project and the relationships that exist between users, characters, and parties.
-
-There are two main types of users — Players and Dungeon Masters (DMs) — both of which are based on Django's built-in user model.
-
-User (Player) records represent ordinary players that can create and maintain multiple Characters. Each Character will include characteristics such as name, level, race, class type, health, mana, and equipment, and can be associated back to its owner (the player) through a Foreign Key (player_id).
-
-User (Dungeon Master) records represent users responsible for creating game sessions and for the Parties. Each Party will have its own unique ID, a Foreign Key (dungeon_master_id) that associates it with the DM that created it, and set up with a Many-To-Many relationship to multiple Characters (their members). This arrangement will allow one DM to run several parties, and each party to have several player characters. 
-
-Extra local versions of users and characters are also created — User (local) and Character (local). These represent offline or stand-alone character sheets that can exist without an account as an online registered user. The local entities will use the same structure as those that are created online, but link only to the owner instead of an authenticated user, using the owner_id Foreign Key.
-
-## Url to View Map
-
-| **URL Pattern**                      | **View Function**        | **Name**                 | **Purpose / Description**                                                                           |
-| ------------------------------------ | ------------------------ | ------------------------ | --------------------------------------------------------------------------------------------------- |
-| `/characters/`                       | `characters_view`        | `characters`             | Main character list and creation page. Displays all characters for a player or all players (if DM). |
-| `/characters/<int:pk>/`              | `characters_view`        | `character_edit`         | Edit an existing character’s sheet.                                                                 |
-| `/characters/delete/<int:pk>/`       | `character_delete`       | `character_delete`       | Delete a character (player or DM permissions).                                                      |
-| `/characters/party/`                 | `party_view`             | `party`                  | Displays either the DM party dashboard or the player’s current party view.                          |
-| `/characters/party/<int:pk>/`        | `party_detail`           | `party_detail`           | Shows detailed info about a specific party, including all member characters.                        |
-| `/characters/party/<int:pk>/remove/` | `party_remove_member`    | `party_remove_member`    | Remove a member from a party (DM or authorized member).                                             |
-| `/characters/party/<int:pk>/invite/` | `party_invite`           | `party_invite`           | Invite another user to join a party.                                                                |
-| `/characters/party/<int:pk>/select/` | `party_select_character` | `party_select_character` | Players select which of their characters to use in the current party.                               |
-| `/characters/dm/parties/`            | `dm_party_list`          | `dm_party_list`          | Dungeon Master dashboard — view, create, or delete managed parties.                                 |
-
-
-## BattleRoster Test Documentation
-
-### Lighthouse Scores & W3C Validation checks
-
-Homepage index.html
-
-<img src= static\images\readme_images\Lighthouse_score_index.png  alt ="index.html lighthouse score" width= 600>
-
-<img src= static\images\readme_images\W3c_test_index.png alt ="index.html W3C valiadation check" width= 600>
-
-characters.html
-
-<img src= static\images\readme_images\Lighthouse_score_characters.png alt ="characters.html lighthouse score" width= 600>
-
-<img src= static\images\readme_images\W3c_test_characters.png  alt ="charcters.html W3C valiadation check" width= 600>
-
-signup_login.html
-
-<img src= static\images\readme_images\Lighthouse_score_signup.png alt ="signup_login.html lighthouse score" width= 600>
-
-<img src= static\images\readme_images\W3c_test_party.png alt ="party.html W3C valiadation check" width= 600>
-
-contact.html
-
-<img src= static\images\readme_images\Lighthouse_score_contact.png alt ="contact.html lighthouse score" width= 600>
-
-<img src= static\images\readme_images\W3c_test_contact.png alt ="contact.html W3C valiadation check" width= 600>
-
-### Test Runs
-
-| Issue / Feature | Test | Result / Fix |
-|------------------|-------|---------------|
-| User Registration & Login | Register new users (Player & DM) via `/register/`, log in and out, test session persistence. | Works as expected. If login fails, verify `AUTH_USER_MODEL` and session middleware in `settings.py`. |
-| Character Creation | Add a new Character from Player account — ensure all attributes (name, level, race, stats, etc.) save correctly. | Data saves correctly. If failure occurs, check model `Character` and form validation fields. |
-| Character Ownership | Verify each Character links to its Player (`ForeignKey` relationship). Ensure Player can only view their own characters. | Access not restricted — add view filtering: `Character.objects.filter(player=request.user)`. |
-| Party Creation | Create Party as Dungeon Master; confirm Party is linked to correct DM and visible in DM’s dashboard. | Works. If Party not linking, confirm `dungeon_master` field in `Party` form uses `request.user`. |
-| Party Membership | Add multiple Characters to a Party (ManyToMany). Ensure changes reflect for all members. | Characters not updating in reverse relation — ensure `related_name='members'` or call `.save_m2m()`. |
-| CharacterLocal Save | Create and update local characters. Test ownership restriction (only owner can modify/delete). | Works. If unauthorized edits occur, add object-level permission check. |
-| Data Persistence | Restart app and confirm characters, parties, and users persist (SQLite DB check). | Works. If lost data, verify DB path and migrations (`python manage.py migrate`). |
-| Dice Roller (if used) | Simulate dice rolls (e.g., `/roll/1d20/`) and confirm correct random generation. | Values not random — check randomization function or seed reset. |
-| UI Rendering | Load templates for dashboard, character sheets, and party list; verify all pages render without error. | Templates render. Fix missing static files with `python manage.py collectstatic`. |
-| Error Handling | Submit invalid form data (e.g., missing name, negative level) and confirm validation errors appear. | Validation messages display correctly. |
-| Security | Try accessing another user’s character or party via URL ID. Should return 403 or redirect. | Data leak risk — add user ownership checks in views. |
-| Deployment Check | Run on production environment (Heroku or similar). Verify DB connections and media/static paths. | Static files not loading — update `STATIC_ROOT` and add `whitenoise`. |
-
-### Automated Test Cases (Django / Pytest)
-
-| Area | Test | Expected Result |
-|-------|-------|----------------|
-| Models: Character | Create a `Character` object and verify default stats (e.g. level=1, health=100). | Character created successfully with expected default values. |
-| Models: Party | Add multiple Characters to a Party (ManyToMany). | All related Characters appear in `party.members.all()`. |
-| Models: CharacterLocal | Create and update local character, ensure ownership is correctly linked. | Object saves and retrieves correctly under `owner`. |
-| Views: Character List | Access character list endpoint while logged in as Player. | Only that Player’s Characters are returned in the response context. |
-| Views: Party Detail | Access Party detail as the Dungeon Master. | Page loads with correct members; unauthorized users receive 403. |
-| Forms: CharacterForm | Submit form with valid and invalid data. | Valid data saves successfully; invalid data raises `form.errors`. |
-| Auth: Registration | POST to `/register/` with new credentials. | User created; redirected to dashboard or login page. |
-| Auth: Login / Logout | Login with valid credentials; logout; access restricted pages. | Authenticated views accessible when logged in; denied after logout. |
-| Permissions | Try editing another Player’s Character via direct URL. | Forbidden (403) response or redirect to home. |
-| Templates | Render core templates (character list, party view, dashboard). | All templates render without errors using `TemplateResponse`. |
-| Dice Roller Utility | Call dice roll function (e.g., `roll_dice('1d20')`). | Returns random integer within correct range; never outside dice bounds. |
-| Database Integrity | Run migrations and ensure models create properly. | No migration or schema errors on `python manage.py makemigrations` and `migrate`. |
 
 ## UI & UX Design
 
@@ -292,14 +201,142 @@ I tested this scheme on Huemint to see its overall appearance and experiment wit
 
 <img src= static\images\readme_images\huemint_scheme_test.png alt ="Testing colour scheme on Huemint." width= 800>
 
+## Battleroster Entity Relationship Diagram
+
+<img src= static/images/readme_images/battleroster_erd.png  alt ="ERD for the battleroster project" width= 800>
+
+The Entity Relationship Diagram (ERD) serves as a representation of the overall database schema for the BattleRoster project and the relationship between Users, Characters, and Parties.
+
+In summary, there exist two types of Users based on Django's built-in user model.  One type of User is a Player and the other a Dungeon Master (DM).
+
+User (Player) records represent common players that are able to create and manage multiple Characters. Each Character will contain properties such as name, level, race, class type, health, mana, and equipment. Each Character will also contain a Foreign Key (player_id) which associates it with the User (Player) owner.
+
+A User (Dungeon Master) record represents a user responsible for one or more game sessions and for the Parties. Each Party will have a unique ID and a Foreign Key (dungeon_master_id) which refers to the Player (User) that created the Party. Each Party is set up with a Many-To-Many relationship to multiple Characters (members). This will allow one DM to run multiple parties and those parties to have multiple Player characters.
+
+Users and Characters have additional local versions, User (local) and Character (local), for use as offline, or stand-alone, character sheets without the requirement of an account as an online registered user. The local entities will retain the same structure as those created by the online registered user, however linking only to the owner instead of an authenticated user, via owner_id Foreign Key.
+
+## Url to View Map
+
+| **URL Pattern**                      | **View Function**        | **Name**                 | **Purpose / Description**                                                                           |
+| ------------------------------------ | ------------------------ | ------------------------ | --------------------------------------------------------------------------------------------------- |
+| `/characters/`                       | `characters_view`        | `characters`             | Main character list and creation page. Displays all characters for a player or all players (if DM). |
+| `/characters/<int:pk>/`              | `characters_view`        | `character_edit`         | Edit an existing character’s sheet.                                                                 |
+| `/characters/delete/<int:pk>/`       | `character_delete`       | `character_delete`       | Delete a character (player or DM permissions).                                                      |
+| `/characters/party/`                 | `party_view`             | `party`                  | Displays either the DM party dashboard or the player’s current party view.                          |
+| `/characters/party/<int:pk>/`        | `party_detail`           | `party_detail`           | Shows detailed info about a specific party, including all member characters.                        |
+| `/characters/party/<int:pk>/remove/` | `party_remove_member`    | `party_remove_member`    | Remove a member from a party (DM or authorized member).                                             |
+| `/characters/party/<int:pk>/invite/` | `party_invite`           | `party_invite`           | Invite another user to join a party.                                                                |
+| `/characters/party/<int:pk>/select/` | `party_select_character` | `party_select_character` | Players select which of their characters to use in the current party.                               |
+| `/characters/dm/parties/`            | `dm_party_list`          | `dm_party_list`          | Dungeon Master dashboard — view, create, or delete managed parties.                                 |
+
+## Defensive Design & Security
+
+BattleRoster was developed with a strong focus on data protection, secure authentication, and defensive coding practices to safeguard users and their data.
+
+### Authentication & Access Control
+- Used Django's `@login_required` decorator to limit access to logged-in users.  
+- Introduced **object-level permission checks** to ensure that users would be able to only read, write, or delete their own data.  
+- Employed a **role-based authorization model** for both Players and Dungeon Masters, enabling or disabling access to party and character management functionality accordingly.
+
+### Data and Form Protection
+- All forms include **CSRF tokens** in order to prevent the [Cross-Site Request Forgery] attack.  
+- **Server-side validation** ensures the user input is appropriately cleaned and validated before being stored in the database.  
+- All sensitive operations (such as deleting characters or changing parties) require pop-up confirmation dialogs in order to prevent unintended actions.
+
+### Environment and Configuration Security
+- A `.env` file to store sensitive credentials (such as `SECRET_KEY`, email configuration, and database URLS).  
+- All environment variables are loaded securely with `python-decouple` to ensure the credentials are not revealed via version control.  
+- `DEBUG=False` is always enforced in production in order to avoid disclosing system information.
+
+### Production Hardening
+- Use of HTTPS in production deployments ensures security in communication between the server and client.  
+- **Whitenoise** serves static files securely and handles appropriate caching headers.  
+- Regularly updating dependencies and minimal usage of external packages reduce risk exposture.
+
+BattleRoster employs **OWASP best practices** and takes advantage of the built-in security provisions available in Django to provide a stable, reliable and secure application environment.
+
+## BattleRoster Test Documentation
+
+### Lighthouse Scores & W3C Validation checks
+
+Performance & Accessibility
+
+Lighthouse tests report an overall score of 92-100 for each page. 
+
+Accessibility checks have confirmed:
+ 
+Semantic HTML structure used.
+ARIA labels where appropriate. 
+Colour contrast confirmed to pass WCAG 2.1 AA. 
+The application works well on desktop and mobile with lazy loading static assets and compressed CSS.
+
+Homepage index.html
+
+<img src= static\images\readme_images\Lighthouse_score_index.png  alt ="index.html lighthouse score" width= 600>
+
+<img src= static\images\readme_images\W3c_test_index.png alt ="index.html W3C valiadation check" width= 600>
+
+characters.html
+
+<img src= static\images\readme_images\Lighthouse_score_characters.png alt ="characters.html lighthouse score" width= 600>
+
+<img src= static\images\readme_images\W3c_test_characters.png  alt ="charcters.html W3C valiadation check" width= 600>
+
+signup_login.html
+
+<img src= static\images\readme_images\Lighthouse_score_signup.png alt ="signup_login.html lighthouse score" width= 600>
+
+<img src= static\images\readme_images\W3c_test_party.png alt ="party.html W3C valiadation check" width= 600>
+
+contact.html
+
+<img src= static\images\readme_images\Lighthouse_score_contact.png alt ="contact.html lighthouse score" width= 600>
+
+<img src= static\images\readme_images\W3c_test_contact.png alt ="contact.html W3C valiadation check" width= 600>
+
+### Test Runs
+
+| Issue / Feature | Test | Result / Fix |
+|------------------|-------|---------------|
+| User Registration & Login | Register new users (Player & DM) via `/register/`, log in and out, test session persistence. | Works as expected. If login fails, verify `AUTH_USER_MODEL` and session middleware in `settings.py`. |
+| Character Creation | Add a new Character from Player account — ensure all attributes (name, level, race, stats, etc.) save correctly. | Data saves correctly. If failure occurs, check model `Character` and form validation fields. |
+| Character Ownership | Verify each Character links to its Player (`ForeignKey` relationship). Ensure Player can only view their own characters. | Access not restricted — add view filtering: `Character.objects.filter(player=request.user)`. |
+| Party Creation | Create Party as Dungeon Master; confirm Party is linked to correct DM and visible in DM’s dashboard. | Works. If Party not linking, confirm `dungeon_master` field in `Party` form uses `request.user`. |
+| Party Membership | Add multiple Characters to a Party (ManyToMany). Ensure changes reflect for all members. | Characters not updating in reverse relation — ensure `related_name='members'` or call `.save_m2m()`. |
+| CharacterLocal Save | Create and update local characters. Test ownership restriction (only owner can modify/delete). | Works. If unauthorized edits occur, add object-level permission check. |
+| Data Persistence | Restart app and confirm characters, parties, and users persist (SQLite DB check). | Works. If lost data, verify DB path and migrations (`python manage.py migrate`). |
+| Dice Roller (if used) | Simulate dice rolls (e.g., `/roll/1d20/`) and confirm correct random generation. | Values not random — check randomization function or seed reset. |
+| UI Rendering | Load templates for dashboard, character sheets, and party list; verify all pages render without error. | Templates render. Fix missing static files with `python manage.py collectstatic`. |
+| Error Handling | Submit invalid form data (e.g., missing name, negative level) and confirm validation errors appear. | Validation messages display correctly. |
+| Security | Try accessing another user’s character or party via URL ID. Should return 403 or redirect. | Data leak risk — add user ownership checks in views. |
+| Deployment Check | Run on production environment (Heroku or similar). Verify DB connections and media/static paths. | Static files not loading — update `STATIC_ROOT` and add `whitenoise`. |
+
+### Automated Test Cases (Django / Pytest)
+
+| Area | Test | Expected Result |
+|-------|-------|----------------|
+| Models: Character | Create a `Character` object and verify default stats (e.g. level=1, health=100). | Character created successfully with expected default values. |
+| Models: Party | Add multiple Characters to a Party (ManyToMany). | All related Characters appear in `party.members.all()`. |
+| Models: CharacterLocal | Create and update local character, ensure ownership is correctly linked. | Object saves and retrieves correctly under `owner`. |
+| Views: Character List | Access character list endpoint while logged in as Player. | Only that Player’s Characters are returned in the response context. |
+| Views: Party Detail | Access Party detail as the Dungeon Master. | Page loads with correct members; unauthorized users receive 403. |
+| Forms: CharacterForm | Submit form with valid and invalid data. | Valid data saves successfully; invalid data raises `form.errors`. |
+| Auth: Registration | POST to `/register/` with new credentials. | User created; redirected to dashboard or login page. |
+| Auth: Login / Logout | Login with valid credentials; logout; access restricted pages. | Authenticated views accessible when logged in; denied after logout. |
+| Permissions | Try editing another Player’s Character via direct URL. | Forbidden (403) response or redirect to home. |
+| Templates | Render core templates (character list, party view, dashboard). | All templates render without errors using `TemplateResponse`. |
+| Dice Roller Utility | Call dice roll function (e.g., `roll_dice('1d20')`). | Returns random integer within correct range; never outside dice bounds. |
+| Database Integrity | Run migrations and ensure models create properly. | No migration or schema errors on `python manage.py makemigrations` and `migrate`. |
+
+
 ## Reflection & Learning Outcomes
 
-During this project, I deepened my understanding of Django’s MVC structure and authentication system.
-I learned how to implement role-based permissions, handle email integration securely, and design data models that scale.
+Throughout this project, I was able to expand my knowledge of Django’s MVC design and authentication framework.   
+I was able to successfully implement role-based permissions, navigate secure email handling, and create data models that were capable of scaling.   
 
-The challenges I faced on this project included managing user ownership of related objects and deploying static assets on Heroku, These were solved through debugging middleware behaviour, using Whitenoise, and configuring environment variables. In addition overseeing the larger scope of coding multiple apps into one cohesive project, it was a couple weeks of work until it all suddenly clicke din my mind and the cohesive web application formed as a working whole.
+Some challenges the project presented were issue around managing user ownership of related objects and managing deployment of static assets on Heroku, which I was manage disabling and enabling the middleware's behaviour, using Whitenoise middleware for static files, and implementing variables into Heroku were my deploy was potentially omitted of critical variables.  Additionally, it was a couple of weeks of working with coding apps into a single cohesive project when it all suddenly clicked all together in my mind and I was primarily concerned about the general scope of the web application to be functional as a working whole of code.    
 
-Future iterations will focus on integrating WebSockets for real-time party updates and campaign chat along with a white-label version of the web application that can be branded for different game systems, for instance Battletech which has a futuristic, metallic, military, mecha theme for its tabletop setting.
+Future iterations will include implementing websockets for real-time updates for party integration or campaign chat for systems like Battletech, or for a campaign or system of tabletop gaming systems branded to something like Battletech with themes of futurism together interoperability of military mech elements of tabletop gaming. 
 
 ---
 
@@ -445,12 +482,10 @@ Keep pull requests focused on a single feature/fix
 
 ### Credits & Acknowledgements
 
-Code Institute — project template and assessment criteria
+Code Institute - Project Template and Assessment Criteria 
 
-Bootstrap 5 — UI components
+Bootstrap 5 - UI components 
 
-Font Awesome — icons
+Font Awesome - icons 
 
-D&D Beyond — inspiration for UI layout and terminology
-
-Special thanks to my mentor for guidance on Django architecture and code reviews.
+D&D Beyond - inspiration for UI layout and terminology 
