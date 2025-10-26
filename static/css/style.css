@@ -87,7 +87,6 @@ strong { color: #2a2a2a; }
   transition: all 0.3s ease;
 }
 
-/* Show below Bootstrap lg breakpoint */
 @media (max-width: 991.98px) {
   .custom-toggler.navbar-toggler { display: flex; }
 }
@@ -234,9 +233,8 @@ textarea.form-control { resize: vertical; }
 }
 
 /* =========================================================
-   Welcome Adventurer Section (side-by-side responsive)
+   Welcome Adventurer Section (responsive balanced)
    ========================================================= */
-
 #welcome-adventurer-text {
   display: flex;
   align-items: center;
@@ -245,36 +243,33 @@ textarea.form-control { resize: vertical; }
   border: 3px solid goldenrod;
   color: rgb(62, 36, 17);
   min-height: 100vh;
-  padding: 4rem 2rem;
+  padding: 3rem 2rem;
 }
 
-/* Inner layout container */
 #welcome-adventurer-text .row {
   display: flex;
   align-items: center;
   justify-content: space-between;
   flex-wrap: nowrap;
   width: 100%;
-  max-width: 1600px;
+  max-width: 95vw;
   margin: 0 auto;
-  gap: 3rem;
+  gap: 2rem;
 }
 
-/* Image */
 #welcome-adventurer-text img {
-  flex: 0 0 40%;
-  max-width: 600px;
+  flex: 0 0 45%;
+  width: 45%;
   height: auto;
   border-radius: 10px;
   object-fit: contain;
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
 }
 
-/* Text block */
 #welcome-adventurer-text .welcome-content {
-  flex: 1;
+  flex: 0 0 50%;
   text-align: left;
-  max-width: 800px;
+  max-width: none;
 }
 
 #welcome-adventurer-text h1,
@@ -292,27 +287,23 @@ textarea.form-control { resize: vertical; }
 #welcome-adventurer-text p {
   line-height: 1.6;
   font-size: 1.1rem;
-  max-width: 800px;
-  margin: 0 auto;
 }
 
 /* Tablets (≤992px) */
 @media (max-width: 992px) {
   #welcome-adventurer-text {
-    padding: 3rem 1.5rem;
+    padding: 2.5rem 1.5rem;
     min-height: auto;
   }
 
   #welcome-adventurer-text .row {
     flex-direction: column;
     align-items: center;
-    gap: 2rem;
+    gap: 1.5rem;
   }
 
   #welcome-adventurer-text img {
-    flex: 0 0 auto;
     width: 80%;
-    max-width: 500px;
     margin-bottom: 1rem;
   }
 
@@ -330,7 +321,7 @@ textarea.form-control { resize: vertical; }
   #welcome-adventurer-text img {
     width: 100%;
     max-width: none;
-    margin-top: 1rem; /* prevents top clipping */
+    margin-top: 1rem;
   }
 
   #welcome-adventurer-text h1 {
@@ -343,16 +334,8 @@ textarea.form-control { resize: vertical; }
   }
 }
 
-/* Extra-wide (≥1800px) */
-@media (min-width: 1800px) {
-  #welcome-adventurer-text {
-    padding-left: 10vw;
-    padding-right: 10vw;
-  }
-}
-
 /* =========================================================
-   Other Components (Cards, Alerts, etc.)
+   Cards, Alerts, Layout Utilities
    ========================================================= */
 .character-grid { display: grid; gap: 1.5rem; margin-top: 2rem; }
 
