@@ -147,6 +147,29 @@ Extra local versions of users and characters are also created — User (local) a
 
 ## BattleRoster Test Documentation
 
+# Lighthouse Scores
+
+Hompage index.html
+
+<img src= static/images/readme_images/lighthouse_score_index.png  alt ="index.html lighthouse score" width= 800>
+
+characters.html
+
+<img src= static/images/readme_images/lighthouse_score_characters.png  alt ="characters.html lighthouse score" width= 800>
+
+signup_login.html
+
+<img src= static/images/readme_images/lighthouse_score_signup.png  alt ="signup_login.html lighthouse score" width= 800>
+
+contact.html
+
+<img src= static/images/readme_images/lighthouse_score_contact.png  alt ="contact.html lighthouse score" width= 800>
+
+# Html Validation
+
+
+
+
 | Issue / Feature | Test | Result / Fix |
 |------------------|-------|---------------|
 | User Registration & Login | Register new users (Player & DM) via `/register/`, log in and out, test session persistence. | Works as expected. If login fails, verify `AUTH_USER_MODEL` and session middleware in `settings.py`. |
