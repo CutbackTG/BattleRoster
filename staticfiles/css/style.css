@@ -417,3 +417,145 @@ footer#footerSocials {
   #social-networks { gap: 1rem; }
   #social-networks a { font-size: 1.6rem; }
 }
+
+/* =========================================================
+   Dice Roller (restored visuals and buttons)
+   ========================================================= */
+.dice-toggle-btn {
+  width: 100%;
+  background-color: gold;
+  color: #1e1e1e;
+  font-weight: bold;
+  border: none;
+  border-radius: 6px;
+  padding: 0.5rem;
+  cursor: pointer;
+  transition: transform 0.2s ease, background-color 0.3s ease;
+  margin-bottom: 0.5rem;
+}
+
+.dice-toggle-btn:hover {
+  transform: scale(1.05);
+  background-color: goldenrod;
+  color: #fff;
+}
+
+.dice-roller-panel {
+  display: none;
+  padding: 1.5rem;
+  background: url("/static/images/parchment-texture.jpg") no-repeat center/cover;
+  border: 2px solid goldenrod;
+  border-radius: 10px;
+  box-shadow: 0 0 15px rgba(255, 215, 0, 0.3);
+  color: #2b1a07;
+  transition: all 0.4s ease;
+  opacity: 0;
+  transform: scaleY(0.9);
+  transform-origin: top;
+}
+
+.dice-roller-panel.open {
+  display: block;
+  opacity: 1;
+  transform: scaleY(1);
+}
+
+/* Inputs and dropdowns inside the dice panel */
+.dice-roller-panel select,
+.dice-roller-panel input[type="number"],
+.dice-roller-panel button {
+  font-family: "Oswald", sans-serif;
+  border-radius: 6px;
+  border: 1px solid goldenrod;
+  padding: 0.3rem 0.5rem;
+  font-size: 1rem;
+  background-color: rgba(255, 255, 255, 0.95);
+  color: #2b1a07;
+  margin-right: 0.3rem;
+}
+
+.dice-roller-panel button {
+  background-color: gold;
+  font-weight: bold;
+  color: #1e1e1e;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.2s ease, background-color 0.2s ease;
+}
+
+.dice-roller-panel button:hover {
+  background-color: goldenrod;
+  color: #fff;
+  transform: scale(1.05);
+}
+
+.dice-roller-panel label {
+  color: goldenrod;
+  font-weight: bold;
+  margin-right: 0.5rem;
+}
+
+.dice-roller-panel h3 {
+  font-family: "Oswald", sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: saddlebrown;
+  margin-top: 1rem;
+  border-top: 1px solid goldenrod;
+  padding-top: 1rem;
+}
+
+/* =========================================================
+   Alerts & Notifications (Fantasy Gold Theme)
+   ========================================================= */
+
+/* Base alert */
+.alert {
+  background: url("/static/images/parchment-texture.jpg") center/cover no-repeat;
+  border: 2px solid goldenrod;
+  border-radius: 10px;
+  color: #3b2607;
+  padding: 1rem 1.25rem;
+  margin: 1rem 0;
+  font-family: "Oswald", sans-serif;
+  font-size: 1.1rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  box-shadow: 0 0 12px rgba(255, 215, 0, 0.25);
+}
+
+/* Text hierarchy */
+.alert strong,
+.alert b {
+  color: #d4af37;
+  text-shadow: 1px 1px 1px #000;
+}
+
+/* Alert variations */
+.alert-success {
+  background-color: rgba(255, 215, 0, 0.2);
+  border-color: #d4af37;
+  color: #2b1a07;
+}
+
+.alert-warning {
+  background-color: rgba(255, 165, 0, 0.15);
+  border-color: #ffcc00;
+}
+
+.alert-danger {
+  background-color: rgba(139, 0, 0, 0.2);
+  border-color: #ff4444;
+}
+
+.alert-info {
+  background-color: rgba(255, 255, 255, 0.2);
+  border-color: #d4af37;
+}
+
+/* Optional hover animation */
+.alert:hover {
+  box-shadow: 0 0 20px rgba(255, 215, 0, 0.4);
+  transform: scale(1.01);
+  transition: 0.2s ease-in-out;
+}
