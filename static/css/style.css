@@ -228,79 +228,34 @@ textarea.form-control {
 }
 
 /* =========================================================
-   Sidebar Tabs
+   Welcome Adventurer Section (Side-by-side on desktop)
    ========================================================= */
-.sidebar .nav-link {
-  background-color: #2a2a2a;
-  border: 1px solid goldenrod;
-  margin-bottom: 5px;
-  color: gold;
-  text-align: left;
-  border-radius: 6px;
-  transition: background-color 0.3s ease;
-}
-
-.sidebar .nav-link.active,
-.sidebar .nav-link:hover {
-  background-color: goldenrod;
-  color: #1e1e1e;
-}
-
-/* =========================================================
-   Buttons
-   ========================================================= */
-.btn-primary,
-.btn-warning {
-  background-color: #d4af37 !important;
-  color: #000 !important;
-  border: none !important;
-  transition: transform 0.2s ease;
-}
-
-.btn-primary:hover,
-.btn-warning:hover {
-  background-color: #b8860b !important;
-  color: #fff !important;
-  transform: scale(1.05);
-}
-
-.btn-danger {
-  background-color: #a83232;
-  border: none;
-}
-
-.btn-danger:hover {
-  background-color: #c94444;
-}
-
-.btn-gold {
-  background-color: gold;
-  border: none;
-  color: #000;
-  font-weight: bold;
-  padding: 6px 14px;
-  border-radius: 10px;
-  transition: 0.2s ease-in-out;
-}
-
-.btn-gold:hover {
-  background-color: #b8860b;
-  color: #fff;
-  transform: scale(1.03);
-}
-
-.bg-gold {
-  background-color: #d4af37 !important;
-  color: #000 !important;
-}
-
-/* =========================================================
-   Welcome Adventurer Section
-   ========================================================= */
-#welcome-adventurer-text .p-5 {
+#welcome-adventurer-text {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: nowrap;
   background: url("../images/parchment-texture.jpg") no-repeat center/cover;
-  color: rgb(62, 36, 17);
   border: 3px solid goldenrod;
+  color: rgb(62, 36, 17);
+  min-height: 100vh;
+  padding: 3rem 2rem;
+  gap: 2rem;
+}
+
+#welcome-adventurer-text img {
+  flex: 0 0 45%;
+  max-width: 600px;
+  height: auto;
+  border-radius: 10px;
+  object-fit: contain;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+}
+
+#welcome-adventurer-text .welcome-content {
+  flex: 1;
+  text-align: left;
+  max-width: 700px;
 }
 
 #welcome-adventurer-text h1,
@@ -315,14 +270,15 @@ textarea.form-control {
   font-weight: 700;
 }
 
-body strong:not(#welcome-adventurer-text strong) {
-  color: #000;
-  text-shadow: none;
-}
-
 #welcome-adventurer-text p {
   line-height: 1.6;
   font-size: 1.1rem;
+  margin-top: 1rem;
+}
+
+body strong:not(#welcome-adventurer-text strong) {
+  color: #000;
+  text-shadow: none;
 }
 
 /* =========================================================
@@ -551,39 +507,26 @@ footer#footerSocials {
 }
 
 /* =========================================================
-   Responsive Refinements for Tablets & Mobiles
+   Responsive Refinements
    ========================================================= */
-@media (max-width: 768px) {
-  /* --- Welcome Section --- */
-  #welcome-adventurer-image {
-    text-align: center;
-    margin-bottom: 1rem;
-  }
-
-  #welcome-adventurer-image img {
-    width: 100%;
-    max-width: 500px;
-    height: auto;
-    margin: 0 auto;
-    display: block;
-  }
-
+@media (max-width: 992px) {
   #welcome-adventurer-text {
-    flex: 0 0 100%;
-    max-width: 100%;
+    flex-direction: column;
     text-align: center;
-  }
-
-  #welcome-adventurer-text .p-5 {
-    width: 100%;
-    margin: 0;
     padding: 2rem 1rem;
-    border-left: none;
-    border-right: none;
-    border-radius: 0;
   }
 
-  /* --- Social Icons --- */
+  #welcome-adventurer-text img {
+    flex: 0 0 auto;
+    width: 80%;
+    margin-bottom: 1.5rem;
+  }
+
+  #welcome-adventurer-text .welcome-content {
+    text-align: center;
+    max-width: 100%;
+  }
+
   #social-networks {
     flex-direction: row !important;
     flex-wrap: nowrap;
@@ -595,24 +538,16 @@ footer#footerSocials {
     display: inline-block;
     font-size: 1.8rem;
   }
-
-  /* Remove Bootstrap row margin overflow */
-  .container-fluid > .row {
-    margin-left: 0;
-    margin-right: 0;
-  }
 }
 
 @media (max-width: 576px) {
-  /* --- Mobile refinements --- */
-  #welcome-adventurer-image img {
-    width: 100%;
-    max-width: none;
+  #welcome-adventurer-text {
+    padding: 1.5rem 1rem;
   }
 
-  #welcome-adventurer-text .p-5 {
-    padding: 1.25rem 0.75rem;
-    font-size: 1rem;
+  #welcome-adventurer-text img {
+    width: 100%;
+    max-width: none;
   }
 
   #welcome-adventurer-text h1 {

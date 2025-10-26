@@ -1,119 +1,106 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="en-US">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="BattleRoster is designed to streamline tabletop game management for both players and dungeon masters." />
+    <meta name="keywords" content="hobby, hobbies, interests, clubs, groups, gaming, tabletop, rosters, multiplayer, fantasy, dungeons and dragons" />
+    <title>BattleRoster | Game Roster management</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}" />
 
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description"
-    content="BattleRoster is designed to streamline tabletop game management for both players and dungeon masters.">
-  <meta name="keywords"
-    content="hobby, hobbies, interests, clubs, groups, gaming, tabletop, rosters, multiplayer, fantasy, dungeons and dragons">
-  <title>BattleRoster | Game Roster management</title>
-  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet" />
+  </head>
 
-  <!-- Bootstrap CSS -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
-</head>
+  <body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+      <div class="container">
+        <!-- Logo -->
+        <a class="navbar-brand" href="{% url 'home' %}"><img class="home" src="{% static 'images/battleroster-logo.png' %}" alt="BattleRoster Logo" id="battleroster-logo" /></a>
 
-<body>
-  <!-- Navbar -->
-  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-    <div class="container">
-      <!-- Logo -->
-      <a class="navbar-brand" href="{% url 'home' %}">
-        <img class="home" src="{% static 'images/battleroster-logo.png' %}" alt="BattleRoster Logo"
-          id="battleroster-logo">
-      </a>
+        <!-- Hamburger button -->
+        <button class="navbar-toggler ms-auto custom-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu" aria-controls="navMenu" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon custom-toggler"></span></button>
 
-      <!-- Hamburger button -->
-      <button class="navbar-toggler ms-auto custom-toggler" type="button" data-bs-toggle="collapse"
-        data-bs-target="#navMenu" aria-controls="navMenu" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon custom-toggler"></span>
-      </button>
-
-      <!-- Navbar items -->
-      <div class="collapse navbar-collapse justify-content-end" id="navMenu">
-        <ul class="navbar-nav flex-column align-items-start">
-          <li class="nav-item"><a class="nav-link" href="{% url 'characters' %}"><i
-                class="fa-solid fa-user me-2 text-gold"></i>Characters</a></li>
-          <li class="nav-item"><a class="nav-link" href="{% url 'party' %}"><i
-                class="fa-solid fa-users me-2 text-gold"></i>Party</a></li>
-          {% if user.is_authenticated %}
-          <li class="nav-item"><a class="nav-link" href="{% url 'logout' %}"><i
-                class="fa-solid fa-right-from-bracket me-2 text-gold"></i>Log out</a></li>
-          {% else %}
-          <li class="nav-item"><a class="nav-link" href="{% url 'signup_login' %}"><i
-                class="fa-solid fa-save me-2 text-gold"></i>Sign-up / Log-in</a></li>
-          {% endif %}
-          <li class="nav-item"><a class="nav-link" href="{% url 'contact' %}"><i
-                class="fa-solid fa-scroll me-2 text-gold"></i>Contact</a></li>
-        </ul>
+        <!-- Navbar items -->
+        <div class="collapse navbar-collapse justify-content-end" id="navMenu">
+          <ul class="navbar-nav flex-column align-items-start">
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'characters' %}"><i class="fa-solid fa-user me-2 text-gold"></i>Characters</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'party' %}"><i class="fa-solid fa-users me-2 text-gold"></i>Party</a>
+            </li>
+            {% if user.is_authenticated %}
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'logout' %}"><i class="fa-solid fa-right-from-bracket me-2 text-gold"></i>Log out</a>
+              </li>
+            {% else %}
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'signup_login' %}"><i class="fa-solid fa-save me-2 text-gold"></i>Sign-up / Log-in</a>
+              </li>
+            {% endif %}
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'contact' %}"><i class="fa-solid fa-scroll me-2 text-gold"></i>Contact</a>
+            </li>
+          </ul>
+        </div>
       </div>
-    </div>
-  </nav>
+    </nav>
 
-  <!-- Messages -->
-  {% if messages %}
-  <div class="container mt-3">
-    {% for message in messages %}
-    <div class="alert alert-{{ message.tags }}">{{ message }}</div>
-    {% endfor %}
-  </div>
-  {% endif %}
+    <!-- Messages -->
+    {% if messages %}
+      <div class="container mt-3">
+        {% for message in messages %}
+          <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+        {% endfor %}
+      </div>
+    {% endif %}
 
-  <!-- Main content -->
-  <div class="container-fluid bg-dark text-light py-5">
-    <div class="row justify-content-center align-items-center">
+    <!-- Main Welcome Section -->
+    <div id="welcome-adventurer-text" class="container-fluid">
+      <div class="row justify-content-center align-items-center">
+        <!-- Image (now nested within parchment) -->
+        <img src="{% static 'images/welcome-adventurer.png' %}" alt="A burly but friendly barkeep welcomes you to his tavern adventurer" />
 
-      <!-- Text box -->
-      <div id="welcome-adventurer-text" class="col-md-5">
-        <div class="p-5">
-            <!-- Image -->
-          <div id="welcome-adventurer-image" class="col-md-6 d-flex justify-content-center mb-4 mb-md-0">
-            <img src="{% static 'images/welcome-adventurer.png' %}"
-              alt="A burly but friendly barkeep welcomes you to his tavern adventurer" class="img-fluid"
-              style="max-width: 100%; height: auto; object-fit: contain;">
-          </div>
-          <h1><strong>Welcome, Adventurer!</strong></h1><br>
+        <!-- Text Content -->
+        <div class="welcome-content">
+          <h1><strong>Welcome, Adventurer!</strong></h1>
           <p>
-            Step into the tavern and explore new adventures with fellow travellers.
-            Feel free to rest, take stock of your party and prepare for your next quest over a tankard or two of my
-            finest ale.<br><br>
-            Select the <strong>Characters</strong>  option from the menu to create or manage your rosters.<br><br>
-            You can also team up with other adventurers with the <strong>Party</strong>  tab and check their overall
-            health or mana levels.<br><br>
-            We also cater for Dungeon Masters who can register straight away and keep a watch on the whole party during
-            your quest via the <strong>Sign-up/Log-in</strong>  menu tab.<br><br>
-            To return to the bar, just click the <strong>BattleRoster Logo</strong>.<br><br>
+            Step into the tavern and explore new adventures with fellow travellers. Feel free to rest, take stock of your party and prepare for your next quest over a tankard or two of my finest ale.<br /><br />
+            Select the <strong>Characters</strong> option from the menu to create or manage your rosters.<br /><br />
+            You can also team up with other adventurers with the <strong>Party</strong> tab and check their overall health or mana levels.<br /><br />
+            We also cater for Dungeon Masters who can register straight away and keep a watch on the whole party during your quest via the <strong>Sign-up/Log-in</strong> menu tab.<br /><br />
+            To return to the bar, just click the <strong>BattleRoster Logo</strong>.<br /><br />
             Any problems, or if that fella in the corner is bothering you, just let me know in the
-            <strong>Contact</strong>  tab.
+            <strong>Contact</strong> tab.
           </p>
         </div>
       </div>
-
     </div>
-  </div>
 
-  <!-- Footer -->
-  <footer id="footerSocials">
-    <ul id="social-networks" class="socials list-unstyled d-flex gap-5 justify-content-center">
-      <li><a href="https://www.facebook.com/" target="_blank" rel="noopener"
-          aria-label="visit our Facebook page (opens in a new tab)"><i class="fa-brands fa-facebook"></i></a></li>
-      <li><a href="https://www.X.com/" target="_blank" rel="noopener"
-          aria-label="visit our X page (opens in a new tab)"><i class="fa-brands fa-square-x-twitter"></i></a></li>
-      <li><a href="https://www.youtube.com/" target="_blank" rel="noopener"
-          aria-label="visit our YouTube page (opens in a new tab)"><i class="fa-brands fa-youtube-square"></i></a></li>
-      <li><a href="https://www.instagram.com/" target="_blank" rel="noopener"
-          aria-label="visit our Instagram page (opens in a new tab)"><i class="fa-brands fa-instagram"></i></a></li>
-    </ul>
-  </footer>
+    <!-- Footer -->
+    <footer id="footerSocials">
+      <ul id="social-networks" class="socials list-unstyled d-flex gap-5 justify-content-center">
+        <li>
+          <a href="https://www.facebook.com/" target="_blank" rel="noopener" aria-label="visit our Facebook page (opens in a new tab)"><i class="fa-brands fa-facebook"></i></a>
+        </li>
+        <li>
+          <a href="https://www.X.com/" target="_blank" rel="noopener" aria-label="visit our X page (opens in a new tab)"><i class="fa-brands fa-square-x-twitter"></i></a>
+        </li>
+        <li>
+          <a href="https://www.youtube.com/" target="_blank" rel="noopener" aria-label="visit our YouTube page (opens in a new tab)"><i class="fa-brands fa-youtube-square"></i></a>
+        </li>
+        <li>
+          <a href="https://www.instagram.com/" target="_blank" rel="noopener" aria-label="visit our Instagram page (opens in a new tab)"><i class="fa-brands fa-instagram"></i></a>
+        </li>
+      </ul>
+    </footer>
 
-  <!-- Scripts -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"
-    crossorigin="anonymous"></script>
-  <script src="{% static 'js/main.js' %}"></script>
-  <script src="https://kit.fontawesome.com/f84e35c3bf.js" crossorigin="anonymous"></script>
-</body>
-
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+    <script src="{% static 'js/main.js' %}"></script>
+    <script src="https://kit.fontawesome.com/f84e35c3bf.js" crossorigin="anonymous"></script>
+  </body>
 </html>
