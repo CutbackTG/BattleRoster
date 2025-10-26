@@ -20,6 +20,8 @@ BattleRoster is a web application built on Django to simplify how players and du
 
 Designed with extensibility in mind, the system supports modular character sheet templates and can be used across multiple game systems, including Dungeons & Dragons and BattleTech. The site features usability emphasis through responsive design and lightweight interactivity, while user authentication and role-based permissions protect player data.
 
+---
+
 ## Features
 
 ### User Roles & Authentication
@@ -50,6 +52,8 @@ Designed with extensibility in mind, the system supports modular character sheet
 - Exporting sheets (PDF, JSON)
 - Party Chat feature
 - White label version for different game systems.
+
+---
 
 ## Tech Stack
 
@@ -88,6 +92,8 @@ Designed with extensibility in mind, the system supports modular character sheet
 - **Heroku / Render / Railway / PythonAnywhere** – Supported hosting options  
 - **Whitenoise** – Static file management for production
 
+---
+
 ## User Stories
 
 ### 1. New User — Quick Character Creator
@@ -125,9 +131,9 @@ so that I can pick up where I left off without recreating my data.
 | **Experienced Player** | A long-time D&D player involved in several parties or campaigns. | Manage a roster of characters for multiple groups and easily switch between them. | - Create multiple characters<br>- Assign characters to different parties<br>- Manage party compositions |
 | **Returning User** | A previous user returning to continue gameplay. | Retrieve and update saved data without starting over. | - Log in<br>- View and edit saved characters<br>- Rejoin or create new parties |
 
-## UI & UX Design
+---
 
-## UX Design
+## UI & UX Design
 
 The UX design process followed the five planes of user experience design to ensure BattleRoster was both functional and engaging.
 
@@ -166,6 +172,7 @@ The UX design process followed the five planes of user experience design to ensu
 - **Typography:** Classic sans-serif fonts combined with strong headers for readability.  
 - **Colour Palette:** Gold, black, and warm browns to evoke a “treasure chest” aesthetic.  
 - **Visual Goal:** Make the interface feel immersive and consistent with tabletop gaming culture.
+
 
 ## Battleroster Entity Relationship Diagram
 
@@ -230,6 +237,7 @@ I tested this scheme on Huemint to see its overall appearance and experiment wit
 | `/characters/party/<int:pk>/select/` | `party_select_character` | `party_select_character` | Players select which of their characters to use in the current party.                               |
 | `/characters/dm/parties/`            | `dm_party_list`          | `dm_party_list`          | Dungeon Master dashboard — view, create, or delete managed parties.                                 |
 
+---
 
 ## Defensive Design & Security
 
@@ -256,6 +264,8 @@ BattleRoster was developed with a strong focus on data protection, secure authen
 - Regularly updating dependencies and minimal usage of external packages reduce risk exposture.
 
 BattleRoster employs **OWASP best practices** and takes advantage of the built-in security provisions available in Django to provide a stable, reliable and secure application environment.
+
+---
 
 ## BattleRoster Test Documentation
 
@@ -330,6 +340,7 @@ contact.html
 | Dice Roller Utility | Call dice roll function (e.g., `roll_dice('1d20')`). | Returns random integer within correct range; never outside dice bounds. |
 | Database Integrity | Run migrations and ensure models create properly. | No migration or schema errors on `python manage.py makemigrations` and `migrate`. |
 
+---
 
 ## Reflection & Learning Outcomes
 
