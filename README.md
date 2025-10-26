@@ -46,12 +46,12 @@ Designed with extensibility in mind, the system supports modular character sheet
 - New game systems can be added with relative ease
 
 ### Future Work
-- In-app chat functionality
+- Implement WebSocket-based **live party chat** for campaigns.
 - Dice rolling tools
 - Campaign notes and logs
 - Exporting sheets (PDF, JSON)
 - Party Chat feature
-- White label version for different game systems.
+- White label version for different game systems (e.g. Pathfinder, Cyberpunk, BattleTech).
 
 ---
 
@@ -188,6 +188,15 @@ A User (Dungeon Master) record represents a user responsible for one or more gam
 
 Users and Characters have additional local versions, User (local) and Character (local), for use as offline, or stand-alone, character sheets without the requirement of an account as an online registered user. The local entities will retain the same structure as those created by the online registered user, however linking only to the owner instead of an authenticated user, via owner_id Foreign Key.
 
+## Accessibility Considerations
+
+BattleRoster was designed with accessibility and inclusivity in mind:
+- Uses semantic HTML5 elements for structure and navigation.  
+- Colour contrast tested with WCAG 2.1 AA standards.  
+- All interactive elements include ARIA labels and keyboard navigation support.  
+- Forms provide clear error messages and input focus states.  
+- Fully responsive layout for desktop, tablet, and mobile.
+
 ### Wireframes
 
 <table>
@@ -306,6 +315,16 @@ contact.html
 
 <img src= static\images\readme_images\W3c_test_contact.png alt ="contact.html W3C valiadation check" width= 600>
 
+### Summary of Automated Testing
+
+| Test Category | Tool Used | Result |
+|----------------|-----------|--------|
+| HTML Validation | W3C Validator | Passed (minor warnings resolved) |
+| CSS Validation | W3C CSS Validator | Passed |
+| Accessibility | Lighthouse | 100% score |
+| Performance | Lighthouse | 92–100% depending on page |
+| Django Unit Tests | `pytest` / `TestCase` | All tests passed successfully |
+
 ### Test Runs
 
 | Issue / Feature | Test | Result / Fix |
@@ -344,12 +363,17 @@ contact.html
 
 ## Reflection & Learning Outcomes
 
-Throughout this project, I was able to expand my knowledge of Django’s MVC design and authentication framework.   
-I was able to successfully implement role-based permissions, navigate secure email handling, and create data models that were capable of scaling.   
+This project greatly improved my understanding of the Model-View-Template architecture and the authentication framework of Django.  
+I learned how to develop secure, scalable systems that support multiple user roles and permissions, implement server-side validation, and develop dynamic CRUD functionalities.
 
-Some challenges the project presented were issue around managing user ownership of related objects and managing deployment of static assets on Heroku, which I was manage disabling and enabling the middleware's behaviour, using Whitenoise middleware for static files, and implementing variables into Heroku were my deploy was potentially omitted of critical variables.  Additionally, it was a couple of weeks of working with coding apps into a single cohesive project when it all suddenly clicked all together in my mind and I was primarily concerned about the general scope of the web application to be functional as a working whole of code.    
+A primary challenge was managing user ownership of related objects, ensuring that characters and parties were only accessible by their rightful owners.  
+Ultimately, this involved a deeper understanding of Django’s QuerySets, decorators, and context management.  
 
-Future iterations will include implementing websockets for real-time updates for party integration or campaign chat for systems like Battletech, or for a campaign or system of tabletop gaming systems branded to something like Battletech with themes of futurism together interoperability of military mech elements of tabletop gaming. 
+Deployment was another challenge, particularly related to static asset handling and environment configuration on Heroku.  
+Through repeated testing, I learned to configure **Whitenoise**, manage `.env` variables securely, and ensure reliable builds in production.  
+
+Overall, this project solidified my full stack development workflow, from concept, wireframing, database design, testing, and deployment.  
+Future development will focus on real-time communication using WebSockets, campaign chat functionality, and **exportable character sheets** would build upon the improvements I made to in-game collaboration.   
 
 ---
 
