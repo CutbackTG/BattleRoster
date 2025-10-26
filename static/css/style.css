@@ -557,13 +557,6 @@ footer#footerSocials {
    Responsive Fixes (≤768px)
    ========================================================= */
 @media (max-width: 768px) {
-  /* Stack image and text vertically */
-  #welcome-adventurer-image,
-  #welcome-adventurer-text {
-    flex: 0 0 100%;
-    max-width: 100%;
-    text-align: center;
-  }
 
   /* Image scaling */
   #welcome-adventurer-image img {
