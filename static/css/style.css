@@ -583,6 +583,57 @@ footer#footerSocials {
 }
 
 /* =========================================================
+   Character Page Side Tabs (Fantasy Gold Theme)
+   ========================================================= */
+
+.nav-pills .nav-link,
+.character-nav .btn {
+  background: linear-gradient(to bottom, #2a2a2a 0%, #1e1e1e 100%);
+  color: gold !important;
+  border: 2px solid goldenrod;
+  border-radius: 10px;
+  font-family: "Oswald", sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-size: 1.25rem;
+  margin: 0.5rem 0;
+  padding: 0.75rem 1.25rem;
+  transition: all 0.3s ease;
+  box-shadow: inset 0 0 8px rgba(255, 215, 0, 0.15);
+  text-align: center;
+}
+
+/* Hover Glow */
+.nav-pills .nav-link:hover,
+.character-nav .btn:hover {
+  background: linear-gradient(to bottom, #3a2a00 0%, #2a1a00 100%);
+  color: #fff8dc !important;
+  box-shadow: 0 0 12px rgba(255, 215, 0, 0.6);
+  transform: translateY(-2px);
+}
+
+/* Active (selected) tab */
+.nav-pills .nav-link.active,
+.character-nav .btn.active,
+.nav-pills .show > .nav-link {
+  background: gold !important;
+  color: #1e1e1e !important;
+  border-color: goldenrod;
+  font-weight: bold;
+  box-shadow: 0 0 20px rgba(255, 215, 0, 0.7);
+  transform: none;
+}
+
+/* Optional: reduce spacing for smaller screens */
+@media (max-width: 768px) {
+  .nav-pills .nav-link,
+  .character-nav .btn {
+    font-size: 1.1rem;
+    padding: 0.6rem 0.8rem;
+  }
+}
+
+/* =========================================================
    Alerts & Notifications (Fantasy Gold Theme)
    ========================================================= */
 
