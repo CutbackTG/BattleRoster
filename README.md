@@ -163,7 +163,7 @@ The UX design process followed the five planes of user experience design to ensu
 **Goal:** Define the final look and feel of the interface.  
 
 - **Theme:** Fantasy-inspired UI with parchment textures and gold accents.  
-- **Typography:** Classic serif fonts combined with strong headers for a medieval tone.  
+- **Typography:** Classic sans-serif fonts combined with strong headers for readability.  
 - **Colour Palette:** Gold, black, and warm browns to evoke a “treasure chest” aesthetic.  
 - **Visual Goal:** Make the interface feel immersive and consistent with tabletop gaming culture.
 
@@ -229,6 +229,7 @@ I tested this scheme on Huemint to see its overall appearance and experiment wit
 | `/characters/party/<int:pk>/invite/` | `party_invite`           | `party_invite`           | Invite another user to join a party.                                                                |
 | `/characters/party/<int:pk>/select/` | `party_select_character` | `party_select_character` | Players select which of their characters to use in the current party.                               |
 | `/characters/dm/parties/`            | `dm_party_list`          | `dm_party_list`          | Dungeon Master dashboard — view, create, or delete managed parties.                                 |
+
 
 ## Defensive Design & Security
 
