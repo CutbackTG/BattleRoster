@@ -1,11 +1,15 @@
-/* Global Styles */
+/* =========================================================
+   Global Styles
+   ========================================================= */
 * {
   padding: 0;
   margin: 0;
   box-sizing: border-box;
 }
 
-html { scroll-behavior: smooth; }
+html {
+  scroll-behavior: smooth;
+}
 
 body {
   background-color: #2a2a2a;
@@ -16,7 +20,14 @@ body {
   flex-direction: column;
 }
 
-/* Typography */
+html, body {
+  height: 100%;
+  background-color: #1e1e1e; /* ensure consistent background */
+}
+
+/* =========================================================
+   Typography
+   ========================================================= */
 h1, h2, h5, h6 {
   font-family: "Oswald", sans-serif;
   text-transform: uppercase;
@@ -34,16 +45,23 @@ h3, h4 {
   margin: 0.25rem 0;
 }
 
-strong { color: #2a2a2a; }
+strong {
+  color: #2a2a2a;
+}
 
-/* Navbar */
+/* =========================================================
+   Navbar
+   ========================================================= */
 .navbar {
   background-color: #2a2a2a;
   border-bottom: 3px solid gold;
   box-shadow: 0 2px 8px rgba(255, 215, 0, 0.2);
 }
 
-.navbar-brand { display: flex; align-items: center; }
+.navbar-brand {
+  display: flex;
+  align-items: center;
+}
 
 #battleroster-logo {
   width: 9rem;
@@ -51,7 +69,9 @@ strong { color: #2a2a2a; }
   transition: transform 0.3s ease;
 }
 
-#battleroster-logo:hover { transform: scale(1.05); }
+#battleroster-logo:hover {
+  transform: scale(1.05);
+}
 
 .nav-link {
   color: gold !important;
@@ -60,7 +80,9 @@ strong { color: #2a2a2a; }
   transition: color 0.3s ease;
 }
 
-.nav-link:hover { color: goldenrod !important; }
+.nav-link:hover {
+  color: goldenrod !important;
+}
 
 /* --- Responsive Hamburger Toggler --- */
 .custom-toggler.navbar-toggler {
@@ -68,7 +90,7 @@ strong { color: #2a2a2a; }
   border-radius: 8px;
   width: 48px;
   height: 48px;
-  display: none; /* hidden by default */
+  display: none;
   align-items: center;
   justify-content: center;
   background: transparent;
@@ -105,13 +127,28 @@ strong { color: #2a2a2a; }
   transition: all 0.3s ease;
 }
 
-.custom-toggler .navbar-toggler-icon::before { top: -8px; }
-.custom-toggler .navbar-toggler-icon::after { top: 8px; }
+.custom-toggler .navbar-toggler-icon::before {
+  top: -8px;
+}
+
+.custom-toggler .navbar-toggler-icon::after {
+  top: 8px;
+}
 
 /* Animate to an "X" when active */
-.custom-toggler.active .navbar-toggler-icon { background-color: transparent; }
-.custom-toggler.active .navbar-toggler-icon::before { top: 0; transform: translateX(-50%) rotate(45deg); }
-.custom-toggler.active .navbar-toggler-icon::after { top: 0; transform: translateX(-50%) rotate(-45deg); }
+.custom-toggler.active .navbar-toggler-icon {
+  background-color: transparent;
+}
+
+.custom-toggler.active .navbar-toggler-icon::before {
+  top: 0;
+  transform: translateX(-50%) rotate(45deg);
+}
+
+.custom-toggler.active .navbar-toggler-icon::after {
+  top: 0;
+  transform: translateX(-50%) rotate(-45deg);
+}
 
 /* Mobile Navbar */
 @media (max-width: 991px) {
@@ -122,10 +159,15 @@ strong { color: #2a2a2a; }
     margin-top: 0.5rem;
     padding: 1rem;
   }
-  .navbar-nav { text-align: right; }
+
+  .navbar-nav {
+    text-align: right;
+  }
 }
 
-/* Footer / Social Links */
+/* =========================================================
+   Footer / Social Links
+   ========================================================= */
 #social-networks {
   background-color: #1a1a1a;
   display: flex;
@@ -144,9 +186,14 @@ strong { color: #2a2a2a; }
   transition: color 0.3s ease, transform 0.3s ease;
 }
 
-#social-networks a:hover { color: gold; transform: scale(1.1); }
+#social-networks a:hover {
+  color: gold;
+  transform: scale(1.1);
+}
 
-/* Forms and Tabs */
+/* =========================================================
+   Forms and Tabs
+   ========================================================= */
 form {
   background: url("/static/images/parchment-texture.jpg") no-repeat center/cover;
   border: 3px solid goldenrod;
@@ -176,9 +223,13 @@ form label {
   box-shadow: 0 0 8px rgba(255, 215, 0, 0.5);
 }
 
-textarea.form-control { resize: vertical; }
+textarea.form-control {
+  resize: vertical;
+}
 
-/* Sidebar Tabs */
+/* =========================================================
+   Sidebar Tabs
+   ========================================================= */
 .sidebar .nav-link {
   background-color: #2a2a2a;
   border: 1px solid goldenrod;
@@ -195,7 +246,9 @@ textarea.form-control { resize: vertical; }
   color: #1e1e1e;
 }
 
-/* Buttons */
+/* =========================================================
+   Buttons
+   ========================================================= */
 .btn-primary,
 .btn-warning {
   background-color: #d4af37 !important;
@@ -216,7 +269,9 @@ textarea.form-control { resize: vertical; }
   border: none;
 }
 
-.btn-danger:hover { background-color: #c94444; }
+.btn-danger:hover {
+  background-color: #c94444;
+}
 
 .btn-gold {
   background-color: gold;
@@ -234,18 +289,53 @@ textarea.form-control { resize: vertical; }
   transform: scale(1.03);
 }
 
-.bg-gold { background-color: #d4af37 !important; color: #000 !important; }
+.bg-gold {
+  background-color: #d4af37 !important;
+  color: #000 !important;
+}
 
+/* =========================================================
+   Welcome Adventurer Section
+   ========================================================= */
 #welcome-adventurer-text .p-5 {
-  background: url("../images/parchment-texture.jpg");
+  background: url("../images/parchment-texture.jpg") no-repeat center/cover;
   color: rgb(62, 36, 17);
   border: 3px solid goldenrod;
   background-size: cover;
   background-repeat: no-repeat;
 }
 
-/* Character Cards */
-.character-grid { display: grid; gap: 1.5rem; margin-top: 2rem; }
+#welcome-adventurer-text h1,
+#welcome-adventurer-text h1 strong {
+  color: #d4af37;
+  text-shadow: 1px 1px 2px #000;
+}
+
+#welcome-adventurer-text strong {
+  color: #d4af37 !important;
+  text-shadow: 1px 1px 2px #000;
+  font-weight: 700;
+}
+
+body strong:not(#welcome-adventurer-text strong) {
+  color: #000;
+  text-shadow: none;
+}
+
+/* Optional: improve text readability */
+#welcome-adventurer-text p {
+  line-height: 1.6;
+  font-size: 1.1rem;
+}
+
+/* =========================================================
+   Character Cards
+   ========================================================= */
+.character-grid {
+  display: grid;
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
 
 .card {
   background: url("/static/images/parchment-texture.jpg") no-repeat center/cover;
@@ -268,10 +358,17 @@ textarea.form-control { resize: vertical; }
   color: #4b3600;
 }
 
-.card-text { font-family: "Lato", sans-serif; color: #3a2a00; }
+.card-text {
+  font-family: "Lato", sans-serif;
+  color: #3a2a00;
+}
 
-/* Dice Roller */
-.left-column-dice { margin-top: 1rem; }
+/* =========================================================
+   Dice Roller
+   ========================================================= */
+.left-column-dice {
+  margin-top: 1rem;
+}
 
 .dice-toggle-btn {
   width: 100%;
@@ -285,7 +382,10 @@ textarea.form-control { resize: vertical; }
   transition: transform 0.2s ease;
   margin-bottom: 0.5rem;
 }
-.dice-toggle-btn:hover { transform: scale(1.05); }
+
+.dice-toggle-btn:hover {
+  transform: scale(1.05);
+}
 
 .dice-roller-panel {
   display: none;
@@ -300,26 +400,41 @@ textarea.form-control { resize: vertical; }
   transform-origin: top;
   color: #2b1a07;
 }
-.dice-roller-panel.open { display: block; opacity: 1; transform: scaleY(1); }
 
-/* Party system additions */
+.dice-roller-panel.open {
+  display: block;
+  opacity: 1;
+  transform: scaleY(1);
+}
+
+/* =========================================================
+   Party System
+   ========================================================= */
 .party-card {
   border: 1px solid rgba(255, 215, 0, 0.3);
   border-radius: 0.75rem;
   box-shadow: 0 0 8px rgba(255, 215, 0, 0.15);
   transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
+
 .party-card:hover {
   transform: translateY(-2px);
   box-shadow: 0 0 12px rgba(255, 215, 0, 0.25);
 }
 
-#invite-list li.added, #member-grid .card.added {
+#invite-list li.added,
+#member-grid .card.added {
   background-color: rgba(255, 215, 0, 0.15);
 }
-#invite-list li.removed, #member-grid .card.removed { opacity: 0.6; }
 
-/* Alerts */
+#invite-list li.removed,
+#member-grid .card.removed {
+  opacity: 0.6;
+}
+
+/* =========================================================
+   Alerts
+   ========================================================= */
 .alert {
   background-color: #c8bda1;
   color: #000;
@@ -332,18 +447,6 @@ textarea.form-control { resize: vertical; }
   box-shadow: 0 0 8px rgba(0,0,0,0.2);
 }
 
-/* Bootstrap override cleanup */
-a, a:hover, a:focus {
-  color: goldenrod;
-  text-decoration: none;
-}
-
-a.btn:focus, button:focus, input:focus, select:focus, textarea:focus {
-  outline: none !important;
-  box-shadow: 0 0 6px rgba(255, 215, 0, 0.6) !important;
-  border-color: gold !important;
-}
-
 .alert-success,
 .alert-info,
 .alert-primary {
@@ -352,13 +455,34 @@ a.btn:focus, button:focus, input:focus, select:focus, textarea:focus {
   border-color: #b8860b !important;
 }
 
-.alert-warning, .alert-danger {
+.alert-warning,
+.alert-danger {
   background-color: #c8bda1 !important;
   color: #000 !important;
   border-color: #8b6508 !important;
 }
 
-/* Character Form */
+/* =========================================================
+   Bootstrap Overrides & Focus Styles
+   ========================================================= */
+a, a:hover, a:focus {
+  color: goldenrod;
+  text-decoration: none;
+}
+
+a.btn:focus,
+button:focus,
+input:focus,
+select:focus,
+textarea:focus {
+  outline: none !important;
+  box-shadow: 0 0 6px rgba(255, 215, 0, 0.6) !important;
+  border-color: gold !important;
+}
+
+/* =========================================================
+   Character Form
+   ========================================================= */
 .character-form {
   background: url('/static/images/parchment-bg.jpg') center/cover no-repeat;
   border: 3px solid goldenrod;
@@ -370,68 +494,101 @@ a.btn:focus, button:focus, input:focus, select:focus, textarea:focus {
   box-shadow: 0 0 25px rgba(255, 215, 0, 0.15);
 }
 
-.tab-content { background: none; border: none; padding: 0; }
-.tab-pane { padding: 1rem 0; }
+.tab-content {
+  background: none;
+  border: none;
+  padding: 0;
+}
 
-/* Progress Bars */
+.tab-pane {
+  padding: 1rem 0;
+}
+
+/* =========================================================
+   Progress Bars
+   ========================================================= */
 .progress {
   background-color: rgba(255, 255, 255, 0.3);
   border-radius: 8px;
   overflow: hidden;
   margin-top: 4px;
 }
+
 .progress-bar {
   font-weight: bold;
   color: #fff;
   font-size: 0.85rem;
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
 }
+
 .bg-danger { background-color: #c0392b !important; }
 .bg-info { background-color: #2980b9 !important; }
 
-/* Highlights / Borders */
+/* =========================================================
+   Highlights / Borders
+   ========================================================= */
 .border-gold {
   border: 2px solid #d4af37 !important;
   box-shadow: 0 0 12px rgba(255, 215, 0, 0.5);
 }
-.glowing { box-shadow: 0 0 12px #d4af37; }
 
-html, body {
-  height: 100%;
-  background-color: #1e1e1e; /* ensure consistent background */
+.glowing {
+  box-shadow: 0 0 12px #d4af37;
 }
 
-/* Ensure main content fills available space */
-main.container, main.container-fluid {
+/* =========================================================
+   Layout Utilities
+   ========================================================= */
+main.container,
+main.container-fluid {
   flex: 1 0 auto;
 }
 
-/* Keep footer pinned to bottom and full width */
 footer#footerSocials {
   flex-shrink: 0;
   background-color: #1a1a1a;
   width: 100%;
   border-top: 2px solid gold;
   padding: 1rem 0;
-  margin: 0; /* prevent gaps */
+  margin: 0;
 }
 
-/* Welcome Adventurer section styles */
-#welcome-adventurer-text h1,
-#welcome-adventurer-text h1 strong {
-  color: #d4af37; /* rich gold */
-  text-shadow: 1px 1px 2px #000; /* subtle black shadow */
-}
+/* =========================================================
+   Responsive Fixes (≤768px)
+   ========================================================= */
+@media (max-width: 768px) {
+  /* Stack image and text vertically */
+  #welcome-adventurer-image,
+  #welcome-adventurer-text {
+    flex: 0 0 100%;
+    max-width: 100%;
+    text-align: center;
+  }
 
-/* make emphasized text inside the paragraph gold + shadow too */
-#welcome-adventurer-text strong {
-  color: #d4af37 !important;
-  text-shadow: 1px 1px 2px #000;
-  font-weight: 700;
-}
+  /* Image scaling */
+  #welcome-adventurer-image img {
+    width: 90%;
+    height: auto;
+    margin: 0 auto 1rem;
+    display: block;
+  }
 
-/* keep other <strong> elsewhere black (as before) */
-body strong:not(#welcome-adventurer-text strong) {
-  color: #000;
-  text-shadow: none;
+  /* Parchment panel spacing */
+  #welcome-adventurer-text .p-5 {
+    padding: 1.5rem;
+    margin: 0 auto 1.5rem;
+    width: 90%;
+  }
+
+  /* Prevent overflow and weird spacing */
+  .container-fluid > .row {
+    margin-left: 0;
+    margin-right: 0;
+  }
+
+  /* Stack grid/flex layouts */
+  .row, .d-flex, .character-grid {
+    flex-direction: column !important;
+    grid-template-columns: 1fr !important;
+  }
 }
