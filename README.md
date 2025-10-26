@@ -151,25 +151,25 @@ Extra local versions of users and characters are also created — User (local) a
 
 Hompage index.html
 
-<img src= static\images\readme_images\Lighthouse_score_index.png  alt ="index.html lighthouse score" width= 800>
+<img src= static\images\readme_images\Lighthouse_score_index.png  alt ="index.html lighthouse score" width= 600>
 
 <img src= static\images\readme_images\W3c_test_index.png alt ="index.html W3C valiadation check" width= 600>
 
 characters.html
 
-<img src= static\images\readme_images\lighthouse_score_characters.png  alt ="characters.html lighthouse score" width= 800>
+<img src= static\images\readme_images\Lighthouse_score_characters.png alt ="characters.html lighthouse score" width= 600>
 
 <img src= static\images\readme_images\W3c_test_characters.png  alt ="charcters.html W3C valiadation check" width= 600>
 
 signup_login.html
 
-<img src= static\images\readme_images\lighthouse_score_signup.png  alt ="signup_login.html lighthouse score" width= 800>
+<img src= static\images\readme_images\Lighthouse_score_signup.png alt ="signup_login.html lighthouse score" width= 600>
 
 <img src= static\images\readme_images\W3c_test_party.png alt ="party.html W3C valiadation check" width= 600>
 
 contact.html
 
-<img src= static\images\readme_images\lighthouse_score_contact.png  alt ="contact.html lighthouse score" width= 800>
+<img src= static\images\readme_images\Lighthouse_score_contact.png alt ="contact.html lighthouse score" width= 600>
 
 <img src= static\images\readme_images\W3c_test_contact.png alt ="contact.html W3C valiadation check" width= 600>
 
