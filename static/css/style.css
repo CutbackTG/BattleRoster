@@ -590,3 +590,44 @@ footer#footerSocials {
   transform: scale(1.01);
   transition: 0.2s ease-in-out;
 }
+
+/* =========================================================
+   Large screen / Desktop text scaling
+   ========================================================= */
+
+/* For wide desktop monitors */
+@media (min-width: 1200px) {
+  body {
+    font-size: 1.15rem; /* slightly larger default text */
+  }
+
+  #welcome-adventurer-text h1 {
+    font-size: 2.75rem;  /* bigger hero heading */
+    letter-spacing: 2px;
+  }
+
+  #welcome-adventurer-text p {
+    font-size: 1.25rem;  /* readable paragraph text */
+    line-height: 1.7;
+  }
+
+  #welcome-adventurer-text strong {
+    font-size: 1.25rem;
+  }
+
+  /* Optional: make character/party headings bolder */
+  h2, h3 {
+    font-size: 1.6rem;
+  }
+}
+
+/* Ultra-wide monitors */
+@media (min-width: 1600px) {
+  #welcome-adventurer-text h1 {
+    font-size: 3rem;
+  }
+
+  #welcome-adventurer-text p {
+    font-size: 1.35rem;
+  }
+}
