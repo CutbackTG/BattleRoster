@@ -8,6 +8,14 @@
 - Project Link: [https://github.com/CutbackTG/BattleRoster](https://github.com/CutbackTG/BattleRoster)
 - Deployment URL: https://battlerosterhost-e22dbecc83dc.herokuapp.com/
 
+##Project Overview
+
+BattleRoster was developed as part of Code Institute’s Level 5 Web Application Development Diploma (Project 3: Full Stack Frameworks with Django).
+
+The aim of this project was to create a data-driven web application using Django that allows user authentication, CRUD functionality, and responsive front-end design.
+
+BattleRoster fulfills this by providing a role-playing game management system for players and dungeon masters to create and manage characters, parties, and campaigns.
+
 BattleRoster is a Django-based web application designed to streamline tabletop game management for both players and dungeon masters. Players can easily create, edit, and organize their character sheets, while dungeon masters can oversee groups, manage player sheets, and coordinate campaigns.
 
 Built with extensibility in mind, the system supports modular character sheet templates, making it adaptable for multiple game systems such as Dungeons & Dragons or BattleTech. The site emphasizes usability with responsive design, lightweight interactivity, and secure role-based permissions to protect player data.
@@ -209,6 +217,46 @@ contact.html
 
 ## UI & UX Design
 
+## UX Design
+
+The UX design process followed the five planes of user experience design to ensure BattleRoster was both functional and engaging.
+
+### Strategy Plane
+**Goal:** Define the target users and their needs, and align them with the project’s objectives.  
+
+- **Target Audience:** Tabletop gamers and dungeon masters seeking a digital tool to manage campaigns.  
+- **User Needs:** Quick and intuitive character creation, persistent data storage, and a simple UI.  
+- **Business Goal:** Build a scalable Django-based platform demonstrating authentication, CRUD functionality, and responsive design.
+
+### Scope Plane
+**Goal:** Determine which features will be included in the project based on user importance.  
+
+- **Must-have Features:** Character CRUD, user authentication (login/logout), DM party management.  
+- **Should-have Features:** Dice roller, contact form.  
+- **Could-have Features:** Real-time chat, session logs, and campaign notes.
+
+### Structure Plane
+**Goal:** Organize and structure the content and navigation flow.  
+
+- Content and navigation structured around user roles (**Player** vs **Dungeon Master**).  
+- Logical flow between character creation, editing, and party management pages.  
+- Simple and predictable navigation hierarchy for clarity.
+
+### Skeleton Plane
+**Goal:** Create a visual layout for elements on each page.  
+
+- Low-fidelity **wireframes** drawn using pencil concept sketches.  
+- Focused on clean, mobile-first layouts for clarity and ease of use.  
+- Consistent placement of navigation, buttons, and content areas across pages.  
+
+### Surface Plane
+**Goal:** Define the final look and feel of the interface.  
+
+- **Theme:** Fantasy-inspired UI with parchment textures and gold accents.  
+- **Typography:** Classic serif fonts combined with strong headers for a medieval tone.  
+- **Colour Palette:** Gold, black, and warm browns to evoke a “treasure chest” aesthetic.  
+- **Visual Goal:** Make the interface feel immersive and consistent with tabletop gaming culture.
+
 ### Wireframes
 
 <table>
@@ -243,6 +291,17 @@ A simple, bold and striking colour scheme was chosen, gold accents and warm brow
 I tested this scheme on Huemint to see its overall appearance and experiment with alternatives, it was here that I decided to add some browns here and there throughout to break through the colder, more warning colours of the plain black and yellow.
 
 <img src= static\images\readme_images\huemint_scheme_test.png alt ="Testing colour scheme on Huemint." width= 800>
+
+## Reflection & Learning Outcomes
+
+During this project, I deepened my understanding of Django’s MVC structure and authentication system.
+I learned how to implement role-based permissions, handle email integration securely, and design data models that scale.
+
+The challenges I faced on this project included managing user ownership of related objects and deploying static assets on Heroku, These were solved through debugging middleware behaviour, using Whitenoise, and configuring environment variables. In addition overseeing the larger scope of coding multiple apps into one cohesive project, it was a couple weeks of work until it all suddenly clicke din my mind and the cohesive web application formed as a working whole.
+
+Future iterations will focus on integrating WebSockets for real-time party updates and campaign chat along with a white-label version of the web application that can be branded for different game systems, for instance Battletech which has a futuristic, metallic, military, mecha theme for its tabletop setting.
+
+---
 
 ## Installation & Deployment
 
@@ -383,3 +442,15 @@ Write clear commit messages
 Add tests for new features
 Update documentation as needed
 Keep pull requests focused on a single feature/fix
+
+### Credits & Acknowledgements
+
+Code Institute — project template and assessment criteria
+
+Bootstrap 5 — UI components
+
+Font Awesome — icons
+
+D&D Beyond — inspiration for UI layout and terminology
+
+Special thanks to my mentor for guidance on Django architecture and code reviews.
