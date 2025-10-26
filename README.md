@@ -8,7 +8,7 @@
 - Project Link: [https://github.com/CutbackTG/BattleRoster](https://github.com/CutbackTG/BattleRoster)
 - Deployment URL: https://battlerosterhost-e22dbecc83dc.herokuapp.com/
 
-##Project Overview
+## Project Overview
 
 BattleRoster was designed as part of Code Institute’s Level 5 Web Application Development Diploma (Project 3: Full Stack Frameworks with Django). 
 
@@ -48,7 +48,8 @@ Designed with extensibility in mind, the system supports modular character sheet
 - Dice rolling tools
 - Campaign notes and logs
 - Exporting sheets (PDF, JSON)
-- Companion mobile application
+- Party Chat feature
+- White label version for different game systems.
 
 ## Tech Stack
 
@@ -166,6 +167,20 @@ The UX design process followed the five planes of user experience design to ensu
 - **Colour Palette:** Gold, black, and warm browns to evoke a “treasure chest” aesthetic.  
 - **Visual Goal:** Make the interface feel immersive and consistent with tabletop gaming culture.
 
+## Battleroster Entity Relationship Diagram
+
+<img src= static/images/readme_images/battleroster_erd.png  alt ="ERD for the battleroster project" width= 800>
+
+The Entity Relationship Diagram (ERD) serves as a representation of the overall database schema for the BattleRoster project and the relationship between Users, Characters, and Parties.
+
+In summary, there exist two types of Users based on Django's built-in user model.  One type of User is a Player and the other a Dungeon Master (DM).
+
+User (Player) records represent common players that are able to create and manage multiple Characters. Each Character will contain properties such as name, level, race, class type, health, mana, and equipment. Each Character will also contain a Foreign Key (player_id) which associates it with the User (Player) owner.
+
+A User (Dungeon Master) record represents a user responsible for one or more game sessions and for the Parties. Each Party will have a unique ID and a Foreign Key (dungeon_master_id) which refers to the Player (User) that created the Party. Each Party is set up with a Many-To-Many relationship to multiple Characters (members). This will allow one DM to run multiple parties and those parties to have multiple Player characters.
+
+Users and Characters have additional local versions, User (local) and Character (local), for use as offline, or stand-alone, character sheets without the requirement of an account as an online registered user. The local entities will retain the same structure as those created by the online registered user, however linking only to the owner instead of an authenticated user, via owner_id Foreign Key.
+
 ### Wireframes
 
 <table>
@@ -200,20 +215,6 @@ A simple, bold and striking colour scheme was chosen, gold accents and warm brow
 I tested this scheme on Huemint to see its overall appearance and experiment with alternatives, it was here that I decided to add some browns here and there throughout to break through the colder, more warning colours of the plain black and yellow.
 
 <img src= static\images\readme_images\huemint_scheme_test.png alt ="Testing colour scheme on Huemint." width= 800>
-
-## Battleroster Entity Relationship Diagram
-
-<img src= static/images/readme_images/battleroster_erd.png  alt ="ERD for the battleroster project" width= 800>
-
-The Entity Relationship Diagram (ERD) serves as a representation of the overall database schema for the BattleRoster project and the relationship between Users, Characters, and Parties.
-
-In summary, there exist two types of Users based on Django's built-in user model.  One type of User is a Player and the other a Dungeon Master (DM).
-
-User (Player) records represent common players that are able to create and manage multiple Characters. Each Character will contain properties such as name, level, race, class type, health, mana, and equipment. Each Character will also contain a Foreign Key (player_id) which associates it with the User (Player) owner.
-
-A User (Dungeon Master) record represents a user responsible for one or more game sessions and for the Parties. Each Party will have a unique ID and a Foreign Key (dungeon_master_id) which refers to the Player (User) that created the Party. Each Party is set up with a Many-To-Many relationship to multiple Characters (members). This will allow one DM to run multiple parties and those parties to have multiple Player characters.
-
-Users and Characters have additional local versions, User (local) and Character (local), for use as offline, or stand-alone, character sheets without the requirement of an account as an online registered user. The local entities will retain the same structure as those created by the online registered user, however linking only to the owner instead of an authenticated user, via owner_id Foreign Key.
 
 ## Url to View Map
 
