@@ -271,13 +271,6 @@ textarea.form-control { resize: vertical; }
   box-shadow: 0 0 10px rgba(255, 215, 0, 0.6);
 }
 
-@media (max-width: 768px) {
-  .nav-tabs .nav-link {
-    font-size: 1.1rem;
-    padding: 0.6rem 0.8rem;
-  }
-}
-
 /* =========================================================
    Welcome Adventurer Section (responsive balanced)
    ========================================================= */
@@ -335,404 +328,66 @@ textarea.form-control { resize: vertical; }
   font-size: 1.1rem;
 }
 
-/* Tablets (≤992px) */
-@media (max-width: 992px) {
-  #welcome-adventurer-text {
-    padding: 2.5rem 1.5rem;
-    min-height: auto;
-  }
-
-  #welcome-adventurer-text .row {
-    flex-direction: column;
-    align-items: center;
-    gap: 1.5rem;
-  }
-
-  #welcome-adventurer-text img {
-    width: 80%;
-    margin-bottom: 1rem;
-  }
-
-  #welcome-adventurer-text .welcome-content {
-    text-align: center;
-  }
-}
-
-/* Mobiles (≤576px) */
-@media (max-width: 576px) {
-  #welcome-adventurer-text {
-    padding: 2rem 1rem;
-  }
-
-  #welcome-adventurer-text img {
-    width: 100%;
-    max-width: none;
-    margin-top: 1rem;
-  }
-
-  #welcome-adventurer-text h1 {
-    font-size: 1.75rem;
-    line-height: 1.3;
-  }
-
-  #welcome-adventurer-text p {
-    font-size: 1rem;
-  }
-}
-
 /* =========================================================
-   iPad Pro & mid-tablet fix (portrait ~1024px)
-   ========================================================= */
-@media (max-width: 1100px) {
-  #welcome-adventurer-text .row {
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    gap: 2rem;
-  }
-
-  #welcome-adventurer-text img {
-    width: 70%;
-    max-width: 600px;
-    margin: 0 auto 1.5rem;
-  }
-
-  #welcome-adventurer-text .welcome-content {
-    max-width: 85%;
-    text-align: center;
-  }
-
-  #welcome-adventurer-text {
-    padding: 2.5rem 1rem;
-  }
-}
-
-/* =========================================================
-   Fix for short wide screens (e.g. 1024x600 Nest Hub)
-   ========================================================= */
-@media (max-height: 700px) and (min-width: 900px) {
-  #welcome-adventurer-text {
-    padding: 1.5rem 1rem;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: flex-start;
-    overflow-y: auto;
-    max-height: calc(100vh - 180px); /* leave room for navbar/footer */
-  }
-
-  #welcome-adventurer-text img {
-    width: 65%;
-    max-width: 500px;
-    height: auto;
-    margin-bottom: 1rem;
-  }
-
-  #welcome-adventurer-text h1 {
-    font-size: 2rem;
-    margin-top: 0.5rem;
-  }
-
-  #welcome-adventurer-text p {
-    font-size: 1rem;
-    line-height: 1.4;
-  }
-}
-
-/* =========================================================
-   Cards, Alerts, Layout Utilities
-   ========================================================= */
-.character-grid { display: grid; gap: 1.5rem; margin-top: 2rem; }
-
-.card {
-  background: url("/static/images/parchment-texture.jpg") no-repeat center/cover;
-  color: #2b1a07;
-  border: 2px solid goldenrod;
-  border-radius: 12px;
-  box-shadow: 0 4px 15px rgba(255, 215, 0, 0.2);
-  transition: transform 0.2s ease-in-out, box-shadow 0.3s ease;
-}
-.card:hover { transform: translateY(-6px); box-shadow: 0 6px 20px rgba(255, 215, 0, 0.4); }
-
-.card-title {
-  font-family: "Oswald", sans-serif;
-  border-bottom: 1px solid goldenrod;
-  margin-bottom: 0.5rem;
-  color: #4b3600;
-}
-.card-text { font-family: "Lato", sans-serif; color: #3a2a00; }
-
-/* =========================================================
-   Footer Layout
-   ========================================================= */
-footer#footerSocials {
-  flex-shrink: 0;
-  background-color: #1a1a1a;
-  width: 100%;
-  border-top: 2px solid gold;
-  padding: 1rem 0;
-  margin: 0;
-}
-
-/* =========================================================
-   Social Responsiveness
-   ========================================================= */
-@media (max-width: 768px) {
-  #social-networks {
-    flex-direction: row !important;
-    flex-wrap: nowrap;
-    justify-content: center;
-    gap: 1.5rem;
-  }
-  #social-networks a {
-    display: inline-block;
-    font-size: 1.8rem;
-  }
-}
-@media (max-width: 576px) {
-  #social-networks { gap: 1rem; }
-  #social-networks a { font-size: 1.6rem; }
-}
-
-/* =========================================================
-   Dice Roller (restored visuals and buttons)
-   ========================================================= */
-.dice-toggle-btn {
-  width: 100%;
-  background-color: gold;
-  color: #1e1e1e;
-  font-weight: bold;
-  border: none;
-  border-radius: 6px;
-  padding: 0.5rem;
-  cursor: pointer;
-  transition: transform 0.2s ease, background-color 0.3s ease;
-  margin-bottom: 0.5rem;
-}
-
-.dice-toggle-btn:hover {
-  transform: scale(1.05);
-  background-color: goldenrod;
-  color: #fff;
-}
-
-.dice-roller-panel {
-  display: none;
-  padding: 1.5rem;
-  background: url("/static/images/parchment-texture.jpg") no-repeat center/cover;
-  border: 2px solid goldenrod;
-  border-radius: 10px;
-  box-shadow: 0 0 15px rgba(255, 215, 0, 0.3);
-  color: #2b1a07;
-  transition: all 0.4s ease;
-  opacity: 0;
-  transform: scaleY(0.9);
-  transform-origin: top;
-}
-
-.dice-roller-panel.open {
-  display: block;
-  opacity: 1;
-  transform: scaleY(1);
-}
-
-/* Inputs and dropdowns inside the dice panel */
-.dice-roller-panel select,
-.dice-roller-panel input[type="number"],
-.dice-roller-panel button {
-  font-family: "Oswald", sans-serif;
-  border-radius: 6px;
-  border: 1px solid goldenrod;
-  padding: 0.3rem 0.5rem;
-  font-size: 1rem;
-  background-color: rgba(255, 255, 255, 0.95);
-  color: #2b1a07;
-  margin-right: 0.3rem;
-}
-
-.dice-roller-panel button {
-  background-color: gold;
-  font-weight: bold;
-  color: #1e1e1e;
-  border: none;
-  cursor: pointer;
-  transition: transform 0.2s ease, background-color 0.2s ease;
-}
-
-.dice-roller-panel button:hover {
-  background-color: goldenrod;
-  color: #fff;
-  transform: scale(1.05);
-}
-
-.dice-roller-panel label {
-  color: goldenrod;
-  font-weight: bold;
-  margin-right: 0.5rem;
-}
-
-.dice-roller-panel h3 {
-  font-family: "Oswald", sans-serif;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  color: saddlebrown;
-  margin-top: 1rem;
-  border-top: 1px solid goldenrod;
-  padding-top: 1rem;
-}
-
-/* =========================================================
-   Character Page Side Tabs (Fantasy Gold Theme)
-   ========================================================= */
-
-.nav-pills .nav-link,
-.character-nav .btn {
-  background: linear-gradient(to bottom, #2a2a2a 0%, #1e1e1e 100%);
-  color: gold !important;
-  border: 2px solid goldenrod;
-  border-radius: 10px;
-  font-family: "Oswald", sans-serif;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  font-size: 1.25rem;
-  margin: 0.5rem 0;
-  padding: 0.75rem 1.25rem;
-  transition: all 0.3s ease;
-  box-shadow: inset 0 0 8px rgba(255, 215, 0, 0.15);
-  text-align: center;
-}
-
-/* Hover Glow */
-.nav-pills .nav-link:hover,
-.character-nav .btn:hover {
-  background: linear-gradient(to bottom, #3a2a00 0%, #2a1a00 100%);
-  color: #fff8dc !important;
-  box-shadow: 0 0 12px rgba(255, 215, 0, 0.6);
-  transform: translateY(-2px);
-}
-
-/* Active (selected) tab */
-.nav-pills .nav-link.active,
-.character-nav .btn.active,
-.nav-pills .show > .nav-link {
-  background: gold !important;
-  color: #1e1e1e !important;
-  border-color: goldenrod;
-  font-weight: bold;
-  box-shadow: 0 0 20px rgba(255, 215, 0, 0.7);
-  transform: none;
-}
-
-/* Optional: reduce spacing for smaller screens */
-@media (max-width: 768px) {
-  .nav-pills .nav-link,
-  .character-nav .btn {
-    font-size: 1.1rem;
-    padding: 0.6rem 0.8rem;
-  }
-}
-
-/* =========================================================
-   Alerts & Notifications (Fantasy Gold Theme)
-   ========================================================= */
-
-/* Base alert */
-.alert {
-  background: url("/static/images/parchment-texture.jpg") center/cover no-repeat;
-  border: 2px solid goldenrod;
-  border-radius: 10px;
-  color: #3b2607;
-  padding: 1rem 1.25rem;
-  margin: 1rem 0;
-  font-family: "Oswald", sans-serif;
-  font-size: 1.1rem;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  box-shadow: 0 0 12px rgba(255, 215, 0, 0.25);
-}
-
-/* Text hierarchy */
-.alert strong,
-.alert b {
-  color: #d4af37;
-  text-shadow: 1px 1px 1px #000;
-}
-
-/* Alert variations */
-.alert-success {
-  background-color: rgba(255, 215, 0, 0.2);
-  border-color: #d4af37;
-  color: #2b1a07;
-}
-
-.alert-warning {
-  background-color: rgba(255, 165, 0, 0.15);
-  border-color: #ffcc00;
-}
-
-.alert-danger {
-  background-color: rgba(139, 0, 0, 0.2);
-  border-color: #ff4444;
-}
-
-.alert-info {
-  background-color: rgba(255, 255, 255, 0.2);
-  border-color: #d4af37;
-}
-
-/* Optional hover animation */
-.alert:hover {
-  box-shadow: 0 0 20px rgba(255, 215, 0, 0.4);
-  transform: scale(1.01);
-  transition: 0.2s ease-in-out;
-}
-
-/* =========================================================
-   Enhanced Desktop Scaling (Full HD & above)
+   Enhanced Desktop Scaling + Layout Fix (1920x1080 and above)
    ========================================================= */
 
 @media (min-width: 1080px) {
-  body {
-    font-size: 1.2rem; /* boost all text slightly */
+  #welcome-adventurer-text {
+    padding: 4rem 6rem;
+  }
+
+  #welcome-adventurer-text .row {
+    max-width: 1400px;
+    margin: 0 auto;
+    justify-content: center;
+    gap: 4rem;
+  }
+
+  #welcome-adventurer-text img {
+    flex: 0 0 40%;
+    width: 40%;
+    max-width: 600px;
   }
 
   #welcome-adventurer-text .welcome-content {
     flex: 0 0 55%;
     max-width: 55%;
+    text-align: left;
   }
 
   #welcome-adventurer-text h1 {
-    font-size: 2.75rem;
+    font-size: 3.25rem;
+    line-height: 1.3;
+    margin-bottom: 1.25rem;
     letter-spacing: 2px;
   }
 
   #welcome-adventurer-text p {
-    font-size: 1.25rem;
+    font-size: 1.3rem;
     line-height: 1.8;
   }
 
   #welcome-adventurer-text strong {
-    font-size: 1.3rem;
+    font-size: 1.35rem;
   }
 }
 
-/* Extra Large Desktops / 1440px+ */
+/* Even wider screens (1440px+) */
 @media (min-width: 1440px) {
-  body {
-    font-size: 1.25rem;
+  #welcome-adventurer-text {
+    padding: 5rem 8rem;
   }
 
   #welcome-adventurer-text h1 {
-    font-size: 3rem;
+    font-size: 3.75rem;
   }
 
   #welcome-adventurer-text p {
-    font-size: 1.35rem;
+    font-size: 1.4rem;
   }
 
   #welcome-adventurer-text .welcome-content {
-    flex: 0 0 60%;
     max-width: 60%;
   }
 }
