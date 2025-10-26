@@ -211,17 +211,28 @@ contact.html
 
 ### Wireframes
 
-Homepage
-<img src= static\images\readme_images\homepage_concept.png alt ="homepage wireframe concept" width= 300>
-
-Characters
-<img src= static\images\readme_images\characters_concept.png alt ="Characters wireframe concept" width= 300>
-
-Signup/ Login
-<img src= static\images\readme_images\signup_concept.png alt ="signup/ login wireframe concept" width= 300>
-
-Contact
-<img src= static\images\readme_images\contact_concept.png alt ="Contact wireframe concept" width= 300>
+<table>
+  <tr>
+    <td align="center">
+      <strong>Homepage</strong><br>
+      <img src="static/images/readme_images/homepage_concept.png" alt="Homepage wireframe concept" width="300">
+    </td>
+    <td align="center">
+      <strong>Characters</strong><br>
+      <img src="static/images/readme_images/characters_concept.png" alt="Characters wireframe concept" width="300">
+    </td>
+  </tr>
+  <tr>
+    <td align="center">
+      <strong>Signup / Login</strong><br>
+      <img src="static/images/readme_images/signup_concept.png" alt="Signup/Login wireframe concept" width="300">
+    </td>
+    <td align="center">
+      <strong>Contact</strong><br>
+      <img src="static/images/readme_images/contact_concept.png" alt="Contact wireframe concept" width="300">
+    </td>
+  </tr>
+</table>
 
 ### Colour Scheme
 
